@@ -10,6 +10,12 @@ const vscode = require('vscode');
  */
 function activate(context) {
 
+	let button = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+	button.text = "Button Label";
+	button.command = "llamadoc.helloworld";
+	button.show();
+
+
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "llamadoc" is now active!');
