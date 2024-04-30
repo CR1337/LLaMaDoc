@@ -12,7 +12,7 @@ function activate(context) {
 
 	let button = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 	button.text = "Button Label";
-	button.command = "llamadoc.helloworld";
+	button.command = "llamadoc.helloWorld";
 	button.show();
 
 
