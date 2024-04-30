@@ -13,8 +13,8 @@
   "main": "./extension.js",
   "contributes": {
     "commands": [{
-      "command": "llamadoc.helloWorld",
-      "title": "Hello World"
+      "command": "llamadoc.scanFile",
+      "title": "Scan file"
     }]
   },
   "scripts": {
