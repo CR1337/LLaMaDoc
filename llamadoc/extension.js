@@ -6,6 +6,48 @@ const os = require('os')
  */
 
 
+function spawnButtons(jsonObject) {
+	let decorations = [];
+	for (const func of jsonObject) {
+		if (!func.has_docstring) continue;
+		const lineNumber = func.start_line - 1;
+	
+		let buttonDecorationType = vscode.window.createTextEditorDecorationType({
+			after: {
+				margin: '0 0 0 4em',
+				contentText: "$(sync) Update", // Example icon with text
+				textDecoration: 'none', // Example property
+				color: '#ffffff', // Example color
+				backgroundColor: '#007acc', // Example background color
+				fontWeight: 'bold', // Example font weight
+				padding: '4px 8px', // Example padding
+			}
+		});
+
+		// Get the active text editor
+		let editor = vscode.window.activeTextEditor;
+		if (editor) {
+			// Get the line where you want to add the button
+			let startPosition = new vscode.Position(lineNumber, 75);
+			let endPosition = new vscode.Position(lineNumber, 75);
+
+			// Define the decoration
+			let decoration = {
+				range: new vscode.Range(startPosition, endPosition),
+				renderOptions: {
+					after: {
+						contentText: "$(sync) Update",
+						margin: '0 0 0 4em',
+					}
+				}
+			};
+
+			// Apply the decoration to the active text editor
+			editor.setDecorations(buttonDecorationType, [decoration]);
+		}
+	}
+}
+
 function activate(context) {
 
 	let button = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
@@ -41,6 +83,7 @@ function activate(context) {
 			}
 			console.log(`stdout: ${stdout}`);
 			let jsonObject = JSON.parse(stdout);
+			spawnButtons(jsonObject);
 		});
 	});
 
