@@ -9,6 +9,8 @@ from typing import List, Dict, Any
 class Function:
     start_line: int
     end_line: int
+    docstring_start_line: int
+    docstring_end_line: int
     docstring: str
     code: str
     has_docstring: bool = False
@@ -19,6 +21,8 @@ class Function:
         return {
             'start_line': self.start_line,
             'end_line': self.end_line,
+            'docstring_start_line': self.docstring_start_line,
+            'docstring_end_line': self.docstring_end_line,
             'docstring': self.docstring,
             'code': self.code,
             'has_docstring': self.has_docstring,
@@ -51,6 +55,30 @@ def extract_functions(full_code: List[str]) -> List[Function]:
                     code="".join(full_code[start_line-1:end_line])
                 ))
                 continue
+
+            docstring_start_line = None
+            docstring_end_line = None
+            one_delimiter_found = False
+            delimiter = None
+            for i, line in enumerate(full_code):
+                if not delimiter:
+                    if '"""' in line:
+                        delimiter = '"""'
+                    elif "'''" in line:
+                        delimiter = "'''"
+                delimiter_count = line.count(delimiter)
+                if delimiter_count == 2:
+                    docstring_start_line = i
+                    docstring_end_line = i
+                    break
+                if delimiter_count == 1:
+                    if one_delimiter_found:
+                        docstring_end_line = i
+                        break
+                    else:
+                        docstring_start_line = i
+                        one_delimiter_found = True
+
             code = "".join(full_code[start_line-1:end_line])
             docstring_delimiter = '"""' if '"""' in code else "'''"
             docstring_start = code.index(docstring_delimiter)
@@ -59,6 +87,8 @@ def extract_functions(full_code: List[str]) -> List[Function]:
             functions.append(Function(
                 start_line=start_line,
                 end_line=end_line,
+                docstring_start_line=docstring_start_line,
+                docstring_end_line=docstring_end_line,
                 docstring=docstring,
                 code=code,
                 has_docstring=True
