@@ -51,6 +51,8 @@ def extract_functions(full_code: List[str]) -> List[Function]:
                 functions.append(Function(
                     start_line=start_line,
                     end_line=end_line,
+                    docstring_start_line=None,
+                    docstring_end_line=None,
                     docstring='',
                     code="".join(full_code[start_line-1:end_line])
                 ))

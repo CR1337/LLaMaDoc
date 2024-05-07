@@ -1,100 +1,69 @@
-const path = require('path')
 const vscode = require('vscode');
-const os = require('os')
+
 /**
- * @param {vscode.ExtensionContext} context
+ * This method is called when your extension is activated
+ * Your extension is activated the very first time the command is executed
  */
-
-
-function spawnButtons(jsonObject) {
-	let decorations = [];
-	for (const func of jsonObject) {
-		if (!func.has_docstring) continue;
-		const lineNumber = func.start_line - 1;
-	
-		let buttonDecorationType = vscode.window.createTextEditorDecorationType({
-			after: {
-				margin: '0 0 0 4em',
-				contentText: "$(sync) Update", // Example icon with text
-				textDecoration: 'none', // Example property
-				color: '#ffffff', // Example color
-				backgroundColor: '#007acc', // Example background color
-				fontWeight: 'bold', // Example font weight
-				padding: '4px 8px', // Example padding
-			}
-		});
-
-		// Get the active text editor
-		let editor = vscode.window.activeTextEditor;
-		if (editor) {
-			// Get the line where you want to add the button
-			let startPosition = new vscode.Position(lineNumber, 75);
-			let endPosition = new vscode.Position(lineNumber, 75);
-
-			// Define the decoration
-			let decoration = {
-				range: new vscode.Range(startPosition, endPosition),
-				renderOptions: {
-					after: {
-						contentText: "$(sync) Update",
-						margin: '0 0 0 4em',
-					}
-				}
-			};
-
-			// Apply the decoration to the active text editor
-			editor.setDecorations(buttonDecorationType, [decoration]);
-		}
-	}
-}
-
 function activate(context) {
+    console.log('Congratulations, your extension "my-extension" is now active!');
 
-	let button = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-	button.text = "$(megaphone) Check for Out of Date Docstrings";
-	button.command = "llamadoc.scanFile";
-	button.show();
+    let disposable = vscode.commands.registerCommand('extension.generateRandomHints', () => {
+        // Get active text editor
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) {
+            vscode.window.showErrorMessage('No active editor!');
+            return;
+        }
 
-	let disposable = vscode.commands.registerCommand('llamadoc.scanFile', function () {
-		
-		const { exec } = require('child_process');
-		const argument = vscode.window.activeTextEditor.document.fileName;
+        const lineCount = editor.document.lineCount;
+        const n = Math.floor(Math.random() * 3) + 1; // Random number of hints to generate
 
-		let windowsSystem = `python -u ${__dirname}\\find_docstrings.py "${argument}"`;
-		let otherSystem = `python3 -u ${__dirname}/find_docstrings.py "${argument}"`;
+        // Array to store line numbers
+        const lineNumbers = [];
 
-		let pyCommand
-		
-		const platform = os.platform();
-		
-		if (platform == 'win32') {
-			pyCommand = windowsSystem
-		} else {
-			pyCommand = otherSystem
-		}
+        // Generate n random line numbers
+        for (let i = 0; i < n; i++) {
+            const lineNumber = Math.floor(Math.random() * lineCount) + 1;
+            lineNumbers.push(lineNumber);
+            vscode.window.showInformationMessage(`Line Number: ${lineNumber}`);
+        }
 
-		exec(pyCommand, (error, stdout, stderr) => {
-			if (error) {
-				console.error(`Error: ${error.message}`);
-				return;
-			}
-			if (stderr) {
-				console.error(`stderr: ${stderr}`);
-			}
-			console.log(`stdout: ${stdout}`);
-			let jsonObject = JSON.parse(stdout);
-			spawnButtons(jsonObject);
-		});
-	});
+        // Show code action hints
+        lineNumbers.forEach(lineNumber => {
+            const position = new vscode.Position(lineNumber - 1, 0);
+            const range = new vscode.Range(position, position);
+            const diagnostic = new vscode.Diagnostic(range, `Line Number: ${lineNumber}`, vscode.DiagnosticSeverity.Hint);
+            const codeActions = [];
+            const showLineNumberCommand = {
+                title: 'Show Line Number',
+                command: 'extension.showLineNumber',
+                arguments: [lineNumber]
+            };
+            const codeAction = new vscode.CodeAction('Show Line Number', vscode.CodeActionKind.QuickFix);
+            codeAction.diagnostics = [diagnostic];
+            codeAction.isPreferred = true;
+            codeAction.command = showLineNumberCommand;
+            codeActions.push(codeAction);
+            vscode.languages.registerCodeActionsProvider('*', {
+                provideCodeActions(document, range) {
+                    return codeActions;
+                }
+            });
+        });
 
-	context.subscriptions.push(disposable);
+        vscode.window.showInformationMessage(`${n} code action hints generated!`);
+    });
 
+    context.subscriptions.push(disposable);
+
+    // Register command to show line number
+    let showLineNumberDisposable = vscode.commands.registerCommand('extension.showLineNumber', (lineNumber) => {
+        vscode.window.showInformationMessage(`Line Number: ${lineNumber}`);
+    });
+
+    context.subscriptions.push(showLineNumberDisposable);
 }
-
-// This method is called when your extension is deactivated
-function deactivate() {}
 
 module.exports = {
-	activate,
-	deactivate
-}
+    activate
+};

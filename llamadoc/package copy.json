@@ -12,12 +12,10 @@
   "activationEvents": ["*"],
   "main": "./extension.js",
   "contributes": {
-    "commands": [
-      {
-          "command": "extension.generateRandomHints",
-          "title": "Generate Random Code Action Hints"
-      }
-  ]
+    "commands": [{
+      "command": "llamadoc.scanFile",
+      "title": "Scan file"
+    }]
   },
   "scripts": {
     "lint": "eslint .",
