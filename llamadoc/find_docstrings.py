@@ -66,6 +66,8 @@ def extract_functions(full_code: List[str]) -> List[Function]:
                         delimiter = '"""'
                     elif "'''" in line:
                         delimiter = "'''"
+                    else:
+                        continue
                 delimiter_count = line.count(delimiter)
                 if delimiter_count == 2:
                     docstring_start_line = i
