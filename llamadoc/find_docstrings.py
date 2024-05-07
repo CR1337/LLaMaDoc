@@ -70,15 +70,15 @@ def extract_functions(full_code: List[str]) -> List[Function]:
                         continue
                 delimiter_count = line.count(delimiter)
                 if delimiter_count == 2:
-                    docstring_start_line = i
-                    docstring_end_line = i
+                    docstring_start_line = i+1
+                    docstring_end_line = i+1
                     break
                 if delimiter_count == 1:
                     if one_delimiter_found:
-                        docstring_end_line = i
+                        docstring_end_line = i+1
                         break
                     else:
-                        docstring_start_line = i
+                        docstring_start_line = i+1
                         one_delimiter_found = True
 
             code = "".join(full_code[start_line-1:end_line])
