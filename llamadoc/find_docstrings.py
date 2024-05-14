@@ -62,7 +62,7 @@ def extract_functions(full_code: List[str]) -> List[Function]:
             docstring_end_line = None
             one_delimiter_found = False
             delimiter = None
-            for i, line in enumerate(full_code):
+            for i, line in enumerate(full_code[start_line-1:end_line]):
                 if not delimiter:
                     if '"""' in line:
                         delimiter = '"""'
@@ -72,15 +72,15 @@ def extract_functions(full_code: List[str]) -> List[Function]:
                         continue
                 delimiter_count = line.count(delimiter)
                 if delimiter_count == 2:
-                    docstring_start_line = i+1
-                    docstring_end_line = i+1
+                    docstring_start_line = i + start_line
+                    docstring_end_line = i + start_line
                     break
                 if delimiter_count == 1:
                     if one_delimiter_found:
-                        docstring_end_line = i+1
+                        docstring_end_line = i + start_line
                         break
                     else:
-                        docstring_start_line = i+1
+                        docstring_start_line = i + start_line
                         one_delimiter_found = True
 
             code = "".join(full_code[start_line-1:end_line])
