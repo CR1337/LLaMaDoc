@@ -39,7 +39,7 @@ function spawnLightbulbs(lineNumber, docstring_start, docstring_end, replacement
 }
 
 function spawnButtons(jsonObject) {
-	let decorations = [];
+	//let decorations = [];
 	for (const pythonFunc of jsonObject) {
 		if (!pythonFunc.has_docstring || pythonFunc.up_to_date) continue;
 		const lineNumber = pythonFunc.start_line - 1;
@@ -126,7 +126,6 @@ function activate(context) {
 
 }
 
-// This method is called when your extension is deactivated
 function deactivate() {}
 
 module.exports = {
