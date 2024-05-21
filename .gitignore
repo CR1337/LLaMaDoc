@@ -2,3 +2,5 @@
 **/.venv
 **/auth.token
 github-scraper/repositories.json
+github-scraper/cloned_repos
+github-scrper/extracted-py-files
