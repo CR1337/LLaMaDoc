@@ -2,8 +2,6 @@ import json
 import git
 import os
 from typing import List, Dict, Any, Iterable, Tuple
-from concurrent.futures import ProcessPoolExecutor
-from multiprocessing import cpu_count
 from tqdm import tqdm
 import shutil
 from datetime import datetime
@@ -92,14 +90,9 @@ def executor_workload(repository: Tuple[Dict[str, Any], int]):
 
 def main():
     with open("filtered_repositories.json", "r") as file:
-        repositories = json.load(file)[:2]  # TODO: Remove the slicing
+        repositories = json.load(file)[:10]  # TODO: Remove the slicing
 
-    # with ProcessPoolExecutor(max_workers=cpu_count() // 2) as executor:
-    #     repositories_iter = tqdm(zip(repositories, range(len(repositories))), desc="Scraping Repositories")
-    #     for _ in executor.map(executor_workload, repositories_iter):
-    #         pass
-
-    repositories_iter = tqdm(zip(repositories, range(len(repositories))), desc="Scraping Repositories")
+    repositories_iter = tqdm(zip(repositories, range(len(repositories))), desc="Scraping Repositories", total=len(repositories))
     for repo in repositories_iter:
         RepositoryScraper(*repo).scrape()
 
