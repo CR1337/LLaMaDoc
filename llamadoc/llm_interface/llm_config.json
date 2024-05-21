@@ -1,0 +1,16 @@
+{
+    "defaults": {
+        "max_new_tokens": 100, 
+        "num_beams": 5,
+        "do_sample": true,
+        "temperature": 0.7,
+        "top_k": 50,
+        "top_p": 0.9,
+        "repetition_penalty": 1.2,
+        "length_penalty": 2.0
+    },
+    "server": {
+        "address:": "http://delos.eaalab.hpi.uni-potsdam.de",
+        "port": 9002
+    }
+}
