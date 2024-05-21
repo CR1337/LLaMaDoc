@@ -22,6 +22,6 @@ if [ $STEP -le 2 ]; then
 fi
 
 if [ $STEP -le 3 ]; then
-    python3 03_extract_data.py
+    python3 03_extract_examples.py
     if [ $? -ne 0 ]; then exit 1; fi
 fi
