@@ -5,3 +5,4 @@ github-scraper/repositories.json
 github-scraper/cloned_repos
 github-scrper/extracted-py-files
 github-scraper/filtered_repositories.json
+github-scraper/extracted-py-files/
