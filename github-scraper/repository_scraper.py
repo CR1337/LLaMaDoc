@@ -1,128 +1,107 @@
-import requests
 import json
+import git
+import os
+from typing import List, Dict, Any, Iterable, Tuple
+from concurrent.futures import ProcessPoolExecutor
+from multiprocessing import cpu_count
 from tqdm import tqdm
-from typing import Any, Dict, List
+import shutil
+from datetime import datetime
+
+CLONE_PATH: str = "cloned_repos"
+
 
 class RepositoryScraper:
 
-    ITEMS_PER_PAGE: int = 100
-    # GitHub API has a limit of 1000 items per search result
-    MAX_RESULT_ITEMS: int = 1000
+    _index: int
+    _local_directory: str
+    _repo: git.Repo
+    _repo_name: str
+    _main_head: git.Head
 
-    with open("auth.token", 'r') as file:
-        AUTH_TOKEN: str = file.read().replace('\n', '')
-    HEADERS: Dict[str, str] = {
-        "Accept": "application/vnd.github+json",
-        "Authorization": f"Bearer {AUTH_TOKEN}",
-        "X-GitHub-Api-Version": "2022-11-28"
-    }
-    del AUTH_TOKEN
-
-    REPO_URL: str = "https://api.github.com/search/repositories"
-
-    _language: str
-    _star_threshold: int
-    _contributor_threshold: int
-    _repositories: List[Dict[str, Any]]
-
-    _total_item_count: int = None
-    _page_count: int = None
-    
-    _scraped: bool
-
-    def __init__(
-        self, 
-        star_threshold: int, 
-        contributor_threshold: int | None, 
-        language: str = "python"
-    ):
-        self._language = language
-        self._star_threshold = star_threshold
-        self._contributor_threshold = contributor_threshold
-        
-        self._repositories = []
-
-        self._scraped = False
-
-    def _scrape_repository_page(self, page: int):
-        parameters = {
-            "q": f"language:{self._language} stars:>={self._star_threshold}",
-            "per_page": self.ITEMS_PER_PAGE,
-            "sort": "stars",
-            "page": page
-        }
-        response = requests.get(
-            self.REPO_URL, headers=self.HEADERS, params=parameters
+    def __init__(self, repo: Dict[str, Any], index: int):
+        self._index = index
+        self._local_directory = os.path.join(CLONE_PATH, repo["name"])
+        self._repo = git.Repo.clone_from(
+            repo["html_url"], 
+            self._local_directory, 
+            bare=True
         )
-        result = response.json()
-        self._repositories.extend(result['items'])
-        if page == 1:
-            self._total_item_count = min(
-                result['total_count'], self.MAX_RESULT_ITEMS
-            )
-            self._page_count = (
-                self._total_item_count // self.ITEMS_PER_PAGE 
-                + (
-                    1 
-                    if self._total_item_count % self.ITEMS_PER_PAGE > 0 
-                    else 0
-                )
-            )
-        
-    def _scrape_repository_pages(self):
-        self._scrape_repository_page(1)
-        for page in tqdm(
-            range(2, self._page_count + 1), 
-            desc="Scraping Repositories",
-            unit="pages",
-            total=self._page_count,
-            initial=1
-        ):
-            self._scrape_repository_page(page)
-    def _filter_function(self, item: Dict[str, Any]) -> bool:
-        parameters = { "per_page": 100 }
-        contributors_url = item['contributors_url']
-        response = requests.get(
-            contributors_url, headers=self.HEADERS, params=parameters
-        )
-        contributors = response.json()
-        item['total_contributors'] = contributors
-        return (
-            self._contributor_threshold is None
-            or len(contributors) >= self._contributor_threshold
-        )
+        self._main_head = self._repo.heads[0]
+        self._repo_name = repo["name"]
+        if not os.path.exists("extracted-py-files"):
+            os.mkdir("extracted-py-files")
+        if not os.path.exists(f"extracted-py-files/{self._repo_name}"):
+            os.mkdir(f"extracted-py-files/{self._repo_name}")
 
-    def _filter_repositories(self):
-        filtered_repositories = []
-        for item in tqdm(
-            self._repositories, desc="Filtering Repositories"
-        ):
-            if self._filter_function(item):
-                filtered_repositories.append(item)
-        self._repositories = filtered_repositories
+    def __del__(self):
+        shutil.rmtree(self._local_directory)
 
     def scrape(self):
-        self._scrape_repository_pages()
-        self._filter_repositories()
-        self._scraped = True
+        py_files = self._find_all_py_files()
+        py_file_versions = {
+            py_file: self._find_all_blob_versions(py_file)
+            for py_file in py_files
+        }
+        for py_file, versions in py_file_versions.items():
+            output = {
+                "repo_index": self._index,
+                "file_path": py_file.path,
+                "versions": [
+                    {
+                        "commit": commit.hexsha,
+                        "date": datetime.fromtimestamp(commit.committed_date).isoformat(),
+                        "blob": blob.data_stream.read().decode("utf-8")
+                    }
+                    for blob, commit in versions
+                ]
+            }
 
-    def save(self, filename: str):
-        if not self._scraped:
-            raise RuntimeError("Repositories have not been scraped yet.")
-        with open(filename, 'w') as file:
-            json.dump(self._repositories, file, indent=2)
+            short_file_path = py_file.path.split("/")[-1]
+            with open(f"extracted-py-files/{self._repo_name}/{short_file_path}.json", "w") as file:
+                json.dump(output, file, indent=2)
+            
 
-    @property
-    def repository_count(self) -> int:
-        if not self._scraped:
-            raise RuntimeError("Repositories have not been scraped yet.")
-        return len(self._repositories)
+    def _find_all_py_files(self) -> Iterable[git.Blob]:
+        """Find all Python files in _main_head"""
+        return (
+            blob for blob in self._main_head.commit.tree.traverse()
+            if blob.path.endswith(".py")
+        )
+    
+    def _find_all_blob_versions(self, blob: git.Blob) -> List[Tuple[git.Blob, git.Commit]]:
+        """Find all versions of a blob, skip if it doesnt exist in a commit."""
+        versions = []
+        last_version = None
+        for commit in self._repo.iter_commits(self._main_head):
+            try:
+                blob_version = commit.tree[blob.path]
+                if last_version is not None and blob_version.data_stream.read().decode("utf-8") == last_version.data_stream.read().decode("utf-8"):
+                    continue 
+                last_version = blob_version
+            except KeyError:
+                continue
+            else:
+                versions.append((blob_version, commit))
+        return versions
+
+
+def executor_workload(repository: Tuple[Dict[str, Any], int]):
+    RepositoryScraper(*repository).scrape()
+
+
+def main():
+    with open("filtered_repositories.json", "r") as file:
+        repositories = json.load(file)[:2]  # TODO: Remove the slicing
+
+    # with ProcessPoolExecutor(max_workers=cpu_count() // 2) as executor:
+    #     repositories_iter = tqdm(zip(repositories, range(len(repositories))), desc="Scraping Repositories")
+    #     for _ in executor.map(executor_workload, repositories_iter):
+    #         pass
+
+    repositories_iter = tqdm(zip(repositories, range(len(repositories))), desc="Scraping Repositories")
+    for repo in repositories_iter:
+        RepositoryScraper(*repo).scrape()
 
 if __name__ == "__main__":
-    scraper = RepositoryScraper(
-        star_threshold=1000, 
-        contributor_threshold=None
-    )
-    scraper.scrape()
-    scraper.save("repositories.json")
-    print(f"Scraped {scraper.repository_count} repositories.")
+    main()
