@@ -1,28 +1,54 @@
 from pydantic import BaseModel
 from typing import Optional
-import json
+from enum import Enum
 
 
-with open("llm_config.json") as file:
-    llm_config = json.load(file)
+class SampleMethod(str, Enum):
+    greedy = "greedy"
+    top_k = "top_k"
+    top_p = "top_p"
+    beam = "beam"
+
+
+class CheckMethod(str, Enum):
+    absolute = "absolute"
+    relative = "relative"
 
 
 class LlmQuery(BaseModel):
     code: str
-    docstring: str
+    model_size: str
 
-    max_new_tokens: Optional[int] = llm_config["defaults"]["max_new_tokens"]
-    num_beams: Optional[int] = llm_config["defaults"]["num_beams"]
-    do_sample: Optional[bool] = llm_config["defaults"]["do_sample"]
-    temperature: Optional[float] = llm_config["defaults"]["temperature"]
-    top_k: Optional[int] = llm_config["defaults"]["top_k"]
-    top_p: Optional[float] = llm_config["defaults"]["top_p"]
-    repetition_penalty: Optional[float] = llm_config["defaults"]["repetition_penalty"]
-    length_penalty: Optional[float] = llm_config["defaults"]["length_penalty"]
+
+class LlmUpdateQuery(LlmQuery):
+    max_length: Optional[int] = None
+    temperature: Optional[float] = None
+    repetition_penalty: Optional[float] = None
+    length_penalty: Optional[float] = None
+
+    sample_method: Optional[SampleMethod] = SampleMethod.greedy
+
+    # top_k sampling
+    top_k: Optional[int] = None
+
+    # top_p sampling
+    top_p: Optional[float] = None
+
+    # beam search
+    num_beams: Optional[int] = None
+    early_stopping: Optional[bool] = None
+
+
+class LlmCheckQuery(LlmQuery):
+    docstring: str
+    check_method: Optional[CheckMethod] = CheckMethod.absolute
+
+    update_query: Optional[LlmUpdateQuery] = None
 
 
 class LlmCheckResponse(BaseModel):
     docstring_probability: float
+    generated_docstring_probability: Optional[float] = None
 
 
 class LlmUpdateResponse(BaseModel):
