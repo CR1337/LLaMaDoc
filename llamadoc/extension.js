@@ -7,71 +7,71 @@ const LLAMADOC_DISMISS_COMMAND = 'llamadoc.dismissCommand';
 const LLAMADOC_SCAN_FILE = 'llamadoc.scanFile';
 
 let decorationTypes = [];
-let executedActions = new Set(); // Track executed actions
-let codeActionProvider = null; // Track the provider registration
-let lightbulbLines = []; // Track lines for which lightbulbs are registered
-let dismissAllButton; // Track the dismiss all button
+let executedActions = new Set();
+let codeActionProvider = null;
+let lightbulbLines = [];
+let dismissAllButton;
+let jsonObject;
 
-/**
- * @param {vscode.ExtensionContext} context
- */
 function activate(context) {
     registerCommands(context);
     createStatusBarButton(context);
 }
 
 function deactivate() {
-    if (codeActionProvider) {
-        codeActionProvider.dispose();
-    }
+    codeActionProvider?.dispose();
 }
 
 function registerCommands(context) {
     context.subscriptions.push(
-        vscode.commands.registerCommand(LLAMADOC_UPDATE_DOCSTRING_COMMAND, (lineNumber) => {
-            clearSpecificDecoration(lineNumber);
-            executedActions.add(lineNumber);
-            vscode.window.showInformationMessage('Updated Docstring.');
-        }),
-        vscode.commands.registerCommand(LLAMADOC_DISMISS_COMMAND, (lineNumber) => {
-            clearSpecificDecoration(lineNumber);
-            executedActions.add(lineNumber);
-            vscode.window.showInformationMessage('Dismissed Docstring Update.');
-        }),
+        vscode.commands.registerCommand(LLAMADOC_UPDATE_DOCSTRING_COMMAND, updateDocstring),
+        vscode.commands.registerCommand(LLAMADOC_DISMISS_COMMAND, dismissDocstring),
         vscode.commands.registerCommand(LLAMADOC_SCAN_FILE, scanFile),
         vscode.commands.registerCommand('llamadoc.dismissAll', dismissAllExpiredDocstrings)
     );
 }
 
 function createStatusBarButton(context) {
-    const searchButton = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-    searchButton.text = "$(search) Search for Out of Date Docstrings";
-    searchButton.command = LLAMADOC_SCAN_FILE;
-    searchButton.show();
+    const searchButton = createButton("$(search) Search for Out of Date Docstrings", LLAMADOC_SCAN_FILE, vscode.StatusBarAlignment.Left, 100);
     context.subscriptions.push(searchButton);
 
-    dismissAllButton = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 99);
-    dismissAllButton.text = "$(close) Dismiss All Expired Docstrings";
-    dismissAllButton.command = 'llamadoc.dismissAll';
+    dismissAllButton = createButton("$(close) Dismiss All Expired Docstrings", 'llamadoc.dismissAll', vscode.StatusBarAlignment.Left, 99);
     context.subscriptions.push(dismissAllButton);
 }
 
-function scanFile() {
-    executedActions.clear(); // Clear the set to allow new actions
-    lightbulbLines = []; // Clear previous lightbulb lines
+function createButton(text, command, alignment, priority) {
+    const button = vscode.window.createStatusBarItem(alignment, priority);
+    button.text = text;
+    button.command = command;
+    button.show();
+    return button;
+}
 
+function updateDocstring(lineNumber, oldDocstringLines, newDocstringLines) {
+    if (newDocstringLines !== oldDocstringLines) {
+        updateLineDifference(lineNumber + 1, newDocstringLines - oldDocstringLines);
+    }
+    clearSpecificDecoration(lineNumber);
+    executedActions.add(lineNumber);
+    vscode.window.showInformationMessage('Updated Docstring.');
+}
+
+function dismissDocstring(lineNumber) {
+    clearSpecificDecoration(lineNumber);
+    executedActions.add(lineNumber);
+    vscode.window.showInformationMessage('Dismissed Docstring Update.');
+}
+
+function scanFile() {
+    executedActions.clear();
+    lightbulbLines = [];
     const activeEditor = vscode.window.activeTextEditor;
     if (!activeEditor) {
         vscode.window.showErrorMessage('No active editor found.');
         return;
     }
 
-    const fileName = activeEditor.document.fileName;
-    const platform = os.platform();
-    const pyCommand = platform === 'win32' 
-        ? `python -u ${__dirname}\\find_docstrings.py "${fileName}"`
-        : `python3 -u ${__dirname}/find_docstrings.py "${fileName}"`;
-
+    const pyCommand = getPythonCommand(activeEditor.document.fileName);
     exec(pyCommand, (error, stdout, stderr) => {
         if (error) {
             console.error(`Error: ${error.message}`);
@@ -80,73 +80,69 @@ function scanFile() {
         if (stderr) {
             console.error(`stderr: ${stderr}`);
         }
-        console.log(`stdout: ${stdout}`);
-        const jsonObject = JSON.parse(stdout);
+        jsonObject = JSON.parse(stdout);
         spawnButtons(jsonObject);
-
         dismissAllButton.show();
     });
 }
 
+function getPythonCommand(fileName) {
+    const platform = os.platform();
+    const scriptPath = platform === 'win32' ? `${__dirname}\\find_docstrings.py` : `${__dirname}/find_docstrings.py`;
+    const pythonCommand = platform === 'win32' ? 'python -u' : 'python3 -u';
+    return `${pythonCommand} ${scriptPath} "${fileName}"`;
+}
+
 function getUpdatedText() {
-    return "    \"\"\"This is the updated docstring\"\"\"\n";
+    return '    """This is the updated docstring\n    I am testing a long one"""\n';
 }
 
 function registerCodeActionsProvider() {
-    if (codeActionProvider) {
-        codeActionProvider.dispose();
-    }
-
+    codeActionProvider?.dispose();
     codeActionProvider = vscode.languages.registerCodeActionsProvider('python', {
-        provideCodeActions(document, range, context, token) {
-            let actions = [];
-            lightbulbLines.forEach(({ lineNumber, docstring_start, docstring_end, replacementText }) => {
-                if (executedActions.has(lineNumber)) {
-                    return;
-                }
-
-                if (range.start.line === lineNumber && range.end.line === lineNumber) {
-                    const updateAction = createCodeAction('Update Docstring', LLAMADOC_UPDATE_DOCSTRING_COMMAND, vscode.CodeActionKind.RefactorRewrite, [lineNumber]);
-                    const dismissAction = createCodeAction('Dismiss', LLAMADOC_DISMISS_COMMAND, vscode.CodeActionKind.Refactor, [lineNumber]);
-
-                    const start = new vscode.Position(docstring_start - 1, 0);
-                    const end = new vscode.Position(docstring_end, 0);
-                    const docstringRange = new vscode.Range(start, end);
-
-                    updateAction.edit = new vscode.WorkspaceEdit();
-                    updateAction.isPreferred = true;
-                    dismissAction.isPreferred = true;
-                    updateAction.edit.replace(document.uri, docstringRange, replacementText);
-                    
-                    actions.push(updateAction, dismissAction);
-                }
-            });
-            return actions;
-        }
+        provideCodeActions
     }, { providedCodeActionKinds: [vscode.CodeActionKind.Refactor, vscode.CodeActionKind.RefactorRewrite] });
 }
 
-function spawnLightbulbs(lineNumber, docstring_start, docstring_end, replacementText) {
-    lightbulbLines.push({ lineNumber, docstring_start, docstring_end, replacementText });
-    registerCodeActionsProvider();
+function provideCodeActions(document, range) {
+    return lightbulbLines.flatMap(({ lineNumber, docstring_start, docstring_end }) => {
+        if (executedActions.has(lineNumber)) return [];
+        if (range.start.line !== lineNumber || range.end.line !== lineNumber) return [];
+        
+        const updateAction = createCodeAction('Update Docstring', LLAMADOC_UPDATE_DOCSTRING_COMMAND, vscode.CodeActionKind.RefactorRewrite, [lineNumber, docstring_end - docstring_start + 1, getUpdatedText().split('\n').length - 1]);
+        const dismissAction = createCodeAction('Dismiss', LLAMADOC_DISMISS_COMMAND, vscode.CodeActionKind.Refactor, [lineNumber]);
+
+        const editRange = new vscode.Range(new vscode.Position(docstring_start - 1, 0), new vscode.Position(docstring_end, 0));
+        updateAction.edit = new vscode.WorkspaceEdit();
+        updateAction.edit.replace(document.uri, editRange, getUpdatedText());
+        updateAction.isPreferred = true;
+        dismissAction.isPreferred = true;
+
+        return [updateAction, dismissAction];
+    });
 }
 
 function createCodeAction(title, command, kind, args = []) {
-    const action = new vscode.CodeAction(title, kind);
-    action.command = { command, title, arguments: args };
-    return action;
+    return {
+        title,
+        command: { command, title, arguments: args },
+        kind
+    };
 }
 
-function spawnButtons(jsonObject) {
+function spawnButtons(jsonObject, currentLineNumber, lineDiff=0,) {
     clearDecorations();
     const editor = vscode.window.activeTextEditor;
     if (!editor) return;
 
-    jsonObject.forEach(pythonFunc => {
-        if (!pythonFunc.has_docstring || pythonFunc.up_to_date) return;
+    jsonObject.forEach(({ has_docstring, up_to_date, start_line, docstring_start_line, docstring_end_line }) => {
+        if (!has_docstring || up_to_date) return;
+        if (start_line < currentLineNumber) lineDiff = 0; // don't need linediff if action was before change in lines
+        if (executedActions.has((start_line - lineDiff) - 1)) return;
+        
 
-        const lineNumber = pythonFunc.start_line - 1;
-        const buttonDecorationType = vscode.window.createTextEditorDecorationType({
+        const lineNumber = start_line - 1;
+        const decorationType = vscode.window.createTextEditorDecorationType({
             after: {
                 contentText: "Expired Docstring!",
                 color: '#f0f0f0',
@@ -156,56 +152,73 @@ function spawnButtons(jsonObject) {
                 fontSize: '12px'
             }
         });
+        editor.setDecorations(decorationType, [{ range: new vscode.Range(new vscode.Position(lineNumber, 75), new vscode.Position(lineNumber, 75)) }]);
+        spawnLightbulbs(lineNumber, docstring_start_line, docstring_end_line);
 
-        const startPosition = new vscode.Position(lineNumber, 75);
-        const decoration = { range: new vscode.Range(startPosition, startPosition) };
-        editor.setDecorations(buttonDecorationType, [decoration]);
-        
-        const replacementText = getUpdatedText();
-        spawnLightbulbs(lineNumber, pythonFunc.docstring_start_line, pythonFunc.docstring_end_line, replacementText);
-
-        decorationTypes.push({ decorationType: buttonDecorationType, lineNumber });
+        decorationTypes.push({ decorationType, lineNumber });
     });
+}
+
+function spawnLightbulbs(lineNumber, docstring_start, docstring_end) {
+    lightbulbLines.push({ lineNumber, docstring_start, docstring_end });
+    registerCodeActionsProvider();
 }
 
 function clearDecorations() {
     const editor = vscode.window.activeTextEditor;
-    if (editor) {
-        decorationTypes.forEach(({ decorationType }) => {
-            editor.setDecorations(decorationType, []);
-            decorationType.dispose();
-        });
-        decorationTypes = [];
-    }
+    if (!editor) return;
+
+    decorationTypes.forEach(({ decorationType }) => {
+        editor.setDecorations(decorationType, []);
+        decorationType.dispose();
+    });
+    decorationTypes = [];
 }
 
 function clearSpecificDecoration(lineNumber) {
     const editor = vscode.window.activeTextEditor;
-    if (editor) {
-        decorationTypes = decorationTypes.filter(({ decorationType, lineNumber: decLineNumber }) => {
-            if (decLineNumber === lineNumber) {
-                editor.setDecorations(decorationType, []);
-                decorationType.dispose();
-                return false;
-            }
-            return true;
-        });
+    if (!editor) return;
 
-        lightbulbLines = lightbulbLines.filter(lightbulb => lightbulb.lineNumber !== lineNumber);
-        registerCodeActionsProvider();
-    }
+    decorationTypes = decorationTypes.filter(({ decorationType, lineNumber: decLineNumber }) => {
+        if (decLineNumber === lineNumber) {
+            editor.setDecorations(decorationType, []);
+            decorationType.dispose();
+            return false;
+        }
+        return true;
+    });
+    lightbulbLines = lightbulbLines.filter(lightbulb => lightbulb.lineNumber !== lineNumber);
+    registerCodeActionsProvider();
 }
 
-function dismissAllExpiredDocstrings() {
+function updateLineDifference(lineNumber, lineDiff) {
+    jsonObject.forEach(docstring => {
+        if (lineNumber < docstring.start_line) {
+            docstring.start_line += lineDiff;
+            docstring.end_line += lineDiff;
+            docstring.docstring_start_line += lineDiff;
+            docstring.docstring_end_line += lineDiff;
+        } else if (lineNumber === docstring.start_line) {
+            docstring.end_line += lineDiff;
+            docstring.docstring_end_line += lineDiff;
+            docstring.up_to_date = true;
+        }
+    });
+    const editor = vscode.window.activeTextEditor;
+    editor?.document.save();
+
+    dismissAllExpiredDocstrings(true);
+    spawnButtons(jsonObject, lineNumber, lineDiff);
+    registerCodeActionsProvider();
+}
+
+function dismissAllExpiredDocstrings(hidden = false) {
     clearDecorations();
     lightbulbLines = [];
     registerCodeActionsProvider();
-    dismissAllButton.hide(); // Geschmackssache
-    vscode.window.showInformationMessage('Dismissed all expired docstrings.');
-
+    if (!hidden) {
+        vscode.window.showInformationMessage('Dismissed all expired docstrings.');
+    }
 }
 
-module.exports = {
-    activate,
-    deactivate
-};
+module.exports = { activate, deactivate };
