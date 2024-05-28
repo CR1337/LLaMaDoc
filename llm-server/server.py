@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from typing import List
 
 from model import LlmUpdateQuery, LlmCheckQuery, LlmCheckResponse, LlmUpdateResponse
-from llm import check, update, model_ids, get_special_tokens
+from llm import check, update, model_ids
 
 server = FastAPI()    
 
@@ -12,15 +12,15 @@ async def hello():
 
 
 @server.get("/model-ids")
-async def model_sizes():
+async def model_ids():
     return {"model_ids": model_ids}
 
 
-@server.post("/check", response_model=List[LlmCheckResponse])
-async def check(queries: List[LlmCheckQuery]):
-    return check(queries)
+@server.post("/check", response_model=LlmCheckResponse)
+async def check(query: LlmCheckQuery):
+    return check(query)
 
 
-@server.post("/update", response_model=List[LlmUpdateResponse])
-async def update(queries: List[LlmUpdateQuery]):
-    return update(queries)
+@server.post("/update", response_model=LlmUpdateResponse)
+async def update(query: LlmUpdateQuery):
+    return update(query)
