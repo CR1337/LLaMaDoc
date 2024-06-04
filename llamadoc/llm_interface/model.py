@@ -59,11 +59,18 @@ class GenerationParameters(BaseModel):
             generation_parameters['early_stopping'] = self.early_stopping
 
         return generation_parameters
+    
+
+class CheckParameters(BaseModel):
+    check_method: CheckMethod
+    gamma: float
+    use_weight_decay: bool
+    use_frequency_weights: bool
 
 
 class LlmQuery(BaseModel, ABC):
     codes: List[str]
-    model_id: str
+    llm_id: str
 
 
 class LlmUpdateQuery(LlmQuery):
@@ -72,7 +79,7 @@ class LlmUpdateQuery(LlmQuery):
 
 class LlmCheckQuery(LlmQuery):
     docstring: str
-    check_method: Optional[CheckMethod] = CheckMethod.absolute
+    check_parameters: CheckParameters
     generation_parameters: Optional[GenerationParameters] = GenerationParameters()
 
 

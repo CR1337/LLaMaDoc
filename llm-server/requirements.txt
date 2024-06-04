@@ -1,3 +1,4 @@
+accelerate==0.30.1
 annotated-types==0.7.0
 anyio==4.3.0
 certifi==2024.2.2
@@ -37,6 +38,7 @@ nvidia-nvjitlink-cu12==12.4.127
 nvidia-nvtx-cu12==12.1.105
 orjson==3.10.3
 packaging==24.0
+psutil==5.9.8
 pydantic==2.7.1
 pydantic_core==2.18.2
 Pygments==2.18.0
@@ -47,6 +49,7 @@ regex==2024.5.15
 requests==2.32.1
 rich==13.7.1
 safetensors==0.4.3
+sentencepiece==0.2.0
 shellingham==1.5.4
 sniffio==1.3.1
 starlette==0.37.2

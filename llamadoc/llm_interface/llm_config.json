@@ -1,4 +1,17 @@
 {
-    "address:": "http://delos.eaalab.hpi.uni-potsdam.de",
-    "port": 9002
+    "server": {
+        "address:": "http://delos.eaalab.hpi.uni-potsdam.de",
+        "port": 9002
+    }, 
+    "defaults": {
+        "update": {
+            "sample_method": "beam"
+        },
+        "check": {
+            "check_method": "relative",
+            "gamma": 0.5,
+            "use_weight_decay": true,
+            "use_frequency_weights": true
+        }
+    }
 }

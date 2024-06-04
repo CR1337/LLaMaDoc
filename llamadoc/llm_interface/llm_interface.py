@@ -10,7 +10,8 @@ from model import (
     LlmCheckQuery, 
     LlmCheckResponse, 
     LlmUpdateResponse,
-    GenerationParameters
+    GenerationParameters,
+    CheckParameters
 )
 
 
@@ -18,6 +19,7 @@ class LlmInterface:
 
     _server_address: str
     _server_port: int
+    _defaults: Dict[str, Any]
     _model_ids: List[str]
 
     @property
@@ -36,8 +38,9 @@ class LlmInterface:
         with open("llm_config.json") as file:
             llm_config = json.load(file)
 
-        self._server_address = llm_config["address"]
-        self._server_port = llm_config["port"]
+        self._server_address = llm_config["server"]["address"]
+        self._server_port = llm_config["server"]["port"]
+        self._defaults = llm_config["defaults"]
 
         self._model_ids = self._get_model_ids()
 
@@ -66,20 +69,47 @@ class LlmInterface:
         codes: List[str],
         docstrings: List[str],
         *,
-        check_method: CheckMethod | None = None,
+        check_method: str | None = None,
         max_length: int | None = None,
         temperature: float | None = None,
         repetition_penalty: float | None = None,
         length_penalty: float | None = None,
-        sample_method: SampleMethod | None = None,
+        sample_method: str | None = None,
         top_k: int | None = None,
         top_p: float | None = None,
         num_beams: int | None = None,
-        early_stopping: bool | None = None
+        early_stopping: bool | None = None,
+        gamma: float | None = None,
+        use_weight_decay: bool | None = None,
+        use_frequency_weights: bool | None = None
     ) -> List[Tuple[float, float | None]]:
         assert len(codes) == len(docstrings), "len(codes) != len(docstrings)"
         if len(codes) == 0:
             return []
+        
+        if check_method is None:
+            check_method = CheckMethod(self._defaults["check"]["check_method"])
+        else:
+            check_method = CheckMethod(check_method)
+
+        if sample_method is None:
+            sample_method = SampleMethod(self._defaults["update"]["sample_method"])
+        else:
+            sample_method = SampleMethod(sample_method)
+
+        if gamma is None:
+            gamma = self._defaults["check"]["gamma"]
+        if use_weight_decay is None:
+            use_weight_decay = self._defaults["check"]["use_weight_decay"]
+        if use_frequency_weights is None:
+            use_frequency_weights = self._defaults["check"]["use_frequency_weights"]
+
+        check_parameters = CheckParameters(
+            check_method=check_method,
+            gamma=gamma,
+            use_weight_decay=use_weight_decay,
+            use_frequency_weights=use_frequency_weights
+        )
         
         if check_method == CheckMethod.relative:
             generation_parameters = GenerationParameters(
@@ -98,9 +128,7 @@ class LlmInterface:
 
         check_query = LlmCheckQuery(
             codes=codes,
-            model_id=model_id,
-            docstrings=docstrings,
-            check_method=check_method,
+            check_parameters=check_parameters,
             generation_parameters=generation_parameters
         )
 
@@ -130,7 +158,7 @@ class LlmInterface:
         temperature: float | None = None,
         repetition_penalty: float | None = None,
         length_penalty: float | None = None,
-        sample_method: SampleMethod | None = None,
+        sample_method: str | None = None,
         top_k: int | None = None,
         top_p: float | None = None,
         num_beams: int | None = None,
@@ -138,6 +166,11 @@ class LlmInterface:
     ) -> List[str]:
         if len(codes) == 0:
             return []
+        
+        if sample_method is None:
+            sample_method = SampleMethod(self._defaults["update"]["sample_method"])
+        else:
+            sample_method = SampleMethod(sample_method)
         
         generation_parameters = GenerationParameters(
             max_length=max_length,

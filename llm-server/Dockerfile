@@ -8,8 +8,7 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-COPY server.py /server/server.py
-COPY model.py /server/model.py
-COPY llm.py /server/llm.py
+COPY *.py /server/
+COPY token_frequencies.pkl /server/token_frequencies.pkl
 
 ENTRYPOINT [ "entrypoint.sh" ]

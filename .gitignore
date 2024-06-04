@@ -5,3 +5,6 @@ github-scraper/extracted-py-files
 github-scraper/filtered_repositories.json
 github-scraper/repositories.json
 github-scraper/cloned_repositories
+llm-server/huggingface-token
+llm-server/not-on-server
+**/__pycache__

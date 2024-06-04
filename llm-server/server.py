@@ -1,8 +1,7 @@
 from fastapi import FastAPI
-from typing import List
 
 from model import LlmUpdateQuery, LlmCheckQuery, LlmCheckResponse, LlmUpdateResponse
-from llm import check, update, model_ids
+from llm import Llm
 
 server = FastAPI()    
 
@@ -13,14 +12,15 @@ async def hello():
 
 @server.get("/model-ids")
 async def model_ids():
-    return {"model_ids": model_ids}
+    return {"model_ids": Llm.model_ids}
 
 
 @server.post("/check", response_model=LlmCheckResponse)
 async def check(query: LlmCheckQuery):
-    return check(query)
+    return Llm.check(query)
 
 
 @server.post("/update", response_model=LlmUpdateResponse)
 async def update(query: LlmUpdateQuery):
-    return update(query)
+    print(type(query))
+    return Llm.update(query)
