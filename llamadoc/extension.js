@@ -47,13 +47,32 @@ function createButton(text, command, alignment, priority) {
     return button;
 }
 
-function updateDocstring(lineNumber, oldDocstringLines, newDocstringLines) {
-    if (newDocstringLines !== oldDocstringLines) {
-        updateLineDifference(lineNumber + 1, newDocstringLines - oldDocstringLines);
+async function updateDocstring(lineNumber, docstringStartLine, docstringEndLine, start_line, end_line) {
+    const activeEditor = vscode.window.activeTextEditor;
+    if (!activeEditor) {
+        vscode.window.showErrorMessage('No active editor found.');
+        return;
+    }
+
+    const document = activeEditor.document;
+    const oldDocstring = document.getText(new vscode.Range(new vscode.Position(docstringStartLine - 1, 0), new vscode.Position(docstringEndLine, 0)));
+    const codestring = document.getText(new vscode.Range(new vscode.Position(start_line - 1, 0), new vscode.Position(end_line, 0)));
+    const newDocstring = await getUpdatedText(codestring, oldDocstring);
+    const newDocstringLength = newDocstring.split('\n').length - 1
+    const oldDocstringLength = oldDocstring.split('\n').length - 1  
+    const lineDiff = newDocstringLength - oldDocstringLength
+
+    if (newDocstring !== oldDocstring) {
+        updateLineDifference(lineNumber + 1,  lineDiff);
     }
     clearSpecificDecoration(lineNumber);
     executedActions.add(lineNumber);
     vscode.window.showInformationMessage('Updated Docstring.');
+
+    const edit = new vscode.WorkspaceEdit();
+    const editRange = new vscode.Range(new vscode.Position(docstringStartLine - 1, 0), new vscode.Position(docstringEndLine, 0));
+    edit.replace(document.uri, editRange, newDocstring);
+    await vscode.workspace.applyEdit(edit);
 }
 
 function dismissDocstring(lineNumber) {
@@ -71,7 +90,7 @@ function scanFile() {
         return;
     }
 
-    const pyCommand = getPythonCommand(activeEditor.document.fileName);
+    const pyCommand = getPythonCommandFind(activeEditor.document.fileName);
     exec(pyCommand, (error, stdout, stderr) => {
         if (error) {
             console.error(`Error: ${error.message}`);
@@ -86,15 +105,46 @@ function scanFile() {
     });
 }
 
-function getPythonCommand(fileName) {
+function getPythonCommandFind(fileName) {
     const platform = os.platform();
     const scriptPath = platform === 'win32' ? `${__dirname}\\find_docstrings.py` : `${__dirname}/find_docstrings.py`;
     const pythonCommand = platform === 'win32' ? 'python -u' : 'python3 -u';
     return `${pythonCommand} ${scriptPath} "${fileName}"`;
 }
 
-function getUpdatedText() {
-    return '    """This is the updated docstring\n    I am testing a long one"""\n';
+// FIX CALLING FUNCTION
+function getPythonCommandUpdate(codestring, oldDocstring) {
+    const platform = os.platform();
+    const scriptPath = platform === 'win32' ? `${__dirname}\\update_docstrings.py` : `${__dirname}/update_docstrings.py`;
+    const pythonCommand = platform === 'win32' ? 'python -u' : 'python3 -u';
+    //codestring.replace('"""', '')
+    //oldDocstring.replace('"""', '')
+    // FIX COMMAND!!!
+    return `${pythonCommand} ${scriptPath} "${codestring}" "${oldDocstring}"`;
+}
+
+async function getUpdatedText(codestring, oldDocstring) {
+    const pyCommand = getPythonCommandUpdate(codestring, oldDocstring)
+    return new Promise((resolve, reject) => {
+        exec(pyCommand, (error, stdout, stderr) => {
+            if (error) {
+                console.error(`Error: ${error.message}`);
+                return reject(error);
+            }
+            if (stderr) {
+                console.error(`stderr: ${stderr}`);
+                return reject(new Error(stderr));
+            }
+            try {
+                const result = JSON.parse(stdout);
+                const formatted_result = result.new_docstring
+                resolve(formatted_result);
+            } catch (parseError) {
+                reject(parseError);
+            }
+        });
+    });
+    //return `    """This is the updated docstring\n    I am testing a long one"""\n`;
 }
 
 function registerCodeActionsProvider() {
@@ -105,16 +155,13 @@ function registerCodeActionsProvider() {
 }
 
 function provideCodeActions(document, range) {
-    return lightbulbLines.flatMap(({ lineNumber, docstring_start, docstring_end }) => {
+    return lightbulbLines.flatMap(({ lineNumber, docstring_start, docstring_end, start_line, end_line }) => {
         if (executedActions.has(lineNumber)) return [];
         if (range.start.line !== lineNumber || range.end.line !== lineNumber) return [];
         
-        const updateAction = createCodeAction('Update Docstring', LLAMADOC_UPDATE_DOCSTRING_COMMAND, vscode.CodeActionKind.RefactorRewrite, [lineNumber, docstring_end - docstring_start + 1, getUpdatedText().split('\n').length - 1]);
+        const updateAction = createCodeAction('Update Docstring', LLAMADOC_UPDATE_DOCSTRING_COMMAND, vscode.CodeActionKind.RefactorRewrite, [lineNumber, docstring_start, docstring_end, start_line, end_line]);
         const dismissAction = createCodeAction('Dismiss', LLAMADOC_DISMISS_COMMAND, vscode.CodeActionKind.Refactor, [lineNumber]);
 
-        const editRange = new vscode.Range(new vscode.Position(docstring_start - 1, 0), new vscode.Position(docstring_end, 0));
-        updateAction.edit = new vscode.WorkspaceEdit();
-        updateAction.edit.replace(document.uri, editRange, getUpdatedText());
         updateAction.isPreferred = true;
         dismissAction.isPreferred = true;
 
@@ -130,16 +177,15 @@ function createCodeAction(title, command, kind, args = []) {
     };
 }
 
-function spawnButtons(jsonObject, currentLineNumber, lineDiff=0,) {
+function spawnButtons(jsonObject, currentLineNumber, lineDiff = 0) {
     clearDecorations();
     const editor = vscode.window.activeTextEditor;
     if (!editor) return;
 
-    jsonObject.forEach(({ has_docstring, up_to_date, start_line, docstring_start_line, docstring_end_line }) => {
+    jsonObject.forEach(({ has_docstring, up_to_date, start_line, end_line, docstring_start_line, docstring_end_line }) => {
         if (!has_docstring || up_to_date) return;
         if (start_line < currentLineNumber) lineDiff = 0; // don't need linediff if action was before change in lines
         if (executedActions.has((start_line - lineDiff) - 1)) return;
-        
 
         const lineNumber = start_line - 1;
         const decorationType = vscode.window.createTextEditorDecorationType({
@@ -153,14 +199,14 @@ function spawnButtons(jsonObject, currentLineNumber, lineDiff=0,) {
             }
         });
         editor.setDecorations(decorationType, [{ range: new vscode.Range(new vscode.Position(lineNumber, 75), new vscode.Position(lineNumber, 75)) }]);
-        spawnLightbulbs(lineNumber, docstring_start_line, docstring_end_line);
+        spawnLightbulbs(lineNumber, docstring_start_line, docstring_end_line, start_line, end_line);
 
         decorationTypes.push({ decorationType, lineNumber });
     });
 }
 
-function spawnLightbulbs(lineNumber, docstring_start, docstring_end) {
-    lightbulbLines.push({ lineNumber, docstring_start, docstring_end });
+function spawnLightbulbs(lineNumber, docstring_start, docstring_end, start_line, end_line) {
+    lightbulbLines.push({ lineNumber, docstring_start, docstring_end, start_line, end_line });
     registerCodeActionsProvider();
 }
 
