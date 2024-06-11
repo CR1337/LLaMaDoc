@@ -1,15 +1,11 @@
-from typing import Any, Dict, List, Tuple, Iteratable
+from typing import Any, Dict, List, Tuple
 import requests
 import json
 
 from model import (
     SampleMethod, 
-    CheckMethod, 
     LlmQuery, 
-    LlmUpdateQuery, 
-    LlmCheckQuery, 
-    LlmCheckResponse, 
-    LlmUpdateResponse,
+    LlmResponse, 
     GenerationParameters,
     CheckParameters
 )
@@ -43,6 +39,7 @@ class LlmInterface:
         self._defaults = llm_config["defaults"]
 
         self._model_ids = self._get_model_ids()
+        assert len(self._model_ids) > 0, "No models found"
 
     def _get_model_ids(self) -> List[str]:
         response = requests.get(
@@ -63,13 +60,12 @@ class LlmInterface:
         response.raise_for_status()
         return response.json()
 
-    def check(
+    def update(
         self,
-        model_id: str,
         codes: List[str],
         docstrings: List[str],
         *,
-        check_method: str | None = None,
+        model_id: str | None = None,
         max_length: int | None = None,
         temperature: float | None = None,
         repetition_penalty: float | None = None,
@@ -79,98 +75,35 @@ class LlmInterface:
         top_p: float | None = None,
         num_beams: int | None = None,
         early_stopping: bool | None = None,
-        gamma: float | None = None,
-        use_weight_decay: bool | None = None,
-        use_frequency_weights: bool | None = None
-    ) -> List[Tuple[float, float | None]]:
+        weight_decay: float | None = None,
+        frequency_importance: float | None = None,
+        test_threshold: float | None = None,
+    ) -> List[Tuple[bool, str]]:
         assert len(codes) == len(docstrings), "len(codes) != len(docstrings)"
+    
         if len(codes) == 0:
             return []
-        
-        if check_method is None:
-            check_method = CheckMethod(self._defaults["check"]["check_method"])
-        else:
-            check_method = CheckMethod(check_method)
 
         if sample_method is None:
             sample_method = SampleMethod(self._defaults["update"]["sample_method"])
         else:
             sample_method = SampleMethod(sample_method)
 
-        if gamma is None:
-            gamma = self._defaults["check"]["gamma"]
-        if use_weight_decay is None:
-            use_weight_decay = self._defaults["check"]["use_weight_decay"]
-        if use_frequency_weights is None:
-            use_frequency_weights = self._defaults["check"]["use_frequency_weights"]
+        model_id = model_id or self._model_ids[0]
+        weight_decay = weight_decay or self._defaults["weight_decay"]
+        frequency_importance = frequency_importance or self._defaults["frequency_importance"]
+        test_threshold = test_threshold or self._defaults["test_threshold"]
+
+        assert model_id in self._model_ids, f"model_id {model_id} not found"
+        assert 0 <= weight_decay <= 1, "weight_decay must be in [0, 1]"
+        assert 0 <= frequency_importance <= 1, "frequency_importance must be in [0, 1]"
+        assert test_threshold >= 0, "test_threshold must be >= 0"
 
         check_parameters = CheckParameters(
-            check_method=check_method,
-            gamma=gamma,
-            use_weight_decay=use_weight_decay,
-            use_frequency_weights=use_frequency_weights
+            weight_decay=weight_decay,
+            frequency_importance=frequency_importance,
+            test_threshold=test_threshold
         )
-        
-        if check_method == CheckMethod.relative:
-            generation_parameters = GenerationParameters(
-                max_length=max_length,
-                temperature=temperature, 
-                repetition_penalty=repetition_penalty, 
-                length_penalty=length_penalty,
-                sample_method=sample_method,
-                top_k=top_k, 
-                top_p=top_p, 
-                num_beams=num_beams, 
-                early_stopping=early_stopping
-            )
-        else:
-            generation_parameters = None
-
-        check_query = LlmCheckQuery(
-            codes=codes,
-            check_parameters=check_parameters,
-            generation_parameters=generation_parameters
-        )
-
-        response = self._do_request(check_query, "/check")
-        check_response = LlmCheckResponse.from_dict(response)
-        if check_method == CheckMethod.relative:
-            return [
-                (docstring_probability, generated_docstring_probability)
-                for docstring_probability, generated_docstring_probability
-                in zip(
-                    check_response.docstring_probabilities,
-                    check_response.generated_docstring_probabilities
-                )
-            ]
-        else:
-            return [
-                docstring_probability for docstring_probability
-                in check_response.docstring_probabilities
-            ]
-
-    def update(
-        self,
-        model_id: str,
-        codes: List[str],
-        *,
-        max_length: int | None = None,
-        temperature: float | None = None,
-        repetition_penalty: float | None = None,
-        length_penalty: float | None = None,
-        sample_method: str | None = None,
-        top_k: int | None = None,
-        top_p: float | None = None,
-        num_beams: int | None = None,
-        early_stopping: bool | None = None
-    ) -> List[str]:
-        if len(codes) == 0:
-            return []
-        
-        if sample_method is None:
-            sample_method = SampleMethod(self._defaults["update"]["sample_method"])
-        else:
-            sample_method = SampleMethod(sample_method)
         
         generation_parameters = GenerationParameters(
             max_length=max_length,
@@ -183,11 +116,18 @@ class LlmInterface:
             num_beams=num_beams, 
             early_stopping=early_stopping
         )
-        update_query = LlmUpdateQuery(
+
+        check_query = LlmQuery(
+            llm_id=model_id,
             codes=codes,
-            model_id=model_id,
+            docstrings=docstrings,
+            check_parameters=check_parameters,
             generation_parameters=generation_parameters
         )
 
-        response = self._do_request(update_query, "/update")
-        return LlmUpdateResponse.from_dict(response).updated_docstrings
+        response = self._do_request(check_query, "/update")
+        response = LlmResponse.from_dict(response)
+        return [
+            (out_of_date, updated_docstring) for out_of_date, updated_docstring
+            in zip(response.out_of_date, response.updated_docstrings)
+        ]

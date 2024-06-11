@@ -4,8 +4,9 @@ from typing import List
 from huggingface_hub import login
 from probability_computer import ProbabilityComputer
 import os
+from torch.nn.utils.rnn import pad_sequence
 
-from model import LlmCheckQuery, LlmUpdateQuery, LlmCheckResponse, LlmUpdateResponse, CheckMethod
+from model import TestQuery, TestResponse, GenerationParameters
 
 
 on_server: bool = not os.path.exists("not-on-server")
@@ -20,7 +21,6 @@ else:
 
 
 class Llm:
-
 
     model_ids: List[str] = [
         'google/codegemma-2b'
@@ -39,14 +39,40 @@ class Llm:
     }
 
     @classmethod
-    def check(cls, query: LlmCheckQuery) -> LlmCheckResponse:
-        tokenizer = cls.tokenizers[query.llm_id]
-        model = cls.models[query.llm_id]
-
-        prompts = [
-            f"<|code|>{query.code}\n<|docstring|>"
-            for query in query.codes
+    def _build_prompts(cls, codes: List[str]) -> List[str]:
+        return [
+            f"#<code>:\n{code}\n#<docstring>:\n"
+            for code in codes
         ]
+
+    @classmethod
+    def _is_out_of_date(
+        cls,
+        docstring_probabilities: List[float],
+        updated_docstring_probabilities: List[float],
+        test_threshold: float
+    ) -> List[bool]:
+        return [
+            (dp / udp) <= test_threshold
+            for dp, udp in zip(
+                docstring_probabilities, 
+                updated_docstring_probabilities
+            )
+        ]
+
+    @classmethod
+    def update(cls, query: TestQuery) -> TestResponse:
+        tokenizer = cls.tokenizers[query.mid]
+        model = cls.models[query.mid]
+
+        prompts = cls._build_prompts(query.codes)
+
+        print("GENERATING UPDATED DOCSTRINGS")
+        updated_docstrings = cls._get_updated_docstring(
+            query.mid,
+            query.codes,
+            query.generation_parameters
+        )
 
         probability_computer = ProbabilityComputer(
             model=model,
@@ -54,63 +80,107 @@ class Llm:
             device=device
         )
 
-        if query.check_method == CheckMethod.absolute:
-            return LlmCheckResponse(
-                probability_computer.compute_docstring_probabilities(
-                    prompts, query.docstrings,
-                    query.check_parameters.gamma,
-                    query.check_parameters.use_weight_decay,
-                    query.check_parameters.use_frequency_weights
-                )
-            )
-
-        elif query.check_method == CheckMethod.relative:
-            update_query = LlmUpdateQuery(
-                llm_id=query.llm_id,
-                codes=query.codes,
-                generation_parameters=query.generation_parameters
-            )
-            update_response = cls.update(update_query)
-            updated_docstrings = update_response.updated_docstrings
-            return LlmCheckResponse(
-                probability_computer.compute_docstring_probabilities(
-                    prompts, query.docstrings,
-                    query.check_parameters.gamma,
-                    query.check_parameters.use_weight_decay,
-                    query.check_parameters.use_frequency_weights
-                ),
-                probability_computer.compute_docstring_probabilities(
-                    prompts, updated_docstrings,
-                    query.check_parameters.gamma,
-                    query.check_parameters.use_weight_decay,
-                    query.check_parameters.use_frequency_weights
-                )
-            )
-
-    @classmethod
-    def update(cls, query: LlmUpdateQuery) -> LlmUpdateResponse:
-        tokenizer = cls.tokenizers[query.llm_id]
-        model = cls.models[query.llm_id]
-
-        prompts = [
-            f"<|code|>{code}\n<|docstring|>"
-            for code in query.codes
-        ]
-        inputs = tokenizer(prompts, return_tensors='pt').to(device)
-
-        outputs = model.generate(
-            inputs.input_ids, 
-            **(
-                query.generation_parameters.to_torch_dict() 
-                | {'eos_token_id': tokenizer.eos_token_id}
-            )
+        print("COMPUTING PROBABILITIES FOR USER DOCSTRINGS")
+        docstring_probabilities = probability_computer.compute_docstring_probabilities(
+            prompts, query.docstrings,
+            query.test_parameters.weight_decay,
+            query.test_parameters.frequency_importance
+        )
+        print("COMPUTING PROBABILITIES FOR GENERATED DOCSTRINGS")
+        updated_docstring_probabilities = probability_computer.compute_docstring_probabilities(
+            prompts, updated_docstrings,
+            query.test_parameters.weight_decay,
+            query.test_parameters.frequency_importance
+        )
+        print("PERFORMING TESTS")
+        out_of_date = cls._is_out_of_date(
+            docstring_probabilities, 
+            updated_docstring_probabilities,
+            query.test_parameters.test_threshold
         )
 
-        predictions = [
-            tokenizer.decode(output)
-            for output in outputs
-        ]
-        return LlmUpdateResponse(updated_docstrings=predictions)
+        print("CONSTRUCTING RESPONSE")
+        return TestResponse(
+            docstring_probabilities=docstring_probabilities,
+            generated_docstring_probabilities=updated_docstring_probabilities,
+            out_of_date=out_of_date,
+            updated_docstrings=updated_docstrings
+        )
+
+    @classmethod
+    def _get_updated_docstring(
+        cls,
+        model_id: str,
+        codes: List[str],
+        generation_parameters: GenerationParameters
+    ) -> List[str]:
+        tokenizer = cls.tokenizers[model_id]
+        model = cls.models[model_id]
+
+        prompts = cls._build_prompts(codes)
+
+        print("TOKENIZING PROMPTS")
+        # inputs = tokenizer(prompts, return_tensors='pt').to(device)
+        inputs = tokenizer(prompts)['input_ids']
+        single_input_tensors = [torch.tensor(inp) for inp in inputs]
+        inputs_tensor = pad_sequence(single_input_tensors, batch_first=True, padding_value=tokenizer.pad_token_id).to(device)
+        attention_masks = (inputs_tensor != tokenizer.pad_token_id).to(device)
+
+
+        print("GENERATING DOCSTRINGS")
+        # outputs = model.generate(
+        #     # inputs.input_ids, 
+        #     inputs_tensor,
+        #     **(
+        #         generation_parameters.to_torch_dict() 
+        #         | {
+        #             'eos_token_id': tokenizer.eos_token_id,
+        #             'attention_mask': attention_masks
+        #         }
+        #     )
+        # )
+
+        print("DECODING DOCSTRINGS")
+        # predictions = [
+        #     tokenizer.decode(output)
+        #     for output in outputs
+        # ]
+
+        # test request:
+        """
+        {
+          "llm_id": "google/codegemma-2b",
+          "codes": [
+            "def double(x):\n    return 2 * x",
+            "def swap(x, y):\n    return y, x"
+          ],
+          "docstrings": [
+            "Triples the value x",
+            "Swaps the values of x and y"
+          ],
+          "check_parameters": {
+            "weight_decay": 0.5,
+            "frequency_importance": 0.5,
+            "test_threshold": 1
+          },
+          "generation_parameters": {
+            "max_length": 64,
+            "sample_method": "greedy"
+          }
+        }
+        """
+
+        # dummy prediction:
+        dummy_prediction_0 = '<bos>#<code>:\ndef double(x):\n    return 2 * x\n#<docstring>:\n<pad>:\n    """\n    This function doubles the input x.\n    """\n    return x * 2\n<|file_separator|><eos>'
+        dummy_prediction_1 = '<bos>#<code>:\ndef swap(x, y):\n    return y, x\n#<docstring>:\ndef swap(x, y):\n    return y, x\n<|file_separator|><eos><pad><pad><pad><pad><pad><pad><pad><pad><pad><pad>'
+        predictions = [dummy_prediction_0, dummy_prediction_1]
+
+        print("PREDICTIONS:")
+        for prediction in predictions:
+            print(prediction)
+            print()
+
+        return predictions
 
 
 

@@ -4,14 +4,9 @@
         "port": 9002
     }, 
     "defaults": {
-        "update": {
-            "sample_method": "beam"
-        },
-        "check": {
-            "check_method": "relative",
-            "gamma": 0.5,
-            "use_weight_decay": true,
-            "use_frequency_weights": true
-        }
+        "sample_method": "beam",
+        "weight_decay": 0.5,
+        "frequeny_importance": 1.0,
+        "test_threshold": 1.0
     }
 }

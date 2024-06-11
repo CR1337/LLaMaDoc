@@ -2,7 +2,6 @@ from __future__ import annotations
 from pydantic import BaseModel, TypeAdapter
 from typing import Any, Dict, List, Optional
 from enum import Enum
-from abc import ABC
 
 class DeserializationMixin:
 
@@ -15,11 +14,6 @@ class SampleMethod(str, Enum):
     top_k = "top_k"
     top_p = "top_p"
     beam = "beam"
-
-
-class CheckMethod(str, Enum):
-    absolute = "absolute"
-    relative = "relative"
 
 
 class GenerationParameters(BaseModel):
@@ -62,31 +56,21 @@ class GenerationParameters(BaseModel):
     
 
 class CheckParameters(BaseModel):
-    check_method: CheckMethod
-    gamma: float
-    use_weight_decay: bool
-    use_frequency_weights: bool
+    weight_decay: float
+    frequency_importance: float
+    test_threshold: float
 
 
-class LlmQuery(BaseModel, ABC):
-    codes: List[str]
+class LlmQuery(BaseModel):
     llm_id: str
-
-
-class LlmUpdateQuery(LlmQuery):
-    generation_parameters: Optional[GenerationParameters] = GenerationParameters()
-
-
-class LlmCheckQuery(LlmQuery):
+    codes: List[str]
     docstring: str
     check_parameters: CheckParameters
-    generation_parameters: Optional[GenerationParameters] = GenerationParameters()
+    generation_parameters: GenerationParameters
 
 
-class LlmCheckResponse(BaseModel, DeserializationMixin):
+class LlmResponse(BaseModel, DeserializationMixin):
     docstring_probabilities: List[float]
-    generated_docstring_probabilities: List[Optional[float]] = [None]
-
-
-class LlmUpdateResponse(BaseModel, DeserializationMixin):
+    generated_docstring_probabilities: List[float]
+    out_of_date: List[bool]
     updated_docstrings: List[str]

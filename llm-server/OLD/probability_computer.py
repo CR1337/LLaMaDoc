@@ -2,13 +2,15 @@ from transformers import GemmaTokenizer, AutoModelForCausalLM
 import torch
 from typing import List, Tuple
 import pickle
+import numpy as np
+from math import tan, pi
 
 
 class ProbabilityComputer:
 
-    token_frequencies: List[float]
-    with open("token_frequencies.pkl", "rb") as file:
-        token_frequencies = pickle.load(file)
+    inverse_relative_log_token_frequencies: List[float]
+    with open("inverse_relative_log_token_frequencies.pkl", "rb") as file:
+        inverse_relative_log_token_frequencies = pickle.load(file)
 
     _model: AutoModelForCausalLM
     _tokenizer: GemmaTokenizer
@@ -28,30 +30,44 @@ class ProbabilityComputer:
         self, 
         prompts: List[str],
         docstrings: List[str],
-        gamma: float,
-        use_weight_decay: bool,
-        use_frequency_weights: bool
+        weight_decay: float,
+        frequency_importance: float
     ) -> List[float]:
+        assert len(prompts) == len(docstrings)
+        assert 0.0 <= weight_decay <= 1.0
+        assert 0.0 <= frequency_importance <= 1.0
+
+        print("TOKENIZE")
         docstrings = self._append_eos_to_docstrings(docstrings)
         prompt_tokens = self._tokenize_texts(prompts)
         docstring_tokens = self._tokenize_texts(docstrings)
 
+        print("PREPARE SEQUENCES AND MASKS")
         all_sequences, attention_masks = self._prepare_sequences_and_masks(
             prompt_tokens, docstring_tokens
         )
-        logits = self._compute_logits(all_sequences, attention_masks)
-        last_token_logits = self._get_last_token_logits(logits, attention_masks)
-        probabilities = torch.softmax(last_token_logits, dim=-1)
+        print("COMPUTE PROBABILITY DISTRIBUTIONS")
+        probability_distributions = self._compute_probability_distributions(all_sequences, attention_masks)
+        print("GET LAST TOKEN PROBABILITY DISTRIBUTIONS")
+        last_token_probability_distributions = self._get_last_token_probability_distributions(probability_distributions, attention_masks)
+        print("COMPUTE LAST DOCSTRING TOKEN PROBABILITIES")
         last_docstring_token_probabilities, last_token_ids = self._compute_last_docstring_token_probabilities(
-            probabilities, docstring_tokens
+            last_token_probability_distributions, docstring_tokens
         )
 
+        clamp = lambda value, min_value, max_value: max(min(value, max_value), min_value)
+
+        epsilon = 1e-16
+        decay_exponent = tan(
+            (1.0 - clamp(weight_decay, epsilon, 1.0 - epsilon)) * pi / 2
+        )
+
+        print("COMPUTE WEIGHTED GEOMETRIC MEANS")
         return self._compute_weighted_geometric_means(
             last_docstring_token_probabilities,
             last_token_ids,
-            gamma,
-            use_weight_decay,
-            use_frequency_weights
+            decay_exponent,
+            frequency_importance
         )
 
     def _append_eos_to_docstrings(self, docstrings: List[str]) -> List[str]:
@@ -61,30 +77,28 @@ class ProbabilityComputer:
         ]
     
     def _tokenize_texts(self, texts: List[str]) -> List[List[int]]:
-        return [
-            self._tokenizer(
-                texts, return_tensors="pt", padding=True, truncation=True
-            )['input_ids'].to(self._device)
-        ]
+        return self._tokenizer(
+            texts, return_tensors="pt", padding=True, truncation=True
+        )['input_ids'].to(self._device)
     
     def _prepare_sequences_and_masks(
         self,
-        prompt_tokens: torch.Tensor, 
-        docstring_tokens: torch.Tensor
+        all_prompt_tokens: List[torch.Tensor], 
+        all_docstring_tokens: List[torch.Tensor]
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         all_sequences = []
         attention_masks = []
 
-        for prompt_token, docstring_token in zip(prompt_tokens, docstring_tokens):
+        for prompt_tokens, docstring_tokens in zip(all_prompt_tokens, all_docstring_tokens):
             sequences = []
             masks = []
-            prompt_len = len(prompt_token)
-            docstring_len = len(docstring_token)
+            prompt_len = len(prompt_tokens)
+            docstring_len = len(docstring_tokens)
 
             for i in range(docstring_len + 1):
                 # Combine prompt and part of the docstring, progressively 
                 # adding more of the docstring
-                combined = torch.cat((prompt_token, docstring_token[:i]), dim=0)
+                combined = torch.cat((prompt_tokens, docstring_tokens[:i]), dim=0)
                 padding_len = prompt_len + docstring_len - len(combined)
 
                 # Pad the combined sequence to the full length
@@ -111,41 +125,43 @@ class ProbabilityComputer:
 
         return torch.stack(all_sequences), torch.stack(attention_masks)
     
-    def _compute_logits(
+    def _compute_probability_distributions(
         self,
         all_sequences: torch.Tensor, 
         attention_masks: torch.Tensor, 
     ) -> torch.Tensor:
         # Reshape tensors to fit the model input requirements
-        n, sequence_len, token_len = all_sequences.shape
-        input_tensor = all_sequences.view(-1, token_len)
-        attention_masks = attention_masks.view(-1, token_len)
+        n_batches, n_sequences, n_tokens = all_sequences.shape
+        input_tensor = all_sequences.view(-1, n_tokens)
+        attention_masks = attention_masks.view(-1, n_tokens)
 
         # Compute logits from the model
         logits = self._model(
             input_tensor, attention_mask=attention_masks
         ).logits.double()
-        return logits.view(n, sequence_len, token_len, -1)
+        # logits = None
+        probabilities = torch.softmax(logits, dim=-1)
+        return probabilities.view(n_batches, n_sequences, n_tokens, -1)
 
-    def _get_last_token_logits(
+    def _get_last_token_probability_distributions(
         self,
-        logits: torch.Tensor, 
+        probability_distributions: torch.Tensor, 
         attention_masks: torch.Tensor
     ) -> torch.Tensor:
-        last_token_logits = []
-        for i in range(logits.size(0)):
-            sequence_logits = []
-            for j in range(logits.size(1)):
+        last_token_probability_distributions = []
+        for i in range(probability_distributions.size(0)):
+            sequence_probability_distributions = []
+            for j in range(probability_distributions.size(1)):
                 # Find the position of the last actual token in the sequence
                 last_token_position = int(attention_masks[i, j].sum().item() - 1)
-                sequence_logits.append(logits[i, j, last_token_position])
-            last_token_logits.append(torch.stack(sequence_logits))
+                sequence_probability_distributions.append(probability_distributions[i, j, last_token_position])
+            last_token_probability_distributions.append(torch.stack(sequence_probability_distributions))
 
-        return torch.stack(last_token_logits)
+        return torch.stack(last_token_probability_distributions)
     
     def _compute_last_docstring_token_probabilities(
         self,
-        softmax_tensor: torch.Tensor, 
+        probability_distributions: torch.Tensor, 
         all_docstring_tokens: torch.Tensor
     ) -> Tuple[List[torch.Tensor], List[List[int]]]:
         all_docstring_probabilities = []
@@ -157,21 +173,20 @@ class ProbabilityComputer:
             for j in range(len(all_docstring_tokens[i])):
                 docstring_token_id = all_docstring_tokens[i][j].item()
                 # Extract the probability of the docstring token
-                token_prob = softmax_tensor[i, j + 1, docstring_token_id]
+                token_prob = probability_distributions[i, j + 1, docstring_token_id]
                 docstring_probabilities.append(token_prob)
                 token_ids.append(docstring_token_id)
             all_docstring_probabilities.append(torch.stack(docstring_probabilities))
             all_token_ids.append(token_ids)
 
         return all_docstring_probabilities, all_token_ids
-    
+
     def _compute_weighted_geometric_means(
         self,
         last_docstring_token_probabilities: List[torch.Tensor], 
         last_token_ids: List[List[int]], 
-        gamma: float, 
-        use_weight_decay: bool, 
-        use_frequency_weights: bool
+        decay_exponent: float, 
+        frequency_importance: float
     ) -> List[float]:
         weighted_geom_means = []
     
@@ -180,16 +195,14 @@ class ProbabilityComputer:
             weights = self._compute_weights(
                 probabilities, 
                 token_ids, 
-                gamma, 
-                use_weight_decay, 
-                use_frequency_weights
+                decay_exponent,
+                frequency_importance
             )
             log_probs = probabilities.log()
             weighted_log_probs = log_probs * weights
             weighted_log_sum = weighted_log_probs.sum()
-            sum_weights = weights.sum()
             # Calculate the weighted geometric mean
-            weighted_geom_mean = torch.exp(weighted_log_sum / sum_weights)
+            weighted_geom_mean = torch.exp(weighted_log_sum / weights.sum())
             weighted_geom_means.append(float(weighted_geom_mean))
     
         return weighted_geom_means
@@ -198,24 +211,22 @@ class ProbabilityComputer:
         self,
         probabilities: List[float], 
         token_ids: List[int],
-        gamma: float, 
-        use_weight_decay: bool, 
-        use_frequency_weights: bool
+        decay_exponent: float, 
+        frequency_importance: float
     ) -> torch.Tensor:
-        num_probs = len(probabilities)
-
-        if use_weight_decay:
-            x = torch.linspace(0, 1, num_probs, device=probabilities.device).to(self._device)
-            weights = ((gamma + 1) / gamma) * (-x ** gamma + 1)
-        else:
-            weights = torch.ones(num_probs, device=probabilities.device).to(self._device)
-
-        if use_frequency_weights:
-            frequencies = torch.tensor(
-                [self.token_frequencies[token_id] for token_id in token_ids], 
-                device=probabilities.device
-            ).to(self._device)
-            weights *= frequencies
-
+        frequencies = torch.tensor(
+            [
+                self.inverse_relative_log_token_frequencies[token_id] 
+                for token_id in token_ids
+            ]
+        ).to(self._device)
+        x = torch.linspace(0, 1, len(probabilities)).to(self._device)
+        decay_weights = 1 - x ** decay_exponent
+        frequency_weights = torch.lerp(
+            torch.ones_like(decay_weights),
+            frequencies,
+            frequency_importance
+        )
+        weights = decay_weights * frequency_weights
+        weights /= weights.sum()
         return weights
-    
