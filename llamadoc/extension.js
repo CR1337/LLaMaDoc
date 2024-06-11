@@ -62,9 +62,6 @@ async function updateDocstring(lineNumber, docstringStartLine, docstringEndLine,
     const oldDocstringLength = oldDocstring.split('\n').length - 1  
     const lineDiff = newDocstringLength - oldDocstringLength
 
-    if (newDocstring !== oldDocstring) {
-        updateLineDifference(lineNumber + 1,  lineDiff);
-    }
     clearSpecificDecoration(lineNumber);
     executedActions.add(lineNumber);
     vscode.window.showInformationMessage('Updated Docstring.');
@@ -73,6 +70,10 @@ async function updateDocstring(lineNumber, docstringStartLine, docstringEndLine,
     const editRange = new vscode.Range(new vscode.Position(docstringStartLine - 1, 0), new vscode.Position(docstringEndLine, 0));
     edit.replace(document.uri, editRange, newDocstring);
     await vscode.workspace.applyEdit(edit);
+
+    if (newDocstringLength !== oldDocstringLength) {
+        updateLineDifference(lineNumber + 1,  lineDiff);
+    }
 }
 
 function dismissDocstring(lineNumber) {
