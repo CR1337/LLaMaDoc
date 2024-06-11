@@ -3,6 +3,7 @@ import json
 import sys
 from dataclasses import dataclass
 from typing import List, Dict, Any
+from llm_interface.llm_interface import LLMInterface
 
 
 @dataclass
@@ -110,6 +111,10 @@ def check_out_of_date(functions: List[Function]) -> List[Function]:
     Returns:
         List[Function]: The updated list of Function objects.
     """
+
+    # TODO: connect to backend
+
+    # --- comment this out to connect to the backend ---
     for i in range(len(functions)):
         if not functions[i].has_docstring:
             continue
@@ -118,6 +123,20 @@ def check_out_of_date(functions: List[Function]) -> List[Function]:
         else:
             functions[i].up_to_date = False
     return functions
+    # ---------------------------------------------------
+
+    # --- uncomment this to connect to the backend ---
+    # codes = [function.code for function in functions if function.has_docstring]
+    # docstrings = [function.docstring for function in functions if function.has_docstring]
+    # function_indices = [i for i, function in enumerate(functions) if function.has_docstring]
+
+    # results = LLMInterface().check(codes, docstrings)
+
+    # for i, result in zip(function_indices, results):
+    #     functions[i].up_to_date = not result[0]
+
+    # return functions
+    # ---------------------------------------------------
 
 
 def main():
