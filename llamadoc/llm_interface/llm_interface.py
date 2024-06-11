@@ -3,11 +3,8 @@ import requests
 import json
 
 from model import (
-    SampleMethod, 
-    LlmQuery, 
-    LlmResponse, 
-    GenerationParameters,
-    CheckParameters
+    TestQuery, TestMethod, DistanceFunction, 
+    DistanceTestParameters, GenerationParameters
 )
 
 
@@ -15,8 +12,8 @@ class LlmInterface:
 
     _server_address: str
     _server_port: int
-    _defaults: Dict[str, Any]
-    _model_ids: List[str]
+    _generative_model_ids: List[str]
+    _embedding_model_ids: List[str]
 
     @property
     def server_address(self) -> str:
@@ -27,35 +24,69 @@ class LlmInterface:
         return self._server_port
     
     @property
-    def model_ids(self) -> List[str]:
-        return self._model_ids
+    def generative_model_ids(self) -> List[str]:
+        return self._generative_model_ids
+    
+    @property
+    def embedding_model_ids(self) -> List[str]:
+        return self._embedding_model_ids
 
     def __init__(self):
-        with open("llm_config.json") as file:
-            llm_config = json.load(file)
+        with open("server_config.json") as file:
+            server_config = json.load(file)
 
-        self._server_address = llm_config["server"]["address"]
-        self._server_port = llm_config["server"]["port"]
-        self._defaults = llm_config["defaults"]
+        self._server_address = server_config["address"]
+        self._server_port = server_config["port"]
 
-        self._model_ids = self._get_model_ids()
-        assert len(self._model_ids) > 0, "No models found"
+        self._server_address = "http://localhost"
+        self._server_port = 8000
 
-    def _get_model_ids(self) -> List[str]:
+        self._generative_model_ids = self._get_generative_model_ids()
+        assert len(self._generative_model_ids) > 0, "No models found"
+    
+        self._embedding_model_ids = self._get_embedding_model_ids()
+        assert len(self._embedding_model_ids) > 0, "No models found"
+
+    def _get_model_ids(self, model_type: str) -> List[str]:
         response = requests.get(
-            url=f"{self._server_address}:{self._server_port}/model-ids"
+            url=f"{self._server_address}:{self._server_port}/models/{model_type}"
         )
         response.raise_for_status()
         return response.json()
 
+    def _get_generative_model_ids(self) -> List[str]:
+        return self._get_model_ids("generative")
+    
+    def _get_embedding_model_ids(self) -> List[str]:
+        return self._get_model_ids("embedding")
+
+    def _get_loaded_model_ids(self, model_type: str) -> Dict[str, bool]:
+        response = requests.get(
+            url=f"{self._server_address}:{self._server_port}/models/{model_type}/loaded"
+        )
+        response.raise_for_status()
+        return response.json()
+    
+    def get_loaded_generative_model_ids(self) -> Dict[str, bool]:
+        return self._get_loaded_model_ids("generative")
+    
+    def get_loaded_embedding_model_ids(self) -> Dict[str, bool]:
+        return self._get_loaded_model_ids("embedding")
+    
+    def unload_model(self, model_id: str) -> None:
+        response = requests.delete(
+            url=f"{self._server_address}:{self._server_port}/unload/{model_id}"
+        )
+        response.raise_for_status()
+    
     def _do_request(
         self, 
-        query: LlmQuery,
+        query: TestQuery,
         endpoint: str
     ) -> Dict[str, Any]:
         response = requests.post(
             url=f"{self._server_address}:{self._server_port}{endpoint}",
-            json=[query.model_dump() for query in query]
+            json=query.model_dump()
         )
         response.raise_for_status()
         return response.json()
@@ -63,71 +94,37 @@ class LlmInterface:
     def update(
         self,
         codes: List[str],
-        docstrings: List[str],
-        *,
-        model_id: str | None = None,
-        max_length: int | None = None,
-        temperature: float | None = None,
-        repetition_penalty: float | None = None,
-        length_penalty: float | None = None,
-        sample_method: str | None = None,
-        top_k: int | None = None,
-        top_p: float | None = None,
-        num_beams: int | None = None,
-        early_stopping: bool | None = None,
-        weight_decay: float | None = None,
-        frequency_importance: float | None = None,
-        test_threshold: float | None = None,
+        docstrings: List[str]
     ) -> List[Tuple[bool, str]]:
         assert len(codes) == len(docstrings), "len(codes) != len(docstrings)"
     
         if len(codes) == 0:
             return []
 
-        if sample_method is None:
-            sample_method = SampleMethod(self._defaults["update"]["sample_method"])
-        else:
-            sample_method = SampleMethod(sample_method)
+        gen_mid = self._generative_model_ids[0]
+        emb_mid = self._embedding_model_ids[0]
 
-        model_id = model_id or self._model_ids[0]
-        weight_decay = weight_decay or self._defaults["weight_decay"]
-        frequency_importance = frequency_importance or self._defaults["frequency_importance"]
-        test_threshold = test_threshold or self._defaults["test_threshold"]
-
-        assert model_id in self._model_ids, f"model_id {model_id} not found"
-        assert 0 <= weight_decay <= 1, "weight_decay must be in [0, 1]"
-        assert 0 <= frequency_importance <= 1, "frequency_importance must be in [0, 1]"
-        assert test_threshold >= 0, "test_threshold must be >= 0"
-
-        check_parameters = CheckParameters(
-            weight_decay=weight_decay,
-            frequency_importance=frequency_importance,
-            test_threshold=test_threshold
-        )
-        
-        generation_parameters = GenerationParameters(
-            max_length=max_length,
-            temperature=temperature, 
-            repetition_penalty=repetition_penalty, 
-            length_penalty=length_penalty,
-            sample_method=sample_method,
-            top_k=top_k, 
-            top_p=top_p, 
-            num_beams=num_beams, 
-            early_stopping=early_stopping
-        )
-
-        check_query = LlmQuery(
-            llm_id=model_id,
+        test_query = TestQuery(
+            mid=gen_mid,
             codes=codes,
             docstrings=docstrings,
-            check_parameters=check_parameters,
-            generation_parameters=generation_parameters
+            test_method=TestMethod.DISTANCE,
+            test_parameters=DistanceTestParameters(
+                test_threshold=1.0,
+                mid=emb_mid,
+                distance_function=DistanceFunction.EUCLIDEAN,
+                normalize=True,
+                generation_parameters=GenerationParameters(
+                    max_length=64,
+                    sample_method="greedy"
+                )
+            )
         )
 
-        response = self._do_request(check_query, "/update")
-        response = LlmResponse.from_dict(response)
+        response = self._do_request(test_query, "/test")
+
         return [
-            (out_of_date, updated_docstring) for out_of_date, updated_docstring
-            in zip(response.out_of_date, response.updated_docstrings)
+            (r["out_of_date"], r["updated_docstring"]) for r
+            in response["results"]
         ]
+        

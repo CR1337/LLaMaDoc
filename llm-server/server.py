@@ -14,7 +14,7 @@ async def hello():
     return {"message": "Hello this is the LLaMaDoc server!"}
 
 
-@server.get("/models/generation")
+@server.get("/models/generative")
 async def get_generative_models():
     return ModelProvider.generative_model_ids
 
