@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import torch
-from typing import List
+from typing import List, Tuple, Generator
 from out_of_date_test.model import TestParameters, TestResult, GenerationParameters
 from torch.nn.utils.rnn import pad_sequence
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -9,9 +9,14 @@ from out_of_date_test.model_provider import ModelProvider, device
 
 class OutOfDateTest(ABC):
 
-    CODE_PREFIX: str = "#<code>:\n"
-    DOCSTRING_PREFIX: str = "#<docstring>:\n"
-    PROMPT: str = f"{CODE_PREFIX}{{code}}\n{DOCSTRING_PREFIX}"
+    PREFIX_TOKEN: str = '<|fim_prefix|>'
+    SUFFIX_TOKEN: str = '<|fim_suffix|>'
+    MIDDLE_TOKEN: str = '<|fim_middle|>'
+    FILE_SEPARATOR: str = '<|file_separator|>'
+    INDENT: str = '    '
+    HEADER_SEPARATOR: str = ':\n'
+
+    PROMPT: str = f'{PREFIX_TOKEN}{{header}}\n{INDENT}"""{SUFFIX_TOKEN}"""\n{INDENT}{{body}}{MIDDLE_TOKEN}'
 
     _mid: str
     _device: torch.device
@@ -32,8 +37,18 @@ class OutOfDateTest(ABC):
     ) -> List[TestResult]:
         raise NotImplementedError("@abstractmethod def test(...)")
     
+    def _split_codes(self, codes: List[str]) -> Generator[Tuple[str, str], None, None]:
+        for code in codes:
+            header, body = code.split(self.HEADER_SEPARATOR, 1)
+            header = f"{header}{self.HEADER_SEPARATOR}"
+            body = body.lstrip()
+            yield header, body
+    
     def _build_prompts(self, codes: List[str]) -> List[str]:
-        return [self.PROMPT.format(code=code) for code in codes]
+        return [
+            self.PROMPT.format(header=header, body=body) 
+            for header, body in self._split_codes(codes)
+        ]
     
     def _get_updated_docstrings(self, prompts: List[str], parameters: GenerationParameters) ->List[str]:
         prompt_tokens = self._tokenizer(prompts)['input_ids']
@@ -53,7 +68,7 @@ class OutOfDateTest(ABC):
             for docstring_tokens in updated_docstring_token_tensor
         )
         updated_docstrings = [
-            docstring.split(self.DOCSTRING_PREFIX)[-1]
+            docstring.split(self.MIDDLE_TOKEN)[-1].replace(self.FILE_SEPARATOR, '').strip()
             for docstring in updated_docstrings
         ]
         return updated_docstrings
