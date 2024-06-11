@@ -82,15 +82,11 @@ class PredictionTest(OutOfDateTest):
         prompt_tokens = self._tokenize_texts(prompts)
         docstring_tokens = self._tokenize_texts(docstrings)
 
-        print("PREPARE SEQUENCES AND MASKS")
         all_sequences, attention_masks = self._prepare_sequences_and_masks(
             prompt_tokens, docstring_tokens
         )
-        print("COMPUTE PROBABILITY DISTRIBUTIONS")
         probability_distributions = self._compute_probability_distributions(all_sequences, attention_masks)
-        print("GET LAST TOKEN PROBABILITY DISTRIBUTIONS")
         last_token_probability_distributions = self._get_last_token_probability_distributions(probability_distributions, attention_masks)
-        print("COMPUTE LAST DOCSTRING TOKEN PROBABILITIES")
         last_docstring_token_probabilities, last_token_ids = self._compute_last_docstring_token_probabilities(
             last_token_probability_distributions, docstring_tokens
         )
@@ -102,7 +98,6 @@ class PredictionTest(OutOfDateTest):
             (1.0 - clamp(weight_decay, epsilon, 1.0 - epsilon)) * pi / 2
         )
 
-        print("COMPUTE WEIGHTED GEOMETRIC MEANS")
         return self._compute_weighted_geometric_means(
             last_docstring_token_probabilities,
             last_token_ids,
