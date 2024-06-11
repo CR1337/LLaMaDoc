@@ -1,6 +1,6 @@
 const vscode = require('vscode');
 const os = require('os');
-const { exec } = require('child_process');
+const { exec, spawn } = require('child_process');
 
 const LLAMADOC_UPDATE_DOCSTRING_COMMAND = 'llamadoc.updateDocstringCommand';
 const LLAMADOC_DISMISS_COMMAND = 'llamadoc.dismissCommand';
@@ -115,32 +115,49 @@ function getPythonCommandFind(fileName) {
 function getPythonCommandUpdate(codestring, oldDocstring) {
     const platform = os.platform();
     const scriptPath = platform === 'win32' ? `${__dirname}\\update_docstrings.py` : `${__dirname}/update_docstrings.py`;
-    const pythonCommand = platform === 'win32' ? 'python -u' : 'python3 -u';
-   return `${pythonCommand} ${scriptPath} "${codestring}" "${oldDocstring}"`;
+    const pythonCommand = platform === 'win32' ? 'python' : 'python3';
+    return [pythonCommand, '-u', scriptPath];
 }
 
 async function getUpdatedText(codestring, oldDocstring) {
     const pyCommand = getPythonCommandUpdate(codestring, oldDocstring)
     return new Promise((resolve, reject) => {
-        exec(pyCommand, (error, stdout, stderr) => {
-            if (error) {
-                console.error(`Error: ${error.message}`);
-                return reject(error);
+        const process = spawn(pyCommand[0], pyCommand.slice(1));
+
+        let stdoutData = '';
+        let stderrData = '';
+
+        process.stdout.on('data', (data) => {
+            stdoutData += data.toString();
+        });
+
+        process.stderr.on('data', (data) => {
+            stderrData += data.toString();
+        });
+
+        process.on('close', (code) => {
+            if (code !== 0) {
+                return reject(new Error(`Process exited with code ${code}\n${stderrData}`));
             }
-            if (stderr) {
-                console.error(`stderr: ${stderr}`);
-                return reject(new Error(stderr));
-            }
+
             try {
-                const result = JSON.parse(stdout);
-                const formatted_result = result.new_docstring
+                console.info('Received data from python script');
+                const result = JSON.parse(stdoutData);
+                const formatted_result = result.new_docstring;
                 resolve(formatted_result);
             } catch (parseError) {
                 reject(parseError);
             }
         });
+
+        process.on('error', (error) => {
+            reject(error);
+        });
+
+        console.info('Sending data to python script');
+        process.stdin.write(JSON.stringify({ codestring: codestring, old_docstring: oldDocstring }));
+        process.stdin.end();
     });
-    //return `    """This is the updated docstring\n    I am testing a long one"""\n`;
 }
 
 function registerCodeActionsProvider() {

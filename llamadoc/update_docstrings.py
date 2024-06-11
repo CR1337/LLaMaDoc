@@ -10,15 +10,17 @@ def get_updated_docstring(code: str, docstring: str) -> str:
     return new_docstring
 
 def main():
-    codestring = sys.argv[1]
-    old_docstring = sys.argv[2]
+    input_data = json.loads(sys.stdin.read())
+    codestring = input_data["codestring"]
+    old_docstring = input_data["old_docstring"]
+    
     # print("----------------")
     # print(codestring)
     # print("----------------")
     # print(old_docstring)
     # print("----------------")
     new_docstring = get_updated_docstring(codestring, old_docstring)
-    print(new_docstring)
+    # print(new_docstring)
     print(json.dumps({"new_docstring": new_docstring}))
 
 
