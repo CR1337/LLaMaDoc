@@ -112,15 +112,11 @@ function getPythonCommandFind(fileName) {
     return `${pythonCommand} ${scriptPath} "${fileName}"`;
 }
 
-// FIX CALLING FUNCTION
 function getPythonCommandUpdate(codestring, oldDocstring) {
     const platform = os.platform();
     const scriptPath = platform === 'win32' ? `${__dirname}\\update_docstrings.py` : `${__dirname}/update_docstrings.py`;
     const pythonCommand = platform === 'win32' ? 'python -u' : 'python3 -u';
-    //codestring.replace('"""', '')
-    //oldDocstring.replace('"""', '')
-    // FIX COMMAND!!!
-    return `${pythonCommand} ${scriptPath} "${codestring}" "${oldDocstring}"`;
+   return `${pythonCommand} ${scriptPath} "${codestring}" "${oldDocstring}"`;
 }
 
 async function getUpdatedText(codestring, oldDocstring) {

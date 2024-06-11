@@ -17,10 +17,8 @@ def main():
     # print("----------------")
     # print(old_docstring)
     # print("----------------")
-    #codestring = 'def testmethod4(x, y):\r\n    """\r\n    amazing method :)\r\n    longer string\r\n    """\r\n    return x+y\r\n'
-    #old_docstring = '    """\r\n    amazing method :)\r\n    longer string\r\n    """\r\n'
     new_docstring = get_updated_docstring(codestring, old_docstring)
-    #print(new_docstring)
+    print(new_docstring)
     print(json.dumps({"new_docstring": new_docstring}))
 
 
