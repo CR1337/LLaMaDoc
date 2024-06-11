@@ -108,6 +108,39 @@ class LlmInterface:
             mid=gen_mid,
             codes=codes,
             docstrings=docstrings,
+            test_method=TestMethod.UPDATE,
+            test_parameters=DistanceTestParameters(
+                generation_parameters=GenerationParameters(
+                    max_length=64,
+                    sample_method="greedy"
+                )
+            )
+        )
+
+        response = self._do_request(test_query, "/test")
+
+        return [
+            (r["out_of_date"], r["updated_docstring"]) for r
+            in response["results"]
+        ]
+    
+    def check(
+        self,
+        codes: List[str],
+        docstrings: List[str]
+    ) -> List[Tuple[bool, str]]:
+        assert len(codes) == len(docstrings), "len(codes) != len(docstrings)"
+    
+        if len(codes) == 0:
+            return []
+
+        gen_mid = self._generative_model_ids[0]
+        emb_mid = self._embedding_model_ids[0]
+
+        test_query = TestQuery(
+            mid=gen_mid,
+            codes=codes,
+            docstrings=docstrings,
             test_method=TestMethod.DISTANCE,
             test_parameters=DistanceTestParameters(
                 test_threshold=1.0,
