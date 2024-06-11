@@ -9,8 +9,7 @@ def get_updated_docstring(code: str, docstring: str) -> str:
     code = code.replace(docstring, "")
     docstring = docstring.replace('"""', '')
     docstring = docstring.replace("'''", '')
-    new_docstring = f"{docstring}\n    UPDATED"
-    new_docstring = f'    """\n{new_docstring}\n    """'
+    new_docstring = f'    """{docstring}\n    UPDATED\n    """\n'
     return new_docstring
     # ---------------------------------------------------
 
