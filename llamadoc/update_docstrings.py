@@ -21,7 +21,13 @@ def main():
     input_data = json.loads(sys.stdin.read())
     codestring = input_data["codestring"]
     old_docstring = input_data["old_docstring"]
+
+    codestring.replace('\r', '')
+    old_docstring.replace('\r', '')
+
     new_docstring = get_updated_docstring(codestring, old_docstring)
+    new_docstring = f'    """\n    {new_docstring}\n    """\n'
+
     print(json.dumps({"new_docstring": new_docstring}))
 
 

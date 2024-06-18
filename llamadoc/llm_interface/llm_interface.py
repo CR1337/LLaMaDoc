@@ -113,7 +113,7 @@ class LlmInterface:
                 distance_function=DistanceFunction.EUCLIDEAN,
                 normalize=True,
                 generation_parameters=GenerationParameters(
-                    max_length=64,
+                    max_length=512,
                     sample_method="greedy"
                 )
             )
@@ -150,7 +150,7 @@ class LlmInterface:
                 distance_function=DistanceFunction.EUCLIDEAN,
                 normalize=True,
                 generation_parameters=GenerationParameters(
-                    max_length=64,
+                    max_length=512,
                     sample_method="greedy"
                 )
             )

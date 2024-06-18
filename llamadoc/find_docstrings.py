@@ -115,27 +115,27 @@ def check_out_of_date(functions: List[Function]) -> List[Function]:
     # TODO: connect to backend
 
     # --- comment this out to connect to the backend ---
-    for i in range(len(functions)):
-        if not functions[i].has_docstring:
-            continue
-        if i % 2 == 0:
-            functions[i].up_to_date = True
-        else:
-            functions[i].up_to_date = False
-    return functions
+    # for i in range(len(functions)):
+    #     if not functions[i].has_docstring:
+    #         continue
+    #     if i % 2 == 0:
+    #         functions[i].up_to_date = True
+    #     else:
+    #         functions[i].up_to_date = False
+    # return functions
     # ---------------------------------------------------
 
     # --- uncomment this to connect to the backend ---
-    # codes = [function.code for function in functions if function.has_docstring]
-    # docstrings = [function.docstring for function in functions if function.has_docstring]
-    # function_indices = [i for i, function in enumerate(functions) if function.has_docstring]
+    codes = [function.code for function in functions if function.has_docstring]
+    docstrings = [function.docstring for function in functions if function.has_docstring]
+    function_indices = [i for i, function in enumerate(functions) if function.has_docstring]
 
-    # results = LlmInterface().check(codes, docstrings)
+    results = LlmInterface().check(codes, docstrings)
 
-    # for i, result in zip(function_indices, results):
-    #     functions[i].up_to_date = not result[0]
+    for i, result in zip(function_indices, results):
+        functions[i].up_to_date = not result[0]
 
-    # return functions
+    return functions
     # ---------------------------------------------------
 
 
@@ -147,6 +147,11 @@ def main():
     except FileNotFoundError:
         print(f"File {filename} not found", file=sys.stderr)
         sys.exit(1)
+
+    code = [line.replace('\r', '') for line in code]
+
+    #with open("D:\\Programming\\find.txt", "w") as f:
+    #    f.write("".join(code))
 
     functions = extract_functions(code)
     functions = check_out_of_date(functions)
