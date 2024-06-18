@@ -16,6 +16,7 @@ class OutOfDateTest(ABC):
     FILE_SEPARATOR: str = '<|file_separator|>'
     INDENT: str = '    '
     HEADER_SEPARATOR: str = ':\n'
+    TRIPLE_QUOTES: str = '"""'
 
     PROMPT: str = f'{PREFIX_TOKEN}{{header}}\n{INDENT}"""{SUFFIX_TOKEN}"""\n{INDENT}{{body}}{MIDDLE_TOKEN}'
 
@@ -72,7 +73,7 @@ class OutOfDateTest(ABC):
             for docstring_tokens in updated_docstring_token_tensor
         )
         updated_docstrings = [
-            docstring.split(self.MIDDLE_TOKEN)[-1].split(self.FILE_SEPARATOR)[0].strip()
+            docstring.split(self.MIDDLE_TOKEN)[-1].split(self.TRIPLE_QUOTES)[0].strip()
             for docstring in updated_docstrings
         ]
         print(updated_docstrings, flush=True)
