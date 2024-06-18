@@ -6,7 +6,7 @@ export PORT=$((9000 + GROUP))
 
 echo "Creating container..."
 
-docker run --name ai4se-2-llm-server \
+docker run --init --name ai4se-2-llm-server \
         -p 0.0.0.0:$PORT:8000 -v $CACHE_DIR:/root/.cache/huggingface llm_server_llamadoc
 
 if [ $? -ne 0 ]; then
