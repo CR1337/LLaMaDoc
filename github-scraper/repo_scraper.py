@@ -1,4 +1,4 @@
-from typing import Dict, Any, AsyncGenerator, Iterable, List, Tuple
+from typing import Dict, Any, Iterable, List, Tuple
 import json
 import git
 import concurrent.futures
@@ -8,6 +8,10 @@ import datetime
 import ast
 from difflib import SequenceMatcher
 from dataclasses import dataclass
+import pandas as pd
+import pickle
+import lzma
+import shutil
 
 
 @dataclass
@@ -61,13 +65,24 @@ class RepoScraper:
         with open(self.METADATA_PATH, "r") as file:
             self._repositories = json.load(file)
 
-    async def scrape(self) -> AsyncGenerator[Dict[str, Any], None]:
-        with concurrent.futures.ThreadPoolExecutor(max_workers=cpu_count()) as executor:
-            for index, repo in enumerate(self._repositories):
-                yield executor.submit(self._scrape_examples, repo, index)
+    def scrape(self) -> List[ExampleFile]:
+        examples = []
+        with concurrent.futures.ThreadPoolExecutor(max_workers=cpu_count() - 1) as executor:
+            futures = []
+            for index, repo in enumerate(self._repositories[:2]):
+                futures.append(executor.submit(self._scrape_examples, repo, index))
+            for future in concurrent.futures.as_completed(futures):
+                examples.extend(future.result())
+        return examples
 
-    def _scrape_examples(self, repo: Dict[str, Any], index: int):
+    def _scrape_examples(self, repo: Dict[str, Any], index: int) -> List[ExampleFile]:
+        examples = []
+        local_directory = os.path.join(self.CLONE_PATH, repo["name"])
         for repo_file in self._scrape_repo_files(repo, index):
+            examples.append(self._extract_examples(repo_file, index))
+        shutil.rmtree(local_directory)
+        print(f"Done with {repo['full_name']}")
+        return examples
 
     def _extract_examples(self, repo_file: Dict[str, Any], index: int) -> Dict[str, Any]:
         repo_index = index
@@ -181,7 +196,7 @@ class RepoScraper:
 
         py_files = self._find_all_py_files(main_head)
         py_file_versions = {
-            py_file: self._find_all_blob_versions(py_file)
+            py_file: self._find_all_blob_versions(py_file, repo, main_head)
             for py_file in py_files
         }
         for py_file, versions in py_file_versions.items():
@@ -207,11 +222,11 @@ class RepoScraper:
             if blob.path.endswith(".py")
         )
     
-    def _find_all_blob_versions(self, blob: git.Blob) -> List[Tuple[git.Blob, git.Commit]]:
+    def _find_all_blob_versions(self, blob: git.Blob, repo: git.Repo, main_head: git.Head) -> List[Tuple[git.Blob, git.Commit]]:
         """Find all versions of a blob, skip if it doesnt exist in a commit."""
         versions = []
         last_version = None
-        for commit in self._repo.iter_commits(self._main_head):
+        for commit in repo.iter_commits(main_head):
             try:
                 blob_version = commit.tree[blob.path]
                 if last_version is not None and blob_version.data_stream.read().decode("utf-8") == last_version.data_stream.read().decode("utf-8"):
@@ -222,3 +237,41 @@ class RepoScraper:
             else:
                 versions.append((blob_version, commit))
         return versions
+    
+
+if __name__ == "__main__":
+    scraper = RepoScraper()
+    examples = scraper.scrape()
+
+    df = pd.DataFrame(columns=[
+        "repo_index",
+        "file_path",
+        "functions",
+        "code_similarity",
+        "docstring_similarity",
+        "commit",
+        "date",
+        "code",
+        "docstring",
+        "code_updated",
+        "docstring_updated",
+    ])
+
+    for example in examples:
+        for function in example.functions:
+            df.append({
+                "repo_index": example.repo_index,
+                "file_path": example.file_path,
+                "functions": example.functions,
+                "code_similarity": function.code_similarity,
+                "docstring_similarity": function.docstring_similarity,
+                "commit": function.commit,
+                "date": function.date,
+                "code": function.code,
+                "docstring": function.docstring,
+                "code_updated": function.code_updated,
+                "docstring_updated": function.docstring_updated
+            })
+    
+    with lzma.open("examples.pkl.lzma", 'wb') as file:
+        pickle.dump(df, file)
