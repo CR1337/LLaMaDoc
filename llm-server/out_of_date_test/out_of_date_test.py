@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import torch
+import re
 from typing import List, Tuple, Generator
 from out_of_date_test.model import TestParameters, TestResult, GenerationParameters
 from torch.nn.utils.rnn import pad_sequence
@@ -39,6 +40,8 @@ class OutOfDateTest(ABC):
     
     def _split_codes(self, codes: List[str]) -> Generator[Tuple[str, str], None, None]:
         for code in codes:
+            code = re.sub(r'(\r)\1+', r'\1', code)
+            code = code.replace('\r\n', '\n')
             header, body = code.split(self.HEADER_SEPARATOR)[:2]
             header = f"{header}{self.HEADER_SEPARATOR}"
             body = body.lstrip()
