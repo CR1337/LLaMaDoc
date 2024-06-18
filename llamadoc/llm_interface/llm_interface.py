@@ -1,6 +1,7 @@
 from typing import Any, Dict, List, Tuple
 import requests
 import json
+import os
 
 from llm_interface.model import (
     TestQuery, TestMethod, DistanceFunction, 
@@ -32,14 +33,12 @@ class LlmInterface:
         return self._embedding_model_ids
 
     def __init__(self):
-        with open("server_config.json") as file:
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        with open(os.path.join(dir_path, "server_config.json")) as file:
             server_config = json.load(file)
 
         self._server_address = server_config["address"]
         self._server_port = server_config["port"]
-
-        self._server_address = "http://localhost"
-        self._server_port = 8000
 
         self._generative_model_ids = self._get_generative_model_ids()
         assert len(self._generative_model_ids) > 0, "No models found"
