@@ -42,7 +42,8 @@ class OutOfDateTest(ABC):
         for code in codes:
             code = re.sub(r'(\r)\1+', r'\1', code)
             code = code.replace('\r\n', '\n')
-            header, body = code.split(self.HEADER_SEPARATOR)[:2]
+            header, *rest = code.split(self.HEADER_SEPARATOR)
+            body = f'{self.HEADER_SEPARATOR}'.join(rest)
             header = f"{header}{self.HEADER_SEPARATOR}"
             body = body.lstrip()
             yield header, body
