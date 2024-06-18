@@ -110,6 +110,9 @@ class LlmInterface:
             docstrings=docstrings,
             test_method=TestMethod.UPDATE,
             test_parameters=DistanceTestParameters(
+                mid=emb_mid,
+                distance_function=DistanceFunction.EUCLIDEAN,
+                normalize=True,
                 generation_parameters=GenerationParameters(
                     max_length=64,
                     sample_method="greedy"
