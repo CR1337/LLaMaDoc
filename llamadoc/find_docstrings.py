@@ -3,7 +3,7 @@ import json
 import sys
 from dataclasses import dataclass
 from typing import List, Dict, Any
-from llm_interface.llm_interface import LLMInterface
+from llm_interface.llm_interface import LlmInterface
 
 
 @dataclass
@@ -130,7 +130,7 @@ def check_out_of_date(functions: List[Function]) -> List[Function]:
     # docstrings = [function.docstring for function in functions if function.has_docstring]
     # function_indices = [i for i, function in enumerate(functions) if function.has_docstring]
 
-    # results = LLMInterface().check(codes, docstrings)
+    # results = LlmInterface().check(codes, docstrings)
 
     # for i, result in zip(function_indices, results):
     #     functions[i].up_to_date = not result[0]

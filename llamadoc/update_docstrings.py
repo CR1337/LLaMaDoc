@@ -1,6 +1,6 @@
 import sys
 import json
-from llm_interface.llm_interface import LLMInterface
+from llm_interface.llm_interface import LlmInterface
 
 def get_updated_docstring(code: str, docstring: str) -> str:
     # TODO: connect to backend
@@ -14,7 +14,7 @@ def get_updated_docstring(code: str, docstring: str) -> str:
     # ---------------------------------------------------
 
     # --- uncomment this to connect to the backend ---
-    # return LLMInterface().update([code], [docstring])[0][1]
+    # return LlmInterface().update([code], [docstring])[0][1]
     # ---------------------------------------------------
 
 def main():

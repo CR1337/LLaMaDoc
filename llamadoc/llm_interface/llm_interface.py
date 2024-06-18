@@ -2,7 +2,7 @@ from typing import Any, Dict, List, Tuple
 import requests
 import json
 
-from model import (
+from llm_interface.model import (
     TestQuery, TestMethod, DistanceFunction, 
     DistanceTestParameters, GenerationParameters
 )
