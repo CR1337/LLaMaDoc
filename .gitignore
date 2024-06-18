@@ -1,3 +1,4 @@
+**/__pycache__
 **/node_modules
 **/.venv
 **/auth.token
@@ -6,3 +7,5 @@ github-scraper/cloned_repos
 github-scrper/extracted-py-files
 github-scraper/filtered_repositories.json
 github-scraper/extracted-py-files/
+llm-server/huggingface-token
+llm-server/not-on-server
