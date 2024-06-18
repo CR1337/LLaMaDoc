@@ -72,7 +72,8 @@ class OutOfDateTest(ABC):
             for docstring_tokens in updated_docstring_token_tensor
         )
         updated_docstrings = [
-            docstring.split(self.MIDDLE_TOKEN)[-1].replace(self.FILE_SEPARATOR, '').strip()
+            docstring.split(self.MIDDLE_TOKEN)[-1].split(self.FILE_SEPARATOR, '')[0].strip()
             for docstring in updated_docstrings
         ]
+        print(updated_docstrings, flush=True)
         return updated_docstrings
