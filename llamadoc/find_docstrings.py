@@ -150,10 +150,11 @@ def main():
 
     code = [line.replace('\r', '') for line in code]
 
-    #with open("D:\\Programming\\find.txt", "w") as f:
-    #    f.write("".join(code))
-
     functions = extract_functions(code)
+
+    # with open("D:\\Programming\\find.txt", "w") as f:
+    #     f.write("\n".join([funk.code for funk in functions]))
+
     functions = check_out_of_date(functions)
 
     functions_dicts = [function.to_dict() for function in functions]

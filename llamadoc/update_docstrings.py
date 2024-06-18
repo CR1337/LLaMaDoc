@@ -22,8 +22,20 @@ def main():
     codestring = input_data["codestring"]
     old_docstring = input_data["old_docstring"]
 
+    start = codestring.index('"""')
+    end = start + codestring[start + 1:].index('"""')
+    codestring = codestring[:start] + codestring[end + 4:]
+
     codestring.replace('\r', '')
     old_docstring.replace('\r', '')
+
+    # with open("D:\\Programming\\update_code.txt", "w") as f:
+    #     f.write(codestring)
+
+    # with open("D:\\Programming\\update_doc.txt", "w") as f:
+    #     f.write(old_docstring)
+
+
 
     new_docstring = get_updated_docstring(codestring, old_docstring)
     new_docstring = f'    """\n    {new_docstring}\n    """\n'
