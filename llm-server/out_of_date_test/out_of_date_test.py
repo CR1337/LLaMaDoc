@@ -39,7 +39,7 @@ class OutOfDateTest(ABC):
     
     def _split_codes(self, codes: List[str]) -> Generator[Tuple[str, str], None, None]:
         for code in codes:
-            header, body = code.split(self.HEADER_SEPARATOR, 1)
+            header, body = code.split(self.HEADER_SEPARATOR)[:2]
             header = f"{header}{self.HEADER_SEPARATOR}"
             body = body.lstrip()
             yield header, body
