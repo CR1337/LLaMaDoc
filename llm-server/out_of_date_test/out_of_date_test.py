@@ -56,6 +56,7 @@ class OutOfDateTest(ABC):
         ]
     
     def _get_updated_docstrings(self, prompts: List[str], parameters: GenerationParameters) ->List[str]:
+        print("PROMPTS:\n", prompts, flush=True)
         prompt_tokens = self._tokenizer(prompts)['input_ids']
         prompt_tokens_tensor = pad_sequence(
             [torch.tensor(tokens) for tokens in prompt_tokens], 
@@ -76,5 +77,5 @@ class OutOfDateTest(ABC):
             docstring.split(self.MIDDLE_TOKEN)[-1].split(self.TRIPLE_QUOTES)[0].replace(self.FILE_SEPARATOR, "").strip()
             for docstring in updated_docstrings
         ]
-        print(updated_docstrings, flush=True)
+        print("GENERATED:\n", updated_docstrings, flush=True)
         return updated_docstrings
