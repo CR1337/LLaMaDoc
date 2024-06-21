@@ -22,7 +22,7 @@ DB_PATH: str = "examples.db"
 
 class BaseModel(peewee.Model):
     class Meta:
-        database = peewee.PooledSqliteDatabase(DB_PATH)
+        database = PooledSqliteDatabase(DB_PATH)
 
     id = peewee.BinaryUUIDField(primary_key=True, default=uuid4)
 
