@@ -12,6 +12,14 @@
 			"args": [
 				"--extensionDevelopmentPath=${workspaceFolder}/llamadoc"
 			]
-		}
+		},
+        {
+            "name": "Debug current python file in github-scraper directory",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/github-scraper"
+        }
 	]
 }

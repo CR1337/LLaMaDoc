@@ -39,6 +39,7 @@ numpy==1.26.4
 packaging==24.0
 pandas==2.2.2
 parso==0.8.4
+peewee==3.17.5
 pexpect==4.9.0
 pillow==10.3.0
 platformdirs==4.2.1

@@ -1,57 +1,75 @@
-from typing import Dict, Any, Iterable, List, Tuple
+from typing import Dict, Any, List, Tuple
 import json
 import git
-import concurrent.futures
+from concurrent.futures import as_completed, ProcessPoolExecutor
 from multiprocessing import cpu_count
 import os
 import datetime
 import ast
 from difflib import SequenceMatcher
-from dataclasses import dataclass
-import pandas as pd
-import pickle
-import lzma
 import shutil
+import peewee
+from tqdm import tqdm
+import traceback
+import sys 
+from uuid import uuid4
+import os
 
 
-@dataclass
-class Function:
-    code_similarity: float
-    docstring_similarity: float
-    commit: str
-    date: str
-    code: str
-    docstring: str
-    code_updated: bool
-    docstring_updated: bool
+DB_PATH: str = "examples.db"
 
-    def to_dict(self) -> Dict[str, Any]:
-        return {
-            "code_similarity": self.code_similarity,
-            "docstring_similarity": self.docstring_similarity,
-            "commit": self.commit,
-            "date": self.date,
-            "code": self.code,
-            "docstring": self.docstring,
-            "code_updated": self.code_updated,
-            "docstring_updated": self.docstring_updated
-        }
 
-@dataclass
-class ExampleFile:
-    repo_index: str
-    file_path: str
-    functions: Dict[str, List[Function]]
+class BaseModel(peewee.Model):
+    class Meta:
+        database = peewee.SqliteDatabase(DB_PATH)
 
-    def to_dict(self) -> Dict[str, Any]:
-        return {
-            "repo_index": self.repo_index,
-            "file_path": self.file_path,
-            "functions": {
-                k: [f.to_dict() for f in v] 
-                for k, v in self.functions.items()
-            }
-        }
+    id = peewee.BinaryUUIDField(primary_key=True, default=uuid4)
+
+
+class Repository(BaseModel):
+    class Meta:
+        table_name = "repositories"
+
+    full_name = peewee.CharField()
+    size = peewee.IntegerField()
+    open_issues = peewee.IntegerField()
+    watchers = peewee.IntegerField()
+    contributors = peewee.IntegerField()
+    forks = peewee.IntegerField()
+    contributions = peewee.IntegerField()
+    stars = peewee.IntegerField()
+
+
+class File(BaseModel):
+    class Meta:
+        table_name = "files"
+
+    repo = peewee.ForeignKeyField(Repository, backref="files")
+    path = peewee.CharField()
+
+
+class Function(BaseModel):
+    class Meta:
+        table_name = "functions"
+
+    file_ = peewee.ForeignKeyField(File, backref="functions")
+    name = peewee.CharField()
+
+
+class Version(BaseModel):
+    class Meta:
+        table_name = "versions"
+
+    function = peewee.ForeignKeyField(Function, backref="versions")
+    last_version = peewee.ForeignKeyField("self", null=True)
+    commit = peewee.CharField()
+    date = peewee.DateTimeField()
+    code = peewee.TextField()
+    docstring = peewee.TextField()
+    code_updated = peewee.BooleanField(null=True)
+    docstring_updated = peewee.BooleanField(null=True)
+    code_similarity = peewee.FloatField(null=True)
+    docstring_similarity = peewee.FloatField(null=True)
 
 
 class RepoScraper:
@@ -59,62 +77,116 @@ class RepoScraper:
     METADATA_PATH: str = "repositories.json"
     CLONE_PATH: str = "cloned_repos"
 
-    _repositories: Dict[str, Any]
+    INDENTATION: str = "    "
 
     def __init__(self):
+        shutil.rmtree(DB_PATH, ignore_errors=True)
+        shutil.rmtree(self.CLONE_PATH, ignore_errors=True)
+
+    def scrape(self):
         with open(self.METADATA_PATH, "r") as file:
-            self._repositories = json.load(file)
+            repository_data = json.load(file)
+        with ProcessPoolExecutor(cpu_count() - 1)  as executor:
+            futures = [
+                executor.submit(self._scrape_repository, repo_data, index)
+                for index, repo_data in enumerate(repository_data)
+            ]
+            for future in list(tqdm(as_completed(futures), total=len(repository_data), desc="Scraping repositories")):
+                future.result()
 
-    def scrape(self) -> List[ExampleFile]:
-        examples = []
-        with concurrent.futures.ThreadPoolExecutor(max_workers=cpu_count() - 1) as executor:
-            futures = []
-            for index, repo in enumerate(self._repositories[:2]):
-                futures.append(executor.submit(self._scrape_examples, repo, index))
-            for future in concurrent.futures.as_completed(futures):
-                examples.extend(future.result())
-        return examples
+    def _scrape_repository(self, repo_data: Dict[str, Any], index: int):
+        contributors = repo_data.get("contributors", [])
 
-    def _scrape_examples(self, repo: Dict[str, Any], index: int) -> List[ExampleFile]:
-        examples = []
-        local_directory = os.path.join(self.CLONE_PATH, repo["name"])
-        for repo_file in self._scrape_repo_files(repo, index):
-            examples.append(self._extract_examples(repo_file, index))
-        shutil.rmtree(local_directory)
-        print(f"Done with {repo['full_name']}")
-        return examples
+        repo = Repository.create(
+            full_name=repo_data["full_name"],
+            size=repo_data["size"],
+            open_issues=repo_data["open_issues"],
+            watchers=repo_data["watchers"],
+            contributors=len(contributors),
+            forks=repo_data["forks"],
+            contributions=sum(contributor["contributions"] for contributor in contributors),
+            stars=repo_data["stargazers_count"],
+        )
+        
+        local_directory = os.path.join(self.CLONE_PATH, repo.full_name.replace("/", "_"))
 
-    def _extract_examples(self, repo_file: Dict[str, Any], index: int) -> Dict[str, Any]:
-        repo_index = index
-        file_path = repo_file['file_path']
-
-        functions: Dict[str, List[Function]] = {}
-
-        for version in repo_file['versions']:
-            commit = version['commit']
-            date = version['date']
-
-            full_code = (
-                version['blob']
-                    .replace('\r\n', '\n')
-                    .replace('\r', '\n')
-                    .replace('\t', self.INDENTATION)
+        try:
+            repo_object = git.Repo.clone_from(
+                f"git@github.com:{repo_data['full_name']}.git", local_directory, bare=True
             )
+            head = repo_object.heads[0]
+
+            py_blobs: List[git.Blob] = self._find_all_py_blobs(head)
+            files = [
+                File(repo=repo, path=blob.path)
+                for blob in py_blobs
+            ]
+            File.bulk_create(files)
+
+            py_blob_versions = (
+                self._find_all_blob_versions(blob, repo_object, head)
+                for blob in py_blobs
+            )
+
+            [
+                self._extract_examples(file_, blob_versions)
+                for file_, blob_versions in zip(files, py_blob_versions)
+            ]
+        
+        except Exception:
+            exc_info = sys.exc_info()
+            traceback.print_exception(*exc_info)
+
+        finally:
+            repo_object.close()
+            shutil.rmtree(local_directory)
+        
+
+    def _find_all_py_blobs(self, head: git.Head) -> List[git.Blob]:
+        return [
+            blob for blob in head.commit.tree.traverse()
+            if blob.path.endswith(".py")
+        ]
+    
+    def _find_all_blob_versions(self, blob: git.Blob, repo_object: git.Repo, head: git.Head) -> List[Tuple[git.Blob, git.Commit]]:
+        versions = []
+        last_version = None
+        for commit in repo_object.iter_commits(head):
+            try:
+                blob_version = commit.tree[blob.path]
+                if last_version is not None and blob_version.data_stream.read() == last_version.data_stream.read():
+                    continue 
+                last_version = blob_version
+            except (KeyError, IndexError, ValueError, AssertionError):
+                continue
+            else:
+                versions.append((blob_version, commit))
+        return versions
+
+    def _extract_examples(self, file_: File, blob_versions: List[Tuple[git.Blob, git.Commit]]):
+        functions_data: Dict[str, List[Function]] = {}
+
+        for blob, commit in blob_versions:
+            blob_bytes = blob.data_stream.read()
+            if blob_bytes.count(b'\n') < 3:
+                continue
+            try:
+                full_code = (
+                    blob_bytes
+                        .decode('utf-8')
+                        .replace('\r\n', '\n')
+                        .replace('\r', '\n')
+                        .replace('\t', self.INDENTATION)
+                )
+            except (UnicodeDecodeError, ValueError):
+                continue
             full_code_lines = full_code.split('\n')
 
-            if len(full_code_lines) < 3:
+            try:
+                tree = ast.parse("\n".join(full_code_lines))
+            except (SyntaxError, IndentationError):
                 continue
-            while len(full_code_lines) >= 3:
-                try:
-                    tree = ast.parse("\n".join(full_code_lines))
-                except (SyntaxError, IndentationError) as exception:
-                    line_number = exception.lineno
-                    if line_number > len(full_code_lines) // 2:
-                        full_code_lines = full_code_lines[:line_number-1]
-                    else:
-                        full_code_lines = full_code_lines[line_number:]
-                else:
-                    break
+
 
             for node in ast.walk(tree):
                 if not isinstance(node, ast.FunctionDef):
@@ -145,9 +217,9 @@ class RepoScraper:
                 docstring_end = function_code[docstring_start+1:].index(docstring_delimiter)
                 function_code = function_code[:docstring_start] + function_code[docstring_start+1+docstring_end+3:]
 
-                if function_name in functions:
-                    last_function_code = functions[function_name][-1].code
-                    last_docstring = functions[function_name][-1].docstring
+                if function_name in functions_data:
+                    last_function_code = functions_data[function_name][-1]["code"]
+                    last_docstring = functions_data[function_name][-1]["docstring"]
 
                     code_updated = last_function_code != function_code
                     docstring_updated = last_docstring != docstring
@@ -155,123 +227,76 @@ class RepoScraper:
                     if not code_updated and not docstring_updated:
                         continue
 
-                    code_similarity = SequenceMatcher(a=last_function_code, b=function_code).ratio()
-                    docstring_similarity = SequenceMatcher(a=last_docstring, b=docstring).ratio()
+                    code_similarity = SequenceMatcher(a=last_function_code, b=function_code).quick_ratio()
+                    docstring_similarity = SequenceMatcher(a=last_docstring, b=docstring).quick_ratio()
                 else:
                     code_similarity = None
                     docstring_similarity = None
                     code_updated = None
                     docstring_updated = None
-                    functions[function_name] = []
+                    functions_data[function_name] = []
 
-                function = Function(
-                    code_similarity=code_similarity,
-                    docstring_similarity=docstring_similarity,
-                    commit=commit,
-                    date=date,
-                    code=function_code,
-                    docstring=docstring,
-                    code_updated=code_updated,
-                    docstring_updated=docstring_updated
-                )
-                functions[function_name].append(function)
+                date = datetime.datetime.fromtimestamp(commit.committed_date).isoformat()
 
-        if len(functions) == 0:
-            return None
-        
-        return ExampleFile(
-            repo_index=repo_index,
-            file_path=file_path,
-            functions=functions
-        )
+                functions_data[function_name].append({
+                    "code_similarity": code_similarity,
+                    "docstring_similarity": docstring_similarity,
+                    "commit": commit,
+                    "date": date,
+                    "code": function_code,
+                    "docstring": docstring,
+                    "code_updated": code_updated,
+                    "docstring_updated": docstring_updated
+                })
 
-    def _scrape_repo_files(self, repo: Dict[str, Any], index: int) -> Iterable[Dict[str, Any]]:
-        local_directory = os.path.join(self.CLONE_PATH, repo["name"])
-        repo = git.Repo.clone_from(
-            repo["html_url"],
-            local_directory,
-            bare=True
-        )
-        main_head = repo.heads[0]
-
-        py_files = self._find_all_py_files(main_head)
-        py_file_versions = {
-            py_file: self._find_all_blob_versions(py_file, repo, main_head)
-            for py_file in py_files
-        }
-        for py_file, versions in py_file_versions.items():
-            repo_file = {
-                "full_name": repo["full_name"],
-                "file_path": py_file.path,
-                "versions": [
-                    {
-                        "commit": commit.hexsha,
-                        "date": datetime.fromtimestamp(commit.committed_date).isoformat(),
-                        "blob": blob.data_stream.read().decode("utf-8")
-                    }
-                    for blob, commit in versions
-                ]
-            }
-
-            yield repo_file
-
-    def _find_all_py_files(self, main_head: git.Head) -> Iterable[git.Blob]:
-        """Find all Python files in _main_head"""
-        return (
-            blob for blob in main_head.commit.tree.traverse()
-            if blob.path.endswith(".py")
-        )
-    
-    def _find_all_blob_versions(self, blob: git.Blob, repo: git.Repo, main_head: git.Head) -> List[Tuple[git.Blob, git.Commit]]:
-        """Find all versions of a blob, skip if it doesnt exist in a commit."""
+        functions = []
         versions = []
-        last_version = None
-        for commit in repo.iter_commits(main_head):
-            try:
-                blob_version = commit.tree[blob.path]
-                if last_version is not None and blob_version.data_stream.read().decode("utf-8") == last_version.data_stream.read().decode("utf-8"):
-                    continue 
-                last_version = blob_version
-            except KeyError:
+        for function_name, function_data in functions_data.items():
+            if len(function_data) == 0:
                 continue
-            else:
-                versions.append((blob_version, commit))
-        return versions
-    
+            function = Function(file_=file_, name=function_name)
+            functions.append(function)
+            last_version = None
+            for data in function_data:
+                last_version = Version(
+                    function=function,
+                    last_version=last_version,
+                    commit=data["commit"],
+                    date=data["date"],
+                    code=data["code"],
+                    docstring=data["docstring"],
+                    code_updated=data["code_updated"],
+                    docstring_updated=data["docstring_updated"],
+                    code_similarity=data["code_similarity"],
+                    docstring_similarity=data["docstring_similarity"]
+                )
+                versions.append(last_version)
+
+        Function.bulk_create(functions)
+        Version.bulk_create(versions)
+
+    def _is_trivial_function(self, node):
+        # Filter out any docstrings at the start of the body
+        body = node.body
+        if body and isinstance(body[0], ast.Expr) and isinstance(body[0].value, ast.Str):
+            body = body[1:]
+
+        # Now check if the remaining body contains only `pass` or `...`
+        if len(body) == 1 and isinstance(body[0], (ast.Pass, ast.Expr)):
+            if isinstance(body[0], ast.Pass):
+                return True
+            if isinstance(body[0], ast.Expr) and isinstance(body[0].value, ast.Constant) and body[0].value.value is Ellipsis:
+                return True
+        return False
+
 
 if __name__ == "__main__":
-    scraper = RepoScraper()
-    examples = scraper.scrape()
-
-    df = pd.DataFrame(columns=[
-        "repo_index",
-        "file_path",
-        "functions",
-        "code_similarity",
-        "docstring_similarity",
-        "commit",
-        "date",
-        "code",
-        "docstring",
-        "code_updated",
-        "docstring_updated",
-    ])
-
-    for example in examples:
-        for function in example.functions:
-            df.append({
-                "repo_index": example.repo_index,
-                "file_path": example.file_path,
-                "functions": example.functions,
-                "code_similarity": function.code_similarity,
-                "docstring_similarity": function.docstring_similarity,
-                "commit": function.commit,
-                "date": function.date,
-                "code": function.code,
-                "docstring": function.docstring,
-                "code_updated": function.code_updated,
-                "docstring_updated": function.docstring_updated
-            })
+    db = peewee.SqliteDatabase(DB_PATH)
+    db.connect()
+    db.drop_tables([Repository, File, Function, Version], safe=True)
+    db.create_tables([Repository, File, Function, Version])
+    db.close()
     
-    with lzma.open("examples.pkl.lzma", 'wb') as file:
-        pickle.dump(df, file)
+    scraper = RepoScraper()
+    scraper.scrape()
+    
