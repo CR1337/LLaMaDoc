@@ -112,7 +112,7 @@ class RepoScraper:
 
         try:
             repo_object = git.Repo.clone_from(
-                f"git@github.com:{repo_data['full_name']}.git", local_directory, bare=True
+                repo_data["html_url"] + ".git", local_directory, bare=True
             )
             head = repo_object.heads[0]
 
