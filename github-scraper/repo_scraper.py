@@ -14,6 +14,7 @@ import traceback
 import sys 
 from uuid import uuid4
 import os
+from playhouse.pool import PooledSqliteDatabase
 
 
 DB_PATH: str = "examples.db"
