@@ -103,7 +103,7 @@ class RepoScraper:
         delay = 1
         while True:
             try:
-                with BaseModel.database.atomic():
+                with BaseModel._meta.database.atomic():
                     repo = Repository.create(
                         full_name=repo_data["full_name"],
                         size=repo_data["size"],
@@ -135,7 +135,7 @@ class RepoScraper:
             delay = 1
             while True:
                 try:
-                    with BaseModel.database.atomic():
+                    with BaseModel._meta.database.atomic():
                         File.bulk_create(files)
                     break
                 except peewee.OperationalError:
@@ -294,7 +294,7 @@ class RepoScraper:
         delay = 1
         while True:
             try:    
-                with BaseModel.database.atomic():
+                with BaseModel._meta.database.atomic():
                     Function.bulk_create(functions)
                     Version.bulk_create(versions)
                 break
