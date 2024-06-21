@@ -115,7 +115,7 @@ class RepoScraper:
                         stars=repo_data["stargazers_count"],
                     )
                 break
-            except peewee.OperationError:
+            except peewee.OperationalError:
                 time.sleep(delay)
                 delay *= random() + 1
         
