@@ -86,7 +86,7 @@ class RepoScraper:
     def scrape(self):
         with open(self.METADATA_PATH, "r") as file:
             repository_data = json.load(file)
-        with ProcessPoolExecutor(cpu_count() - 1)  as executor:
+        with ProcessPoolExecutor(cpu_count() // 2)  as executor:
             futures = [
                 executor.submit(self._scrape_repository, repo_data, index)
                 for index, repo_data in enumerate(repository_data)
