@@ -15,6 +15,8 @@ import sys
 from uuid import uuid4
 import os
 from playhouse.pool import PooledSqliteDatabase
+import time
+from random import random
 
 
 DB_PATH: str = "examples.db"
@@ -98,16 +100,24 @@ class RepoScraper:
     def _scrape_repository(self, repo_data: Dict[str, Any], index: int):
         contributors = repo_data.get("contributors", [])
 
-        repo = Repository.create(
-            full_name=repo_data["full_name"],
-            size=repo_data["size"],
-            open_issues=repo_data["open_issues"],
-            watchers=repo_data["watchers"],
-            contributors=len(contributors),
-            forks=repo_data["forks"],
-            contributions=sum(contributor["contributions"] for contributor in contributors),
-            stars=repo_data["stargazers_count"],
-        )
+        delay = 1
+        while True:
+            try:
+                with BaseModel.database.atomic():
+                    repo = Repository.create(
+                        full_name=repo_data["full_name"],
+                        size=repo_data["size"],
+                        open_issues=repo_data["open_issues"],
+                        watchers=repo_data["watchers"],
+                        contributors=len(contributors),
+                        forks=repo_data["forks"],
+                        contributions=sum(contributor["contributions"] for contributor in contributors),
+                        stars=repo_data["stargazers_count"],
+                    )
+                break
+            except peewee.OperationError:
+                time.sleep(delay)
+                delay *= random() + 1
         
         local_directory = os.path.join(self.CLONE_PATH, repo.full_name.replace("/", "_"))
 
@@ -122,7 +132,15 @@ class RepoScraper:
                 File(repo=repo, path=blob.path)
                 for blob in py_blobs
             ]
-            File.bulk_create(files)
+            delay = 1
+            while True:
+                try:
+                    with BaseModel.database.atomic():
+                        File.bulk_create(files)
+                    break
+                except peewee.OperationalError:
+                    time.sleep(delay)
+                    delay *= random() + 1
 
             py_blob_versions = (
                 self._find_all_blob_versions(blob, repo_object, head)
@@ -273,8 +291,16 @@ class RepoScraper:
                 )
                 versions.append(last_version)
 
-        Function.bulk_create(functions)
-        Version.bulk_create(versions)
+        delay = 1
+        while True:
+            try:    
+                with BaseModel.database.atomic():
+                    Function.bulk_create(functions)
+                    Version.bulk_create(versions)
+                break
+            except peewee.OperationalError:
+                time.sleep(delay)
+                delay *= random() + 1
 
     def _is_trivial_function(self, node):
         # Filter out any docstrings at the start of the body
