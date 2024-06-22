@@ -53,7 +53,7 @@ class RepoScraper:
         with ProcessPoolExecutor(cpu_count() // 2 + 1)  as executor:
             futures = [
                 executor.submit(self._scrape_repository, repo_data, lock)
-                for repo_data in repository_data[:3]
+                for repo_data in repository_data
             ]
             for future in list(tqdm(as_completed(futures), total=len(repository_data), desc="Scraping repositories")):
                 future.result()

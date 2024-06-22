@@ -1,3 +1,3 @@
 #!/bin/sh
 
-docker run --name github-scraper-db -d -p 5432:5432 github-scraper-db
+docker run --rm -d --name github-scraper-db -p 5432:5432 -v ./db/postgres-data:/var/lib/postgresql/data github-scraper-db
