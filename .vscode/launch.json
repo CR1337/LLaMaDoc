@@ -20,6 +20,25 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}/github-scraper"
+        },
+        {
+            "name": "Run Server",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "server.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/llm-server",
+            "env": {
+                "PYDEVD_WARN_EVALUATION_TIMEOUT": "500"
+            }
+        },
+        {
+            "name": "Run Extension",
+            "type": "extensionHost",
+            "request": "launch",
+            "args": [
+                "--extensionDevelopmentPath=${workspaceFolder}/llamadoc"
+            ]
         }
-	]
+    ]
 }

@@ -3,6 +3,7 @@ import json
 import sys
 from dataclasses import dataclass
 from typing import List, Dict, Any
+from llm_interface.llm_interface import LlmInterface
 
 
 @dataclass
@@ -62,7 +63,7 @@ def extract_functions(full_code: List[str]) -> List[Function]:
             docstring_end_line = None
             one_delimiter_found = False
             delimiter = None
-            for i, line in enumerate(full_code):
+            for i, line in enumerate(full_code[start_line-1:end_line]):
                 if not delimiter:
                     if '"""' in line:
                         delimiter = '"""'
@@ -72,15 +73,15 @@ def extract_functions(full_code: List[str]) -> List[Function]:
                         continue
                 delimiter_count = line.count(delimiter)
                 if delimiter_count == 2:
-                    docstring_start_line = i+1
-                    docstring_end_line = i+1
+                    docstring_start_line = i + start_line
+                    docstring_end_line = i + start_line
                     break
                 if delimiter_count == 1:
                     if one_delimiter_found:
-                        docstring_end_line = i+1
+                        docstring_end_line = i + start_line
                         break
                     else:
-                        docstring_start_line = i+1
+                        docstring_start_line = i + start_line
                         one_delimiter_found = True
 
             code = "".join(full_code[start_line-1:end_line])
@@ -110,14 +111,32 @@ def check_out_of_date(functions: List[Function]) -> List[Function]:
     Returns:
         List[Function]: The updated list of Function objects.
     """
-    for i in range(len(functions)):
-        if not functions[i].has_docstring:
-            continue
-        if i % 2 == 0:
-            functions[i].up_to_date = True
-        else:
-            functions[i].up_to_date = False
+
+    # TODO: connect to backend
+
+    # --- comment this out to connect to the backend ---
+    # for i in range(len(functions)):
+    #     if not functions[i].has_docstring:
+    #         continue
+    #     if i % 2 == 0:
+    #         functions[i].up_to_date = True
+    #     else:
+    #         functions[i].up_to_date = False
+    # return functions
+    # ---------------------------------------------------
+
+    # --- uncomment this to connect to the backend ---
+    codes = [function.code for function in functions if function.has_docstring]
+    docstrings = [function.docstring for function in functions if function.has_docstring]
+    function_indices = [i for i, function in enumerate(functions) if function.has_docstring]
+
+    results = LlmInterface().check(codes, docstrings)
+
+    for i, result in zip(function_indices, results):
+        functions[i].up_to_date = not result[0]
+
     return functions
+    # ---------------------------------------------------
 
 
 def main():
@@ -129,7 +148,13 @@ def main():
         print(f"File {filename} not found", file=sys.stderr)
         sys.exit(1)
 
+    code = [line.replace('\r', '') for line in code]
+
     functions = extract_functions(code)
+
+    # with open("D:\\Programming\\find.txt", "w") as f:
+    #     f.write("\n".join([funk.code for funk in functions]))
+
     functions = check_out_of_date(functions)
 
     functions_dicts = [function.to_dict() for function in functions]
