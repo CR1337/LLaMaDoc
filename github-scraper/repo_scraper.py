@@ -75,6 +75,28 @@ class Version(BaseModel):
     docstring_similarity = peewee.FloatField(null=True)
 
 
+class RandomExponentialBackoff:
+
+    def __init__(self, func, *args, **kwargs):
+        self.func = func
+        self.args = args
+        self.kwargs = kwargs
+        self.delay = 1
+        self.result = None
+
+    def __enter__(self):
+        while True:
+            try:
+                self.result = self.func(*self.args, **self.kwargs)
+                return self
+            except peewee.OperationalError:
+                time.sleep(self.delay)
+                self.delay *= random() + 1
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        return False
+
+
 class RepoScraper:
 
     METADATA_PATH: str = "repositories.json"
@@ -100,24 +122,18 @@ class RepoScraper:
     def _scrape_repository(self, repo_data: Dict[str, Any], index: int):
         contributors = repo_data.get("contributors", [])
 
-        delay = 1
-        while True:
-            try:
-                with BaseModel._meta.database.atomic():
-                    repo = Repository.create(
-                        full_name=repo_data["full_name"],
-                        size=repo_data["size"],
-                        open_issues=repo_data["open_issues"],
-                        watchers=repo_data["watchers"],
-                        contributors=len(contributors),
-                        forks=repo_data["forks"],
-                        contributions=sum(contributor["contributions"] for contributor in contributors),
-                        stars=repo_data["stargazers_count"],
-                    )
-                break
-            except peewee.OperationalError:
-                time.sleep(delay)
-                delay *= random() + 1
+        with RandomExponentialBackoff(
+            Repository.create,
+            full_name=repo_data["full_name"],
+            size=repo_data["size"],
+            open_issues=repo_data["open_issues"],
+            watchers=repo_data["watchers"],
+            contributors=len(contributors),
+            forks=repo_data["forks"],
+            contributions=sum(contributor["contributions"] for contributor in contributors),
+            stars=repo_data["stargazers_count"],
+        ) as backoff:
+            repo = backoff.result
         
         local_directory = os.path.join(self.CLONE_PATH, repo.full_name.replace("/", "_"))
 
@@ -127,20 +143,18 @@ class RepoScraper:
             )
             head = repo_object.heads[0]
 
-            py_blobs: List[git.Blob] = self._find_all_py_blobs(head)
+            py_blobs = self._find_all_py_blobs(head)
             files = [
                 File(repo=repo, path=blob.path)
                 for blob in py_blobs
             ]
-            delay = 1
-            while True:
-                try:
-                    with BaseModel._meta.database.atomic():
-                        File.bulk_create(files)
-                    break
-                except peewee.OperationalError:
-                    time.sleep(delay)
-                    delay *= random() + 1
+
+            def bulk_create():
+                with BaseModel._meta.database.atomic():
+                    File.bulk_create(files)
+
+            with RandomExponentialBackoff(bulk_create):
+                pass
 
             py_blob_versions = (
                 self._find_all_blob_versions(blob, repo_object, head)
@@ -203,7 +217,7 @@ class RepoScraper:
 
             try:
                 tree = ast.parse("\n".join(full_code_lines))
-            except (SyntaxError, IndentationError):
+            except (SyntaxError, IndentationError, ValueError):
                 continue
 
 
@@ -231,10 +245,10 @@ class RepoScraper:
                 docstring_delimiter = '"""' if '"""' in function_code else "'''"
                 try:
                     docstring_start = function_code.index(docstring_delimiter)
+                    docstring_end = function_code[docstring_start+1:].index(docstring_delimiter)
+                    function_code = function_code[:docstring_start] + function_code[docstring_start+1+docstring_end+3:]
                 except ValueError:
                     continue
-                docstring_end = function_code[docstring_start+1:].index(docstring_delimiter)
-                function_code = function_code[:docstring_start] + function_code[docstring_start+1+docstring_end+3:]
 
                 if function_name in functions_data:
                     last_function_code = functions_data[function_name][-1]["code"]
@@ -268,16 +282,14 @@ class RepoScraper:
                     "docstring_updated": docstring_updated
                 })
 
-        functions = []
-        versions = []
+        functions, versions = [], []
         for function_name, function_data in functions_data.items():
             if len(function_data) == 0:
                 continue
-            function = Function(file_=file_, name=function_name)
-            functions.append(function)
+            functions.append(function := Function(file_=file_, name=function_name))
             last_version = None
             for data in function_data:
-                last_version = Version(
+                versions.append(last_version := Version(
                     function=function,
                     last_version=last_version,
                     commit=data["commit"],
@@ -288,20 +300,21 @@ class RepoScraper:
                     docstring_updated=data["docstring_updated"],
                     code_similarity=data["code_similarity"],
                     docstring_similarity=data["docstring_similarity"]
-                )
-                versions.append(last_version)
+                ))
 
-        delay = 1
-        while True:
-            try:    
-                with BaseModel._meta.database.atomic():
-                    Function.bulk_create(functions)
-                    Version.bulk_create(versions)
-                break
-            except peewee.OperationalError:
-                time.sleep(delay)
-                delay *= random() + 1
+        def bulk_create():
+            with BaseModel._meta.database.atomic():
+                Function.bulk_create(functions)
+                Version.bulk_create(versions)
 
+        try:
+            with RandomExponentialBackoff(bulk_create):                             
+                pass
+        except UnicodeEncodeError:
+            # We could check for not encodable characters and remove them, but it's not worth the effort.
+            # Better to just skip the file and move on to the next one.
+            pass
+            
     def _is_trivial_function(self, node):
         # Filter out any docstrings at the start of the body
         body = node.body
@@ -309,12 +322,13 @@ class RepoScraper:
             body = body[1:]
 
         # Now check if the remaining body contains only `pass` or `...`
-        if len(body) == 1 and isinstance(body[0], (ast.Pass, ast.Expr)):
-            if isinstance(body[0], ast.Pass):
-                return True
-            if isinstance(body[0], ast.Expr) and isinstance(body[0].value, ast.Constant) and body[0].value.value is Ellipsis:
-                return True
-        return False
+        return len(body) == 1 and (
+            isinstance(body[0], ast.Pass) or
+            (isinstance(body[0], ast.Expr) 
+                and isinstance(body[0].value, ast.Constant) 
+                and body[0].value.value is Ellipsis)
+        )
+
 
 
 if __name__ == "__main__":
