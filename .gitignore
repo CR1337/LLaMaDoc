@@ -1,10 +1,10 @@
+**/__pycache__
 **/node_modules
 **/.venv
-**/auth.token
-github-scraper/extracted-py-files
-github-scraper/filtered_repositories.json
+**/github-auth.token
 github-scraper/repositories.json
-github-scraper/cloned_repositories
+github-scraper/cloned_repos
 llm-server/huggingface-token
 llm-server/not-on-server
-**/__pycache__
+**.db
+**.db-journal
