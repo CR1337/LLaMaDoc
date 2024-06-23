@@ -11,7 +11,6 @@ ENV POSTGRES_DB=postgres
 
 RUN usermod -u 5110 postgres
 RUN chown -R postgres:postgres /var/lib/postgresql/data
-USER postgres
 
 EXPOSE 5432:5432
 
