@@ -1,6 +1,11 @@
 FROM postgres:16.2-alpine3.19
 
 # VOLUME /var/lib/postgresql/data:./postgres-data
+USER root
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    passwd \
+    && rm -rf /var/lib/apt/lists/*
 
 ENV POSTGRES_USER=postgres
 ENV POSTGRES_PASSWORD=postgres
