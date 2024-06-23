@@ -8,3 +8,4 @@ llm-server/huggingface-token
 llm-server/not-on-server
 **.db
 **.db-journal
+github-scraper/data

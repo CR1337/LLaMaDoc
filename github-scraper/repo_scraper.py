@@ -8,32 +8,12 @@ import datetime
 import ast
 from difflib import SequenceMatcher
 import shutil
-import peewee
 from tqdm import tqdm
 import traceback
 import sys 
 import os
-from db_model import BaseModel, Repository, File, Function, Version, db
+from model import Repository, File, Function, Version
 import multiprocessing
-
-
-class DbLock:
-
-    def __init__(self, func, lock: multiprocessing.Lock, *args, **kwargs):
-        self.func = func
-        self.args = args
-        self.kwargs = kwargs
-        self.lock = lock
-        self.result = None
-
-    def __enter__(self):
-        self.lock.acquire()
-        self.result = self.func(*self.args, **self.kwargs)
-        self.lock.release()
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        return False
 
 
 class RepoScraper:
@@ -47,13 +27,18 @@ class RepoScraper:
         shutil.rmtree(self.CLONE_PATH, ignore_errors=True)
 
     def scrape(self):
+        Repository.initialize()
+        File.initialize()
+        Function.initialize()
+        Version.initialize()
+
         with open(self.METADATA_PATH, "r") as file:
             repository_data = json.load(file)
         lock = multiprocessing.Manager().Lock()
         with ProcessPoolExecutor(cpu_count() // 2 + 1)  as executor:
             futures = [
                 executor.submit(self._scrape_repository, repo_data, lock)
-                for repo_data in repository_data
+                for repo_data in repository_data[:3]
             ]
             for future in list(tqdm(as_completed(futures), total=len(repository_data), desc="Scraping repositories")):
                 future.result()
@@ -61,9 +46,7 @@ class RepoScraper:
     def _scrape_repository(self, repo_data: Dict[str, Any], lock: multiprocessing.Lock):
         contributors = repo_data.get("contributors", [])
 
-        with DbLock(
-            Repository.create,
-            lock,
+        repo = Repository.create(
             full_name=repo_data["full_name"],
             size=repo_data["size"],
             open_issues=repo_data["open_issues"],
@@ -71,9 +54,8 @@ class RepoScraper:
             contributors=len(contributors),
             forks=repo_data["forks"],
             contributions=sum(contributor["contributions"] for contributor in contributors),
-            stars=repo_data["stargazers_count"],
-        ) as backoff:
-            repo = backoff.result
+            stars=repo_data["stargazers_count"]
+        )
         
         local_directory = os.path.join(self.CLONE_PATH, repo.full_name.replace("/", "_"))
 
@@ -84,17 +66,10 @@ class RepoScraper:
             head = repo_object.heads[0]
 
             py_blobs = self._find_all_py_blobs(head)
-            files = [
-                File(repo=repo, path=blob.path)
+            files = File.bulk_create([
+                File(repo=repo.id, path=blob.path)
                 for blob in py_blobs
-            ]
-
-            def bulk_create():
-                with BaseModel._meta.database.atomic():
-                    File.bulk_create(files)
-
-            with DbLock(bulk_create, lock):
-                pass
+            ])
 
             py_blob_versions = (
                 self._find_all_blob_versions(blob, repo_object, head)
@@ -214,7 +189,7 @@ class RepoScraper:
                 functions_data[function_name].append({
                     "code_similarity": code_similarity,
                     "docstring_similarity": docstring_similarity,
-                    "commit": commit,
+                    "commit": commit.name_rev.split(" ")[0],
                     "date": date,
                     "code": function_code,
                     "docstring": docstring,
@@ -226,12 +201,16 @@ class RepoScraper:
         for function_name, function_data in functions_data.items():
             if len(function_data) == 0:
                 continue
-            functions.append(function := Function(file_=file_, name=function_name))
+            functions.append(function := Function(file=file_.id, name=function_name))
             last_version = None
             for data in function_data:
+                if last_version is not None:
+                    last_version_id = last_version.id
+                else:
+                    last_version_id = None
                 versions.append(last_version := Version(
-                    function=function,
-                    last_version=last_version,
+                    function=function.id,
+                    last_version=last_version_id,
                     commit=data["commit"],
                     date=data["date"],
                     code=data["code"],
@@ -242,14 +221,9 @@ class RepoScraper:
                     docstring_similarity=data["docstring_similarity"]
                 ))
 
-        def bulk_create():
-            with BaseModel._meta.database.atomic():
-                Function.bulk_create(functions)
-                Version.bulk_create(versions)
-
         try:
-            with DbLock(bulk_create, lock):                             
-                pass
+            Function.bulk_create(functions)
+            Version.bulk_create(versions)
         except UnicodeEncodeError:
             # We could check for not encodable characters and remove them, but it's not worth the effort.
             # Better to just skip the file and move on to the next one.
@@ -272,11 +246,6 @@ class RepoScraper:
 
 
 if __name__ == "__main__":
-    db.connect()
-    db.drop_tables([Repository, File, Function, Version], safe=True)
-    db.create_tables([Repository, File, Function, Version])
-    db.close()
-    
     scraper = RepoScraper()
     scraper.scrape()
     
