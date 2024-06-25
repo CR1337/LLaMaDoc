@@ -112,6 +112,7 @@ class LlmInterface:
                 mid=emb_mid,
                 distance_function=DistanceFunction.EUCLIDEAN,
                 normalize=True,
+                sample_many=False,
                 generation_parameters=GenerationParameters(
                     max_length=512,
                     sample_method="greedy"
@@ -149,6 +150,7 @@ class LlmInterface:
                 mid=emb_mid,
                 distance_function=DistanceFunction.EUCLIDEAN,
                 normalize=True,
+                sample_many=False,
                 generation_parameters=GenerationParameters(
                     max_length=512,
                     sample_method="greedy"

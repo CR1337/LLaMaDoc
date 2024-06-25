@@ -263,6 +263,7 @@ class DistanceTestParameters(TestParameters):
     mid: str
     distance_function: DistanceFunction
     normalize: bool
+    sample_many: bool
 
 
 class UpdateTestParameters(TestParameters):

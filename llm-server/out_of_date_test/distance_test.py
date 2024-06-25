@@ -8,6 +8,8 @@ from out_of_date_test.model_provider import device_name
 
 class DistanceTest(OutOfDateTest):
 
+    N_SAMPLES: int = 8
+
     def test(
         self, 
         codes: List[str],
@@ -15,6 +17,12 @@ class DistanceTest(OutOfDateTest):
         parameters: DistanceTestParameters
     ) -> List[TestResult]:
         assert len(codes) == len(docstrings)
+
+        n_codes = len(codes)
+        n_samples = self.N_SAMPLES if parameters.sample_many else 1
+
+        codes = [code for code in codes for _ in range(n_samples)]
+        docstrings = [docstring for docstring in docstrings for _ in range(n_samples)]
 
         prompts = self._build_prompts(codes)
         updated_docstrings = self._get_updated_docstrings(prompts, parameters.generation_parameters)
@@ -32,6 +40,13 @@ class DistanceTest(OutOfDateTest):
         if parameters.distance_function == DistanceFunction.EUCLIDEAN:
             docstring_similarities = -docstring_similarities
             updated_docstring_similarities = -updated_docstring_similarities
+
+        if parameters.sample_many:
+            docstring_similarities = docstring_similarities.reshape(n_codes, n_samples)
+            docstring_similarities = torch.median(docstring_similarities, dim=1).values
+
+            updated_docstring_similarities = updated_docstring_similarities.reshape(n_codes, n_samples)
+            updated_docstring_similarities = torch.median(updated_docstring_similarities, dim=1).values
 
         ratios = torch.div(docstring_similarities, updated_docstring_similarities)
         results = [(ratio <= parameters.test_threshold).item() for ratio in ratios]
