@@ -98,12 +98,17 @@ class PredictionTest(OutOfDateTest):
             (1.0 - clamp(weight_decay, epsilon, 1.0 - epsilon)) * pi / 2
         )
 
-        return self._compute_weighted_geometric_means(
+        result = self._compute_weighted_geometric_means(
             last_docstring_token_probabilities,
             last_token_ids,
             decay_exponent,
             frequency_importance
         )
+
+        del probability_distributions, last_token_probability_distributions, last_docstring_token_probabilities
+        torch.cuda.empty_cache()
+
+        return result
     
     def _append_eos_to_docstrings(self, docstrings: List[str]) -> List[str]:
         return [
@@ -157,6 +162,9 @@ class PredictionTest(OutOfDateTest):
             # Stack sequences and masks for the current prompt-docstring pair
             all_sequences.append(torch.stack(sequences))
             attention_masks.append(torch.stack(masks))
+        
+        del combined, padded_combined, sequences, masks
+        torch.cuda.empty_cache()
 
         return torch.stack(all_sequences), torch.stack(attention_masks)
     
@@ -176,6 +184,10 @@ class PredictionTest(OutOfDateTest):
         ).logits.double()
         # logits = None
         probabilities = torch.softmax(logits, dim=-1)
+
+        del input_tensor, attention_masks, logits
+        torch.cuda.empty_cache()
+
         return probabilities.view(n_batches, n_sequences, n_tokens, -1)
 
     def _get_last_token_probability_distributions(
@@ -239,6 +251,9 @@ class PredictionTest(OutOfDateTest):
             # Calculate the weighted geometric mean
             weighted_geom_mean = torch.exp(weighted_log_sum / weights.sum())
             weighted_geom_means.append(float(weighted_geom_mean))
+
+        del weights, log_probs, weighted_log_probs, weighted_log_sum, weighted_geom_mean
+        torch.cuda.empty_cache()
     
         return weighted_geom_means
     
@@ -264,4 +279,8 @@ class PredictionTest(OutOfDateTest):
         )
         weights = decay_weights * frequency_weights
         weights /= weights.sum()
+
+        del frequencies, x, decay_weights, frequency_weights
+        torch.cuda.empty_cache()
+
         return weights
