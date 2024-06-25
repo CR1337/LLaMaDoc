@@ -9,3 +9,5 @@ llm-server/not-on-server
 **.db
 **.db-journal
 github-scraper/data
+github-scraper/*.pkl
+github-scraper/*.json

@@ -24,6 +24,11 @@ class BaseModel:
         cls.FILE_LOCK = Lock()
 
     @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> BaseModel:
+        instance = cls(**d)
+        return instance
+        
+    @classmethod
     def create(cls, *args, **kwargs) -> BaseModel:
         instance = cls(*args, **kwargs)
         with cls.FILE_LOCK:
@@ -43,8 +48,11 @@ class BaseModel:
 
     id: int
 
-    def __init__(self):
-        self.id = uuid4().int
+    def __init__(self, id: int):
+        if id is None:
+            self.id = uuid4().int
+        else:
+            self.id = id
 
     def dict(self) -> Dict[str, Any]:
         return {"id": self.id}
@@ -72,9 +80,10 @@ class Repository(BaseModel):
         contributors: int, 
         forks: int, 
         contributions: int, 
-        stars: int
+        stars: int, 
+        id: int = None
     ):
-        super().__init__()
+        super().__init__(id)
         self.full_name = full_name
         self.size = size
         self.open_issues = open_issues
@@ -105,8 +114,8 @@ class File(BaseModel):
     path: str
     repo: int
 
-    def __init__(self, path: str, repo: int):
-        super().__init__()
+    def __init__(self, path: str, repo: int, id: int = None):
+        super().__init__(id)
         self.path = path
         self.repo = repo
 
@@ -125,8 +134,8 @@ class Function(BaseModel):
     name: str
     file: int
 
-    def __init__(self, name: str, file: int):
-        super().__init__()
+    def __init__(self, name: str, file: int, id: int = None):
+        super().__init__(id)
         self.name = name
         self.file = file
 
@@ -164,9 +173,10 @@ class Version(BaseModel):
         code_similarity: float | None,
         docstring_similarity: float | None,
         function: int,
-        last_version: int | None
+        last_version: int | None, 
+        id: int = None
     ):
-        super().__init__()
+        super().__init__(id)
         self.commit = commit
         self.date = date
         self.code = code
