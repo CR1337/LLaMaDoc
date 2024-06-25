@@ -1,7 +1,7 @@
 from fastapi import FastAPI, status
 from fastapi.responses import Response
 
-from out_of_date_test.model import TestQuery, TestResponse, TestMethod, PredictionTestParameters, DistanceTestParameters, NoneTestParameters, UpdateTestParameters
+from out_of_date_test.model import TestQuery, TestResponse, TestMethod, PredictionTestParameters, DistanceTestParameters, UpdateTestParameters
 from out_of_date_test.model_provider import ModelProvider
 from out_of_date_test.prediction_test import PredictionTest
 from out_of_date_test.distance_test import DistanceTest
@@ -58,7 +58,7 @@ async def check(query: TestQuery) -> TestResponse:
         )
     elif query.test_method == TestMethod.UPDATE:
         test = NoneTest(query.mid)
-        parameters = NoneTestParameters(
+        parameters = UpdateTestParameters(
             generation_parameters=query.test_parameters.generation_parameters
         )
     
