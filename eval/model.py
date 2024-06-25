@@ -284,10 +284,6 @@ class TestQuery(BaseModel):
     def validate_test_query(self):
         if len(self.codes) != len(self.docstrings):
             raise ValueError("The number of codes and docstrings must be equal.")
-        if self.test_method == TestMethod.PREDICTION and not isinstance(self.test_parameters, PredictionTestParameters):
-            raise ValueError("The test_parameters must be of type PredictionTestParameters for the prediction_based test method.")
-        elif self.test_method == TestMethod.DISTANCE and not isinstance(self.test_parameters, DistanceTestParameters):
-            raise ValueError("The test_parameters must be of type DistanceTestParameters for the distance_based test method.")
         return self
         
 
