@@ -44,6 +44,12 @@ class ModelProvider:
 
     @classmethod
     def get_generative_model(cls, model_id: str) -> Tuple[AutoModelForCausalLM, PreTrainedTokenizer]:
+
+        import subprocess
+        process = subprocess.Popen(["nvidia-smi"], stdout=subprocess.PIPE)
+        output = process.communicate()[0]
+        print(output.decode())
+
         if cls._loaded_generative_models[model_id] is None:
             cls._loaded_generative_models[model_id] = (
                 AutoModelForCausalLM.from_pretrained(
