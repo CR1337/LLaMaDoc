@@ -1,7 +1,7 @@
 from fastapi import FastAPI, status
 from fastapi.responses import Response
 
-from out_of_date_test.model import TestQuery, TestResponse, TestMethod, PredictionTestParameters, DistanceTestParameters, UpdateTestParameters
+from out_of_date_test.model import TestQuery, TestResponse, TestMethod, PredictionTestParameters, DistanceTestParameters, NoneTestParameters
 from out_of_date_test.model_provider import ModelProvider
 from out_of_date_test.prediction_test import PredictionTest
 from out_of_date_test.distance_test import DistanceTest
@@ -52,13 +52,14 @@ async def check(query: TestQuery) -> TestResponse:
         parameters = DistanceTestParameters(
             generation_parameters=query.test_parameters.generation_parameters,
             test_threshold=query.test_parameters.test_threshold,
+            mid=query.test_parameters.mid,
             distance_function=query.test_parameters.distance_function,
             normalize=query.test_parameters.normalize,
             sample_many=query.test_parameters.sample_many
         )
     elif query.test_method == TestMethod.UPDATE:
         test = NoneTest(query.mid)
-        parameters = UpdateTestParameters(
+        parameters = NoneTestParameters(
             generation_parameters=query.test_parameters.generation_parameters
         )
     

@@ -9,10 +9,12 @@ from sentence_transformers import SentenceTransformer
 
 on_server: bool = not os.path.exists("not-on-server")
 if on_server:
+    print("ON SERVER")
     device_name: str = "cuda:0"
     device: torch.device = torch.device(device_name)
     device_type: str = "gpu"
 else:
+    print("NOT ON SERVER")
     device_name: str = "cpu"
     device: torch.device = torch.device(device_name)
     device_type: str = "cpu"

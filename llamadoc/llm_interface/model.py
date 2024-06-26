@@ -2,7 +2,6 @@ from __future__ import annotations
 from pydantic import BaseModel, TypeAdapter, model_validator, field_validator
 from typing import Any, Dict, List, Optional, Tuple, Union
 from enum import Enum
-from abc import ABC
 
 class DeserializationMixin:
 
@@ -228,7 +227,7 @@ class GenerationParameters(BaseModel):
         return generation_parameters
 
 
-class TestParameters(BaseModel, ABC):
+class TestParameters(BaseModel):
     generation_parameters: GenerationParameters
     test_threshold: Optional[float] = 1.0
 
@@ -266,11 +265,11 @@ class DistanceTestParameters(TestParameters):
     sample_many: bool
 
 
-class UpdateTestParameters(TestParameters):
+class NoneTestParameters(TestParameters):
     pass
 
 
-TestParametersType = Union[PredictionTestParameters, DistanceTestParameters, UpdateTestParameters]
+TestParametersType = Union[PredictionTestParameters, DistanceTestParameters, NoneTestParameters]
 
 
 class TestQuery(BaseModel):
