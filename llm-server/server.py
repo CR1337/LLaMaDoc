@@ -1,5 +1,8 @@
 from fastapi import FastAPI, status
-from fastapi.responses import Response
+from fastapi.responses import Response, PlainTextResponse
+
+import torch
+import gc
 
 from out_of_date_test.model import TestQuery, TestResponse, TestMethod, PredictionTestParameters, DistanceTestParameters, NoneTestParameters
 from out_of_date_test.model_provider import ModelProvider
@@ -39,31 +42,46 @@ async def check(query: TestQuery) -> TestResponse:
     if query.mid not in ModelProvider.generative_model_ids:
         return Response(status_code=status.HTTP_404_NOT_FOUND)
     
-    if query.test_method == TestMethod.PREDICTION:
-        test = PredictionTest(query.mid)
-        parameters = PredictionTestParameters(
-            generation_parameters=query.test_parameters.generation_parameters,
-            test_threshold=query.test_parameters.test_threshold,
-            weight_decay=query.test_parameters.weight_decay,
-            frequency_importance=query.test_parameters.frequency_importance
-        )
-    elif query.test_method == TestMethod.DISTANCE:
-        test = DistanceTest(query.mid)
-        parameters = DistanceTestParameters(
-            generation_parameters=query.test_parameters.generation_parameters,
-            test_threshold=query.test_parameters.test_threshold,
-            mid=query.test_parameters.mid,
-            distance_function=query.test_parameters.distance_function,
-            normalize=query.test_parameters.normalize,
-            sample_many=query.test_parameters.sample_many
-        )
-    elif query.test_method == TestMethod.UPDATE:
-        test = NoneTest(query.mid)
-        parameters = NoneTestParameters(
-            generation_parameters=query.test_parameters.generation_parameters
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+    
+    try:
+        if query.test_method == TestMethod.PREDICTION:
+            test = PredictionTest(query.mid)
+            parameters = PredictionTestParameters(
+                generation_parameters=query.test_parameters.generation_parameters,
+                test_threshold=query.test_parameters.test_threshold,
+                weight_decay=query.test_parameters.weight_decay,
+                frequency_importance=query.test_parameters.frequency_importance
+            )
+        elif query.test_method == TestMethod.DISTANCE:
+            test = DistanceTest(query.mid)
+            parameters = DistanceTestParameters(
+                generation_parameters=query.test_parameters.generation_parameters,
+                test_threshold=query.test_parameters.test_threshold,
+                mid=query.test_parameters.mid,
+                distance_function=query.test_parameters.distance_function,
+                normalize=query.test_parameters.normalize,
+                sample_many=query.test_parameters.sample_many
+            )
+        elif query.test_method == TestMethod.UPDATE:
+            test = NoneTest(query.mid)
+            parameters = NoneTestParameters(
+                generation_parameters=query.test_parameters.generation_parameters
+            )
+
+        results = test.test(query.codes, query.docstrings, parameters)
+    except torch.cuda.OutOfMemoryError:
+        return PlainTextResponse(
+            content=torch.cuda.memory_summary(device=None, abbreviated=False),
+            status_code=status.HTTP_507_INSUFFICIENT_STORAGE
         )
     
-    results = test.test(query.codes, query.docstrings, parameters)
+    del test
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+
     return TestResponse(results=results)
 
 
