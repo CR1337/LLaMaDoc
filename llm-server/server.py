@@ -72,8 +72,10 @@ async def check(query: TestQuery) -> TestResponse:
 
         results = test.test(query.codes, query.docstrings, parameters)
     except torch.cuda.OutOfMemoryError:
+        mem_summary = torch.cuda.memory_summary(device=None, abbreviated=False)
+        print(mem_summary)
         return PlainTextResponse(
-            content=torch.cuda.memory_summary(device=None, abbreviated=False),
+            content=mem_summary,
             status_code=status.HTTP_507_INSUFFICIENT_STORAGE
         )
     
