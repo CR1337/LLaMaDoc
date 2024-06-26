@@ -4,6 +4,8 @@ from fastapi.responses import Response, PlainTextResponse
 import torch
 import gc
 
+from out_of_date_test.gpu_memory import gpu_memory_summary
+
 from out_of_date_test.model import TestQuery, TestResponse, TestMethod, PredictionTestParameters, DistanceTestParameters, NoneTestParameters
 from out_of_date_test.model_provider import ModelProvider
 from out_of_date_test.prediction_test import PredictionTest
@@ -44,6 +46,10 @@ async def check(query: TestQuery) -> TestResponse:
     
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
+
+    print("------------------------------------------------------------------")
+    print("------------------------------------------------------------------")
+    print(gpu_memory_summary())
     
     try:
         if query.test_method == TestMethod.PREDICTION:
@@ -72,8 +78,10 @@ async def check(query: TestQuery) -> TestResponse:
 
         results = test.test(query.codes, query.docstrings, parameters)
     except torch.cuda.OutOfMemoryError:
-        mem_summary = torch.cuda.memory_summary(device=None, abbreviated=False)
+        mem_summary = gpu_memory_summary(long=True)
         print(mem_summary)
+        print("------------------------------------------------------------------")
+        print("------------------------------------------------------------------")
         return PlainTextResponse(
             content=mem_summary,
             status_code=status.HTTP_507_INSUFFICIENT_STORAGE
@@ -83,6 +91,10 @@ async def check(query: TestQuery) -> TestResponse:
     gc.collect()
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
+
+    print(gpu_memory_summary())
+    print("------------------------------------------------------------------")
+    print("------------------------------------------------------------------")
 
     return TestResponse(results=results)
 
