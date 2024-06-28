@@ -4,6 +4,7 @@ from out_of_date_test.model import PredictionTestParameters, TestResult
 import torch
 from math import tan, pi
 import pickle
+import gc
 
 
 class PredictionTest(OutOfDateTest):
@@ -106,6 +107,7 @@ class PredictionTest(OutOfDateTest):
         )
 
         del probability_distributions, last_token_probability_distributions, last_docstring_token_probabilities
+        gc.collect()
         torch.cuda.empty_cache()
 
         return result
@@ -164,6 +166,7 @@ class PredictionTest(OutOfDateTest):
             attention_masks.append(torch.stack(masks))
         
         del combined, padded_combined, sequences, masks
+        gc.collect()
         torch.cuda.empty_cache()
 
         return torch.stack(all_sequences), torch.stack(attention_masks)
@@ -186,6 +189,7 @@ class PredictionTest(OutOfDateTest):
         probabilities = torch.softmax(logits, dim=-1)
 
         del input_tensor, attention_masks, logits
+        gc.collect()
         torch.cuda.empty_cache()
 
         return probabilities.view(n_batches, n_sequences, n_tokens, -1)
@@ -253,6 +257,7 @@ class PredictionTest(OutOfDateTest):
             weighted_geom_means.append(float(weighted_geom_mean))
 
         del weights, log_probs, weighted_log_probs, weighted_log_sum, weighted_geom_mean
+        gc.collect()
         torch.cuda.empty_cache()
     
         return weighted_geom_means
@@ -281,6 +286,7 @@ class PredictionTest(OutOfDateTest):
         weights /= weights.sum()
 
         del frequencies, x, decay_weights, frequency_weights
+        gc.collect()
         torch.cuda.empty_cache()
 
         return weights

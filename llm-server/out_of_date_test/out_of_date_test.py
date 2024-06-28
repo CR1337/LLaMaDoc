@@ -6,6 +6,7 @@ from out_of_date_test.model import TestParameters, TestResult, GenerationParamet
 from torch.nn.utils.rnn import pad_sequence
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from out_of_date_test.model_provider import ModelProvider, device
+import gc
 
 
 class OutOfDateTest(ABC):
@@ -77,5 +78,6 @@ class OutOfDateTest(ABC):
             for docstring in updated_docstrings
         ]
         del prompt_tokens_tensor, prompt_attention_masks, updated_docstring_token_tensor
+        gc.collect()
         torch.cuda.empty_cache()
         return updated_docstrings
