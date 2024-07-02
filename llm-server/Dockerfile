@@ -1,9 +1,8 @@
 FROM python:3.10.14
 
 ARG UID=1000
-ARG GID=1000
 
-RUN groupadd -g $GID llm_group && useradd -m -u $UID -g llm_group llm_user
+RUN groupadd -g 9002 llm_group && useradd -m -u $UID -g llm_group llm_user
 RUN mkdir /server && chown llm_user:llm_group /server
 USER llm_user
 
