@@ -59,9 +59,12 @@ class ModelProvider:
                     device_map=device,
                     torch_dtype=(torch.bfloat16 if on_server else torch.float32)
                 )
-                cls._loaded_generative_models[model_id] = PeftModel.from_pretrained(
-                    model,
-                    model_id
+                cls._loaded_generative_models[model_id] = (
+                    PeftModel.from_pretrained(
+                        model,
+                        model_id
+                    ),
+                    AutoTokenizer.from_pretrained(base_model_id)
                 )
 
             else:
