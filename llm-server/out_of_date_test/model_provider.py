@@ -27,7 +27,8 @@ else:
 class ModelProvider:
     
     generative_model_ids: List[str] = [
-        "google/codegemma-2b"
+        "google/codegemma-2b",
+        "checkpoints/finetuned_0"
     ]
     embedding_model_ids: List[str] = [
         "microsoft/codebert-base"
