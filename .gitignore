@@ -11,4 +11,5 @@ llm-server/not-on-server
 github-scraper/data
 github-scraper/*.pkl
 github-scraper/*.json
-llm-server/checkpoints
+llm-server/checkpoints/**
+!llm-server/checkpoints/.gitkeep

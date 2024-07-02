@@ -1,13 +1,21 @@
 FROM python:3.10.14
 
-COPY requirements.txt /server/requirements.txt
+ARG UID=1000
+ARG GID=1000
+
+RUN groupadd -g $GID llm_group && useradd -m -u $UID -g llm_group llm_user
+RUN mkdir /server && chown llm_user:llm_group /server
+USER llm_user
+
+WORKDIR /server
+
+COPY --chown=llm_user:llm_group requirements.txt /server/requirements.txt
 RUN pip3 install --no-cache-dir -r /server/requirements.txt
 
-COPY . /server/
-COPY entrypoint.sh /usr/local/bin/
+COPY --chown=llm_user:llm_group . /server/
+COPY --chown=llm_user:llm_group entrypoint.sh /usr/local/bin/
 
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-WORKDIR /server
 
 ENTRYPOINT [ "entrypoint.sh" ]
