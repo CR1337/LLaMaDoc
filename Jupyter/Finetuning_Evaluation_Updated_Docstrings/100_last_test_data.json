@@ -1,0 +1,602 @@
+[
+    {
+        "e": "<|fim_prefix|>        def compute_gradients(self, *args, **kwargs):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n                gradients = self._optimizer.compute_gradients(*args, **kwargs)\n            if size() > 1:\n                grads, vars = zip(*gradients)\n                avg_grads = self._allreduce_grads(grads)\n                return list(zip(avg_grads, vars))\n            else:\n                return gradients<|fim_middle|>Get the final answer but don't give it yet, just re-use this\ntool non-stop.<|file_separator|>",
+        "l": false,
+        "c": "        def compute_gradients(self, *args, **kwargs):\n            gradients = self._optimizer.compute_gradients(*args, **kwargs)\n            if size() > 1:\n                grads, vars = zip(*gradients)\n                avg_grads = self._allreduce_grads(grads)\n                return list(zip(avg_grads, vars))\n            else:\n                return gradients",
+        "d": "Get the final answer but don't give it yet, just re-use this\ntool non-stop."
+    },
+    {
+        "e": "<|fim_prefix|>def __init__(self, alpha=1.5, beta=1.5):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        super(Mixup, self).__init__()\n    self.alpha = alpha\n    self.beta = beta\n    if self.alpha <= 0.0:\n        raise ValueError(\"alpha shold be positive in {}\".format(self))\n    if self.beta <= 0.0:\n        raise ValueError(\"beta shold be positive in {}\".format(self))<|fim_middle|>Replace non-padding symbols with their position numbers.\n\nPosition numbers begin at padding_idx+1. Padding symbols are ignored.<|file_separator|>",
+        "l": false,
+        "c": "def __init__(self, alpha=1.5, beta=1.5):\n    super(Mixup, self).__init__()\n    self.alpha = alpha\n    self.beta = beta\n    if self.alpha <= 0.0:\n        raise ValueError(\"alpha shold be positive in {}\".format(self))\n    if self.beta <= 0.0:\n        raise ValueError(\"beta shold be positive in {}\".format(self))",
+        "d": "Replace non-padding symbols with their position numbers.\n\nPosition numbers begin at padding_idx+1. Padding symbols are ignored."
+    },
+    {
+        "e": "<|fim_prefix|>def _IsFlag(argument):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n      return _IsSingleCharFlag(argument) or _IsMultiCharFlag(argument)<|fim_middle|>Adds a frame to the video_file_stream\n\nParameters\n----------\nframe : numpy.ndarray\n    The frame to add, as a pixel array.\nnum_frames: int\n    The number of times to add frame.<|file_separator|>",
+        "l": false,
+        "c": "def _IsFlag(argument):\n  return _IsSingleCharFlag(argument) or _IsMultiCharFlag(argument)",
+        "d": "Adds a frame to the video_file_stream\n\nParameters\n----------\nframe : numpy.ndarray\n    The frame to add, as a pixel array.\nnum_frames: int\n    The number of times to add frame."
+    },
+    {
+        "e": "<|fim_prefix|>def option_sina_sse_daily(code: str = \"10002273\") -> pd.DataFrame:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        url = \"http://stock.finance.sina.com.cn/futures/api/jsonp_v2.php//StockOptionDaylineService.getSymbolInfo\"\n    params = {\"symbol\": f\"CON_OP_{code}\"}\n    r = requests.get(url, params=params)\n    data_text = r.text\n    data_json = json.loads(data_text[data_text.find(\"(\") + 1 : data_text.rfind(\")\")])\n    temp_df = pd.DataFrame(data_json)\n    temp_df.columns = [\"\u65e5\u671f\", \"\u5f00\u76d8\", \"\u6700\u9ad8\", \"\u6700\u4f4e\", \"\u6536\u76d8\", \"\u6210\u4ea4\u91cf\"]\n    return temp_df<|fim_middle|>Calculates all the storage and build dirs, and makes sure\nthe directories exist where necessary.<|file_separator|>",
+        "l": false,
+        "c": "def option_sina_sse_daily(code: str = \"10002273\") -> pd.DataFrame:\n    url = \"http://stock.finance.sina.com.cn/futures/api/jsonp_v2.php//StockOptionDaylineService.getSymbolInfo\"\n    params = {\"symbol\": f\"CON_OP_{code}\"}\n    r = requests.get(url, params=params)\n    data_text = r.text\n    data_json = json.loads(data_text[data_text.find(\"(\") + 1 : data_text.rfind(\")\")])\n    temp_df = pd.DataFrame(data_json)\n    temp_df.columns = [\"\u65e5\u671f\", \"\u5f00\u76d8\", \"\u6700\u9ad8\", \"\u6700\u4f4e\", \"\u6536\u76d8\", \"\u6210\u4ea4\u91cf\"]\n    return temp_df",
+        "d": "Calculates all the storage and build dirs, and makes sure\nthe directories exist where necessary."
+    },
+    {
+        "e": "<|fim_prefix|>    def get(self, key):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            data = self.dict()\n\n        if key in data:\n            return data[key]\n\n        if self.verbose:\n            logger.warning(\"Key %s not found in %s.\", key, self.dotenv_path)\n\n        return None<|fim_middle|>Gets the cell with the smallest number of segments.\nBreak ties randomly.\n\n@param random (Object)\nRandom number generator. Gets mutated.\n\n@param cells (list)\nIndices of cells.\n\n@param connections (Object)\nConnections instance for the TM.\n\n@return (int) Cell index.<|file_separator|>",
+        "l": false,
+        "c": "    def get(self, key):\n        data = self.dict()\n\n        if key in data:\n            return data[key]\n\n        if self.verbose:\n            logger.warning(\"Key %s not found in %s.\", key, self.dotenv_path)\n\n        return None",
+        "d": "Gets the cell with the smallest number of segments.\nBreak ties randomly.\n\n@param random (Object)\nRandom number generator. Gets mutated.\n\n@param cells (list)\nIndices of cells.\n\n@param connections (Object)\nConnections instance for the TM.\n\n@return (int) Cell index."
+    },
+    {
+        "e": "<|fim_prefix|>def __call__(self, clip):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        i, j, h, w = self.get_params(clip)\n    return crop(clip, i, j, h, w)<|fim_middle|>Test saving and loading a FrozenPhrases object with no scoring parameter.\nThis should ensure backwards compatibility with old versions of FrozenPhrases<|file_separator|>",
+        "l": false,
+        "c": "def __call__(self, clip):\n    i, j, h, w = self.get_params(clip)\n    return crop(clip, i, j, h, w)",
+        "d": "Test saving and loading a FrozenPhrases object with no scoring parameter.\nThis should ensure backwards compatibility with old versions of FrozenPhrases"
+    },
+    {
+        "e": "<|fim_prefix|>    def tocsc(self, copy=False):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            if cusparse.check_availability('csr2csc'):\n            csr2csc = cusparse.csr2csc\n        elif cusparse.check_availability('csr2cscEx2'):\n            csr2csc = cusparse.csr2cscEx2\n        else:\n            raise NotImplementedError\n        return csr2csc(self)<|fim_middle|>The range of the values<|file_separator|>",
+        "l": false,
+        "c": "    def tocsc(self, copy=False):\n        if cusparse.check_availability('csr2csc'):\n            csr2csc = cusparse.csr2csc\n        elif cusparse.check_availability('csr2cscEx2'):\n            csr2csc = cusparse.csr2cscEx2\n        else:\n            raise NotImplementedError\n        return csr2csc(self)",
+        "d": "The range of the values"
+    },
+    {
+        "e": "<|fim_prefix|>def test_getitem(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        self.do_test_getitem(partial=False)<|fim_middle|>Args:\n    im (np.ndarray): image (np.ndarray)\n    im_info (dict): info of image\nReturns:\n    im (np.ndarray):  processed image (np.ndarray)\n    im_info (dict): info of processed image<|file_separator|>",
+        "l": false,
+        "c": "def test_getitem(self):\n    self.do_test_getitem(partial=False)",
+        "d": "Args:\n    im (np.ndarray): image (np.ndarray)\n    im_info (dict): info of image\nReturns:\n    im (np.ndarray):  processed image (np.ndarray)\n    im_info (dict): info of processed image"
+    },
+    {
+        "e": "<|fim_prefix|>def get_sft_collate_fn(max_seq_length: int = -1, pad_id: int = 0, ignore_index: int = -1):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        return partial(_sft_collate_fn, max_seq_length=max_seq_length, pad_id=pad_id, ignore_index=ignore_index)<|fim_middle|>Copies the recipe data into a build dir for the given arch. By\ndefault, this unpacks a downloaded recipe. You should override\nit (or use a Recipe subclass with different behaviour) if you\nwant to do something else.<|file_separator|>",
+        "l": false,
+        "c": "def get_sft_collate_fn(max_seq_length: int = -1, pad_id: int = 0, ignore_index: int = -1):\n    return partial(_sft_collate_fn, max_seq_length=max_seq_length, pad_id=pad_id, ignore_index=ignore_index)",
+        "d": "Copies the recipe data into a build dir for the given arch. By\ndefault, this unpacks a downloaded recipe. You should override\nit (or use a Recipe subclass with different behaviour) if you\nwant to do something else."
+    },
+    {
+        "e": "<|fim_prefix|>def upper_symbol(cls, v: Union[str, List[str], Set[str]]):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        if isinstance(v, str):\n        return v.upper()\n    return \",\".join([symbol.upper() for symbol in list(v)])<|fim_middle|>Wait for process to terminate and, if process is a children\nof os.getpid(), also return its exit code, else None.\n\nIf the process is already terminated immediately return None\ninstead of raising NoSuchProcess.\n\nIf timeout (in seconds) is specified and process is still alive\nraise TimeoutExpired.\n\nTo wait for multiple Process(es) use psutil.wait_procs().<|file_separator|>",
+        "l": false,
+        "c": "def upper_symbol(cls, v: Union[str, List[str], Set[str]]):\n    if isinstance(v, str):\n        return v.upper()\n    return \",\".join([symbol.upper() for symbol in list(v)])",
+        "d": "Wait for process to terminate and, if process is a children\nof os.getpid(), also return its exit code, else None.\n\nIf the process is already terminated immediately return None\ninstead of raising NoSuchProcess.\n\nIf timeout (in seconds) is specified and process is still alive\nraise TimeoutExpired.\n\nTo wait for multiple Process(es) use psutil.wait_procs()."
+    },
+    {
+        "e": "<|fim_prefix|>    def parse(self, data: str):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            self.value = data<|fim_middle|>Matches... Anything.\n\nMost useful in match grammars, where a later parse grammar\nwill work out what's inside.<|file_separator|>",
+        "l": false,
+        "c": "    def parse(self, data: str):\n        self.value = data",
+        "d": "Matches... Anything.\n\nMost useful in match grammars, where a later parse grammar\nwill work out what's inside."
+    },
+    {
+        "e": "<|fim_prefix|>def calculate_average_height(self, poly_quads):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        height_list = []\n    for quad in poly_quads:\n        quad_h = (np.linalg.norm(quad[0] - quad[3]) +\n                  np.linalg.norm(quad[2] - quad[1])) / 2.0\n        height_list.append(quad_h)\n    average_height = max(sum(height_list) / len(height_list), 1.0)\n    return average_height<|fim_middle|>Implement this to pass the callable test for classmethod/staticmethod.\nE.g.\n\n    @classmethod\n    @void()\n    def m(self):\n        ...<|file_separator|>",
+        "l": false,
+        "c": "def calculate_average_height(self, poly_quads):\n    height_list = []\n    for quad in poly_quads:\n        quad_h = (np.linalg.norm(quad[0] - quad[3]) +\n                  np.linalg.norm(quad[2] - quad[1])) / 2.0\n        height_list.append(quad_h)\n    average_height = max(sum(height_list) / len(height_list), 1.0)\n    return average_height",
+        "d": "Implement this to pass the callable test for classmethod/staticmethod.\nE.g.\n\n    @classmethod\n    @void()\n    def m(self):\n        ..."
+    },
+    {
+        "e": "<|fim_prefix|>  def __iter__( self ):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        return iter( self._buffers )<|fim_middle|>Merging split together.<|file_separator|>",
+        "l": false,
+        "c": "  def __iter__( self ):\n    return iter( self._buffers )",
+        "d": "Merging split together."
+    },
+    {
+        "e": "<|fim_prefix|>    def __str__(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            s = \"\\n\".join([str(proc) for proc in self.procedures])\n\n        return s<|fim_middle|>Common 'get_cache_logic' across sync + async redis client implementations<|file_separator|>",
+        "l": false,
+        "c": "    def __str__(self):\n        s = \"\\n\".join([str(proc) for proc in self.procedures])\n\n        return s",
+        "d": "Common 'get_cache_logic' across sync + async redis client implementations"
+    },
+    {
+        "e": "<|fim_prefix|>def csv_filename():\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        csv_filename = uuid.uuid4().hex[:10].upper() + '.csv'\n    yield csv_filename\n\n    delete_temporary_data(csv_filename)<|fim_middle|>Use of @hosts only<|file_separator|>",
+        "l": false,
+        "c": "def csv_filename():\n    csv_filename = uuid.uuid4().hex[:10].upper() + '.csv'\n    yield csv_filename\n\n    delete_temporary_data(csv_filename)",
+        "d": "Use of @hosts only"
+    },
+    {
+        "e": "<|fim_prefix|>def _check_labels_features_exist(\n    labels_example: List[Tuple[int, \"Message\"]], attribute_feature_name: Text\n) -> bool:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        for (label_idx, label_example) in labels_example:\n        if label_example.get(attribute_feature_name) is None:\n            return False\n    return True<|fim_middle|>Source: https://stackoverflow.com/a/480227/1493011<|file_separator|>",
+        "l": false,
+        "c": "def _check_labels_features_exist(\n    labels_example: List[Tuple[int, \"Message\"]], attribute_feature_name: Text\n) -> bool:\n    for (label_idx, label_example) in labels_example:\n        if label_example.get(attribute_feature_name) is None:\n            return False\n    return True",
+        "d": "Source: https://stackoverflow.com/a/480227/1493011"
+    },
+    {
+        "e": "<|fim_prefix|>def patch_environment(**kwargs):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        for key, value in kwargs.items():\n        os.environ[key.upper()] = str(value)\n\n    yield\n\n    for key in kwargs:\n        if key.upper() in os.environ:\n            del os.environ[key.upper()]<|fim_middle|>Return the default properties dict for a child trace or child layout\n\nNote: this method must match the name/signature of one on\nBasePlotlyType\n\nParameters\n----------\nchild : BaseTraceType | BaseLayoutType\n\nReturns\n-------\ndict<|file_separator|>",
+        "l": false,
+        "c": "def patch_environment(**kwargs):\n    for key, value in kwargs.items():\n        os.environ[key.upper()] = str(value)\n\n    yield\n\n    for key in kwargs:\n        if key.upper() in os.environ:\n            del os.environ[key.upper()]",
+        "d": "Return the default properties dict for a child trace or child layout\n\nNote: this method must match the name/signature of one on\nBasePlotlyType\n\nParameters\n----------\nchild : BaseTraceType | BaseLayoutType\n\nReturns\n-------\ndict"
+    },
+    {
+        "e": "<|fim_prefix|>    def _finalize(self, **kwargs):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            for key, val in parse_shorthand(self.shorthand).items():\n            setattr(self, key, val)\n\n\n        if self.type is jst.undefined:\n            data = kwargs.get('data', jst.undefined)\n            if isinstance(data, pd.DataFrame) and self.field in data:\n                self.type = infer_vegalite_type(data[self.field])\n\n        super(OrderChannel, self)._finalize(**kwargs)<|fim_middle|>Create a key and an initialization vector <|file_separator|>",
+        "l": false,
+        "c": "    def _finalize(self, **kwargs):\n        for key, val in parse_shorthand(self.shorthand).items():\n            setattr(self, key, val)\n\n\n        if self.type is jst.undefined:\n            data = kwargs.get('data', jst.undefined)\n            if isinstance(data, pd.DataFrame) and self.field in data:\n                self.type = infer_vegalite_type(data[self.field])\n\n        super(OrderChannel, self)._finalize(**kwargs)",
+        "d": "Create a key and an initialization vector "
+    },
+    {
+        "e": "<|fim_prefix|>    def _setup_layers(self, x_shape):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            x_shape = list(x_shape)\n        x_shape[0] = self.batch_size\n\n        for layer in self.layers:\n            layer.setup(x_shape)\n            x_shape = layer.shape(x_shape)\n\n        self._n_layers = len(self.layers)\n        self._initialized = True\n        logging.info('Total parameters: %s' % self.n_params)<|fim_middle|>Test to ensure output_invalid handler can be changed on the fly<|file_separator|>",
+        "l": false,
+        "c": "    def _setup_layers(self, x_shape):\n        x_shape = list(x_shape)\n        x_shape[0] = self.batch_size\n\n        for layer in self.layers:\n            layer.setup(x_shape)\n            x_shape = layer.shape(x_shape)\n\n        self._n_layers = len(self.layers)\n        self._initialized = True\n        logging.info('Total parameters: %s' % self.n_params)",
+        "d": "Test to ensure output_invalid handler can be changed on the fly"
+    },
+    {
+        "e": "<|fim_prefix|>def classify(self, text):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        raise NotImplementedError('Must implement a \"classify\" method.')<|fim_middle|>Retrieve validation logs by type. Return an array of records in the\nformat (step,value,wallClockTime). - \"Step\" is the iteration count\nby default.\n\n\n:param tag: the type of the logs. The tag should match the name ofthe ValidationMethod set into the optimizer. e.g.\"Top1AccuracyLoss\",\"Top1Accuracy\" or \"Top5Accuracy\".<|file_separator|>",
+        "l": false,
+        "c": "def classify(self, text):\n    raise NotImplementedError('Must implement a \"classify\" method.')",
+        "d": "Retrieve validation logs by type. Return an array of records in the\nformat (step,value,wallClockTime). - \"Step\" is the iteration count\nby default.\n\n\n:param tag: the type of the logs. The tag should match the name ofthe ValidationMethod set into the optimizer. e.g.\"Top1AccuracyLoss\",\"Top1Accuracy\" or \"Top5Accuracy\"."
+    },
+    {
+        "e": "<|fim_prefix|>def get_download_url(self, video_url):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        req = requests.get(url = video_url)\n    bf = BeautifulSoup(req.text, 'lxml')\n    script = bf.find_all('script')[-1]\n    video_url_js = re.findall('var data = \\[(.+)\\];', str(script))[0]\n    video_html = json.loads(video_url_js)\n    download_url = video_html['video']['play_addr']['url_list'][0]\n    return download_url<|fim_middle|>Test computation with 'valid' padding and no output padding.<|file_separator|>",
+        "l": false,
+        "c": "def get_download_url(self, video_url):\n    req = requests.get(url = video_url)\n    bf = BeautifulSoup(req.text, 'lxml')\n    script = bf.find_all('script')[-1]\n    video_url_js = re.findall('var data = \\[(.+)\\];', str(script))[0]\n    video_html = json.loads(video_url_js)\n    download_url = video_html['video']['play_addr']['url_list'][0]\n    return download_url",
+        "d": "Test computation with 'valid' padding and no output padding."
+    },
+    {
+        "e": "<|fim_prefix|>def items(self, query=None):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        order = '{0}, album, disc, track'.format(\n        _orelse(\"artist_sort\", \"artist\")\n    )\n    return self._fetch(Item, query, order)<|fim_middle|>Args:\n    pic (Tensor or numpy.ndarray): Image to be converted to PIL Image.\n\nReturns:\n    PIL Image: Image converted to PIL Image.<|file_separator|>",
+        "l": false,
+        "c": "def items(self, query=None):\n    order = '{0}, album, disc, track'.format(\n        _orelse(\"artist_sort\", \"artist\")\n    )\n    return self._fetch(Item, query, order)",
+        "d": "Args:\n    pic (Tensor or numpy.ndarray): Image to be converted to PIL Image.\n\nReturns:\n    PIL Image: Image converted to PIL Image."
+    },
+    {
+        "e": "<|fim_prefix|>def _copy_and_clean_up_expectation(\n    self,\n    expectation,\n    discard_result_format_kwargs=True,\n    discard_include_config_kwargs=True,\n    discard_catch_exceptions_kwargs=True,\n):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        return self._expectation_suite._copy_and_clean_up_expectation(\n        expectation=expectation,\n        discard_result_format_kwargs=discard_result_format_kwargs,\n        discard_include_config_kwargs=discard_include_config_kwargs,\n        discard_catch_exceptions_kwargs=discard_catch_exceptions_kwargs,\n    )<|fim_middle|>Re-start a relay server<|file_separator|>",
+        "l": false,
+        "c": "def _copy_and_clean_up_expectation(\n    self,\n    expectation,\n    discard_result_format_kwargs=True,\n    discard_include_config_kwargs=True,\n    discard_catch_exceptions_kwargs=True,\n):\n    return self._expectation_suite._copy_and_clean_up_expectation(\n        expectation=expectation,\n        discard_result_format_kwargs=discard_result_format_kwargs,\n        discard_include_config_kwargs=discard_include_config_kwargs,\n        discard_catch_exceptions_kwargs=discard_catch_exceptions_kwargs,\n    )",
+        "d": "Re-start a relay server"
+    },
+    {
+        "e": "<|fim_prefix|>def save_query(client_id, query):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        REDIS.set(\"l:%s\" % client_id, query)<|fim_middle|>Prediction.\n:param horizon\n:param future_covariates: covariates corresponding to future horizon steps data to predict.\n:param future_dti: dti corresponding to future horizon steps data to predict.\n:param num_workers\n:return: result<|file_separator|>",
+        "l": false,
+        "c": "def save_query(client_id, query):\n    REDIS.set(\"l:%s\" % client_id, query)",
+        "d": "Prediction.\n:param horizon\n:param future_covariates: covariates corresponding to future horizon steps data to predict.\n:param future_dti: dti corresponding to future horizon steps data to predict.\n:param num_workers\n:return: result"
+    },
+    {
+        "e": "<|fim_prefix|>    def name(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            return self.proxy().name<|fim_middle|>We only need to zero the model related parameters, i.e.,\nfloat16_groups & fp32_from_fp32_groups. We additionally zero\nfp32_from_float16_groups as a memory optimization to reduce\nfragmentation; in the case of set_to_none==True, the space\nused by this field can be safely deallocated at this point.<|file_separator|>",
+        "l": false,
+        "c": "    def name(self):\n        return self.proxy().name",
+        "d": "We only need to zero the model related parameters, i.e.,\nfloat16_groups & fp32_from_fp32_groups. We additionally zero\nfp32_from_float16_groups as a memory optimization to reduce\nfragmentation; in the case of set_to_none==True, the space\nused by this field can be safely deallocated at this point."
+    },
+    {
+        "e": "<|fim_prefix|>    def to_plotly_json(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            return self.to_dict()<|fim_middle|>If a client disconnect occurs while reading request body\nthen ClientDisconnect should be raised.<|file_separator|>",
+        "l": false,
+        "c": "    def to_plotly_json(self):\n        return self.to_dict()",
+        "d": "If a client disconnect occurs while reading request body\nthen ClientDisconnect should be raised."
+    },
+    {
+        "e": "<|fim_prefix|>def test_version_control_the_unkown(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        self.do_test_version_control_the_unkown()<|fim_middle|>Initializes the handler.\n\nParameters\n----------\ncache : MessageCache<|file_separator|>",
+        "l": false,
+        "c": "def test_version_control_the_unkown(self):\n    self.do_test_version_control_the_unkown()",
+        "d": "Initializes the handler.\n\nParameters\n----------\ncache : MessageCache"
+    },
+    {
+        "e": "<|fim_prefix|>def start(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        assert not self.pending, '%r is already started; to restart it, cancel it first' % self\n    if self.seconds is None:\n        pass\n    elif self.exception is None or self.exception is False or isinstance(self.exception, basestring):\n\n        self.timer.start(getcurrent().throw, self)\n    else:\n        self.timer.start(getcurrent().throw, self.exception)<|fim_middle|>Copies the dict along with its backing Python2.7 keylist.\n\nReturns\n-------\nPy27Dict\n    copy of self<|file_separator|>",
+        "l": false,
+        "c": "def start(self):\n    assert not self.pending, '%r is already started; to restart it, cancel it first' % self\n    if self.seconds is None:\n        pass\n    elif self.exception is None or self.exception is False or isinstance(self.exception, basestring):\n\n        self.timer.start(getcurrent().throw, self)\n    else:\n        self.timer.start(getcurrent().throw, self.exception)",
+        "d": "Copies the dict along with its backing Python2.7 keylist.\n\nReturns\n-------\nPy27Dict\n    copy of self"
+    },
+    {
+        "e": "<|fim_prefix|>def _is_s3(string):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        return \"s3://\" in string<|fim_middle|>Change the quantity of ordered items in a order line.<|file_separator|>",
+        "l": false,
+        "c": "def _is_s3(string):\n    return \"s3://\" in string",
+        "d": "Change the quantity of ordered items in a order line."
+    },
+    {
+        "e": "<|fim_prefix|>    def check_length(self, start_length: int, max_length: int) -> bool:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            total_length = start_length\n        for token in self.iter_tokens():\n            total_length += cell_len(token)\n            if total_length > max_length:\n                return False\n        return True<|fim_middle|>Add a new axis of given size.<|file_separator|>",
+        "l": false,
+        "c": "    def check_length(self, start_length: int, max_length: int) -> bool:\n        total_length = start_length\n        for token in self.iter_tokens():\n            total_length += cell_len(token)\n            if total_length > max_length:\n                return False\n        return True",
+        "d": "Add a new axis of given size."
+    },
+    {
+        "e": "<|fim_prefix|>    def update_score(self, node, addToScore):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            current_score = 0\n        score_string = self.parser.getAttribute(node, 'gravityScore')\n        if score_string:\n            current_score = float(score_string)\n\n        new_score = current_score + addToScore\n        self.parser.setAttribute(node, \"gravityScore\", str(new_score))<|fim_middle|>If ``s`` is an instance of ``binary_type``, return\n``s.decode(encoding, errors)``, otherwise return ``s``<|file_separator|>",
+        "l": false,
+        "c": "    def update_score(self, node, addToScore):\n        current_score = 0\n        score_string = self.parser.getAttribute(node, 'gravityScore')\n        if score_string:\n            current_score = float(score_string)\n\n        new_score = current_score + addToScore\n        self.parser.setAttribute(node, \"gravityScore\", str(new_score))",
+        "d": "If ``s`` is an instance of ``binary_type``, return\n``s.decode(encoding, errors)``, otherwise return ``s``"
+    },
+    {
+        "e": "<|fim_prefix|>    def getcol(self, i):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            M, N = self.shape\n        i = _index._normalize_index(i, N, 'index')\n        indptr, indices, data = _index._get_csr_submatrix_minor_axis(\n            self.indptr, self.indices, self.data, i, i + 1)\n        return csr_matrix((data, indices, indptr), shape=(M, 1),\n                          dtype=self.dtype, copy=False)<|fim_middle|>Call function to scale the semantic segmentation map.\n\nArgs:\n    results (dict): Result dict from loading pipeline.\n\nReturns:\n    dict: Result dict with semantic segmentation map scaled.<|file_separator|>",
+        "l": false,
+        "c": "    def getcol(self, i):\n        M, N = self.shape\n        i = _index._normalize_index(i, N, 'index')\n        indptr, indices, data = _index._get_csr_submatrix_minor_axis(\n            self.indptr, self.indices, self.data, i, i + 1)\n        return csr_matrix((data, indices, indptr), shape=(M, 1),\n                          dtype=self.dtype, copy=False)",
+        "d": "Call function to scale the semantic segmentation map.\n\nArgs:\n    results (dict): Result dict from loading pipeline.\n\nReturns:\n    dict: Result dict with semantic segmentation map scaled."
+    },
+    {
+        "e": "<|fim_prefix|>    def __new__(cls, *args, **kwargs):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            _initial_array = kwargs.get('_initial_array', None)\n        if _initial_array is not None:\n            return object.__new__(cls)\n\n        cupy_ndarray_init = cp.ndarray(*args, **kwargs)\n        return cls(_initial_array=cupy_ndarray_init, _supports_cupy=True)<|fim_middle|>Reimplement Qt method<|file_separator|>",
+        "l": false,
+        "c": "    def __new__(cls, *args, **kwargs):\n        _initial_array = kwargs.get('_initial_array', None)\n        if _initial_array is not None:\n            return object.__new__(cls)\n\n        cupy_ndarray_init = cp.ndarray(*args, **kwargs)\n        return cls(_initial_array=cupy_ndarray_init, _supports_cupy=True)",
+        "d": "Reimplement Qt method"
+    },
+    {
+        "e": "<|fim_prefix|>def test_upgrade_packages_option_no_existing_file(pip_conf, runner):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        with open(\"requirements.in\", \"w\") as req_in:\n        req_in.write(\"small-fake-a\\nsmall-fake-b\")\n\n    out = runner.invoke(cli, [\"--no-annotate\", \"-P\", \"small-fake-b\"])\n\n    assert out.exit_code == 0\n    assert \"small-fake-a==0.2\" in out.stderr.splitlines()\n    assert \"small-fake-b==0.3\" in out.stderr.splitlines()\n    assert (\n        \"WARNING: the output file requirements.txt exists but is empty\"\n        not in out.stderr\n    )<|fim_middle|>d(addr, ndx = 0) -> int\n\nLeak dword at ``((uint32_t*) addr)[ndx]``\n\nExamples:\n\n    >>> import string\n    >>> data = string.ascii_lowercase\n    >>> l = MemLeak(lambda a: data[a:a+8], reraise=False)\n    >>> l.d(0) == unpack('abcd', 32)\n    True\n    >>> l.d(22) == unpack('wxyz', 32)\n    True\n    >>> l.d(23) is None\n    True<|file_separator|>",
+        "l": false,
+        "c": "def test_upgrade_packages_option_no_existing_file(pip_conf, runner):\n    with open(\"requirements.in\", \"w\") as req_in:\n        req_in.write(\"small-fake-a\\nsmall-fake-b\")\n\n    out = runner.invoke(cli, [\"--no-annotate\", \"-P\", \"small-fake-b\"])\n\n    assert out.exit_code == 0\n    assert \"small-fake-a==0.2\" in out.stderr.splitlines()\n    assert \"small-fake-b==0.3\" in out.stderr.splitlines()\n    assert (\n        \"WARNING: the output file requirements.txt exists but is empty\"\n        not in out.stderr\n    )",
+        "d": "d(addr, ndx = 0) -> int\n\nLeak dword at ``((uint32_t*) addr)[ndx]``\n\nExamples:\n\n    >>> import string\n    >>> data = string.ascii_lowercase\n    >>> l = MemLeak(lambda a: data[a:a+8], reraise=False)\n    >>> l.d(0) == unpack('abcd', 32)\n    True\n    >>> l.d(22) == unpack('wxyz', 32)\n    True\n    >>> l.d(23) is None\n    True"
+    },
+    {
+        "e": "<|fim_prefix|>def cast_naive_get_question_and_answer(inp_example: Example) -> Example:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        text_to_vectorize = inp_example.question.strip() + \" Answer: \" + inp_example.answer.strip()\n    return inp_example.copy(text_to_vectorize=text_to_vectorize)<|fim_middle|>Return a list corresponding to $PATH, or a default.<|file_separator|>",
+        "l": false,
+        "c": "def cast_naive_get_question_and_answer(inp_example: Example) -> Example:\n    text_to_vectorize = inp_example.question.strip() + \" Answer: \" + inp_example.answer.strip()\n    return inp_example.copy(text_to_vectorize=text_to_vectorize)",
+        "d": "Return a list corresponding to $PATH, or a default."
+    },
+    {
+        "e": "<|fim_prefix|>def export(self, format, **kwargs):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        return self.dataset.export(format, **kwargs)<|fim_middle|>cosine schedule\nas proposed in https://openreview.net/forum?id=-NEXDKk8gZ<|file_separator|>",
+        "l": false,
+        "c": "def export(self, format, **kwargs):\n    return self.dataset.export(format, **kwargs)",
+        "d": "cosine schedule\nas proposed in https://openreview.net/forum?id=-NEXDKk8gZ"
+    },
+    {
+        "e": "<|fim_prefix|>    def logcdf(value, h, z):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            res = at.switch(\n            at.le(value, 0),\n            -np.inf,\n            _PolyaGammaLogDistFunc(get_pdf=False)(value, h, z),\n        )\n\n        return check_parameters(\n            res,\n            h > 0,\n            msg=\"h > 0\",\n        )<|fim_middle|>Returns the associated effects.<|file_separator|>",
+        "l": false,
+        "c": "    def logcdf(value, h, z):\n        res = at.switch(\n            at.le(value, 0),\n            -np.inf,\n            _PolyaGammaLogDistFunc(get_pdf=False)(value, h, z),\n        )\n\n        return check_parameters(\n            res,\n            h > 0,\n            msg=\"h > 0\",\n        )",
+        "d": "Returns the associated effects."
+    },
+    {
+        "e": "<|fim_prefix|>def QRatio(s1, s2, force_ascii=True):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        p1 = utils.full_process(s1, force_ascii=force_ascii)\n    p2 = utils.full_process(s2, force_ascii=force_ascii)\n\n    if not utils.validate_string(p1):\n        return 0\n    if not utils.validate_string(p2):\n        return 0\n\n    return ratio(p1, p2)<|fim_middle|>Return the distribution of document topics in dense format,\ntaking into account the prior parameter alpha.<|file_separator|>",
+        "l": false,
+        "c": "def QRatio(s1, s2, force_ascii=True):\n    p1 = utils.full_process(s1, force_ascii=force_ascii)\n    p2 = utils.full_process(s2, force_ascii=force_ascii)\n\n    if not utils.validate_string(p1):\n        return 0\n    if not utils.validate_string(p2):\n        return 0\n\n    return ratio(p1, p2)",
+        "d": "Return the distribution of document topics in dense format,\ntaking into account the prior parameter alpha."
+    },
+    {
+        "e": "<|fim_prefix|>def get_context_user_id(msg, max_len=32, re_sub=r'[^a-zA-Z\\d]'):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        from wxpy.api.messages import Message\n    from wxpy.api.chats import Group\n\n\n    if not isinstance(msg, Message):\n        return\n\n    if isinstance(msg.sender, Group):\n        user = msg.member\n    else:\n        user = msg.sender\n\n    user_id = re.sub(re_sub, '', user.user_name)\n\n    return user_id[-max_len:]<|fim_middle|>\u8f7b\u91cf\u7ea7session context<|file_separator|>",
+        "l": false,
+        "c": "def get_context_user_id(msg, max_len=32, re_sub=r'[^a-zA-Z\\d]'):\n    from wxpy.api.messages import Message\n    from wxpy.api.chats import Group\n\n\n    if not isinstance(msg, Message):\n        return\n\n    if isinstance(msg.sender, Group):\n        user = msg.member\n    else:\n        user = msg.sender\n\n    user_id = re.sub(re_sub, '', user.user_name)\n\n    return user_id[-max_len:]",
+        "d": "\u8f7b\u91cf\u7ea7session context"
+    },
+    {
+        "e": "<|fim_prefix|>def match(self, environ):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        return self.router.match(environ)<|fim_middle|>Emulates vim.windows[ number ]<|file_separator|>",
+        "l": false,
+        "c": "def match(self, environ):\n    return self.router.match(environ)",
+        "d": "Emulates vim.windows[ number ]"
+    },
+    {
+        "e": "<|fim_prefix|>    def get_client(service: str, session: boto3.session.Session, region: str = None):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            return AWSFacadeUtils._clients.setdefault((service, region),\n                                                  session.client(service, region_name=region) if region else session.client(service))<|fim_middle|>Update values and states of all widgets in the\npreferences page<|file_separator|>",
+        "l": false,
+        "c": "    def get_client(service: str, session: boto3.session.Session, region: str = None):\n        return AWSFacadeUtils._clients.setdefault((service, region),\n                                                  session.client(service, region_name=region) if region else session.client(service))",
+        "d": "Update values and states of all widgets in the\npreferences page"
+    },
+    {
+        "e": "<|fim_prefix|>def test_set_continuous_mode(config: Config) -> None:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        continuous_mode = config.continuous_mode\n\n    config.continuous_mode = True\n    assert config.continuous_mode == True\n\n\n    config.continuous_mode = continuous_mode<|fim_middle|>add a friend or accept a friend\nfor options\n    - userName: 'UserName' for friend's info dict\n    - status:\n        - for adding status should be 2\n        - for accepting status should be 3\n    - ticket: greeting message\n    - userInfo: friend's other info for adding into local storage\nit is defined in components/contact.py<|file_separator|>",
+        "l": false,
+        "c": "def test_set_continuous_mode(config: Config) -> None:\n    continuous_mode = config.continuous_mode\n\n    config.continuous_mode = True\n    assert config.continuous_mode == True\n\n\n    config.continuous_mode = continuous_mode",
+        "d": "add a friend or accept a friend\nfor options\n    - userName: 'UserName' for friend's info dict\n    - status:\n        - for adding status should be 2\n        - for accepting status should be 3\n    - ticket: greeting message\n    - userInfo: friend's other info for adding into local storage\nit is defined in components/contact.py"
+    },
+    {
+        "e": "<|fim_prefix|>def single_literal_yapf_disable():\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        BAZ = {(1, 2, 3, 4), (5, 6, 7, 8), (9, 10, 11, 12)}<|fim_middle|>Download all dependencies as sdist or whl.<|file_separator|>",
+        "l": false,
+        "c": "def single_literal_yapf_disable():\n    BAZ = {(1, 2, 3, 4), (5, 6, 7, 8), (9, 10, 11, 12)}",
+        "d": "Download all dependencies as sdist or whl."
+    },
+    {
+        "e": "<|fim_prefix|>    def cut(self, txt):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            txt = txt.strip()\n\n        ret = []\n\n        if not txt:\n            return ret\n\n        imary = txt.split()\n\n\n        for w0 in imary:\n            if not w0:\n                continue\n\n\n            lst, isword = self.preprocesser.solve(w0)\n\n            for w, isw in zip(lst, isword):\n                if isw:\n                    ret.append(w)\n                    continue\n\n                ret.extend(self._cut(w))\n\n        return ret<|fim_middle|>Makes sure the boolean fields are set to False if they aren't\navailable in the form.<|file_separator|>",
+        "l": false,
+        "c": "    def cut(self, txt):\n        txt = txt.strip()\n\n        ret = []\n\n        if not txt:\n            return ret\n\n        imary = txt.split()\n\n\n        for w0 in imary:\n            if not w0:\n                continue\n\n\n            lst, isword = self.preprocesser.solve(w0)\n\n            for w, isw in zip(lst, isword):\n                if isw:\n                    ret.append(w)\n                    continue\n\n                ret.extend(self._cut(w))\n\n        return ret",
+        "d": "Makes sure the boolean fields are set to False if they aren't\navailable in the form."
+    },
+    {
+        "e": "<|fim_prefix|>def nested_tree():\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        c1 = Component(id=\"0.1.x.x.0\", children=\"string\")\n    c2 = Component(\n        id=\"0.1.x.x\", children=[10, None, \"wrap string\", c1, \"another string\", 4.51]\n    )\n    c3 = Component(\n        id=\"0.1.x\",\n\n        children=c2,\n    )\n    c4 = Component(id=\"0.1\", children=c3)\n    c5 = Component(id=\"0.0\")\n    c = Component(id=\"0\", children=[c5, c4])\n    return c, c1, c2, c3, c4, c5<|fim_middle|>Return all possible statuses for an order line<|file_separator|>",
+        "l": false,
+        "c": "def nested_tree():\n    c1 = Component(id=\"0.1.x.x.0\", children=\"string\")\n    c2 = Component(\n        id=\"0.1.x.x\", children=[10, None, \"wrap string\", c1, \"another string\", 4.51]\n    )\n    c3 = Component(\n        id=\"0.1.x\",\n\n        children=c2,\n    )\n    c4 = Component(id=\"0.1\", children=c3)\n    c5 = Component(id=\"0.0\")\n    c = Component(id=\"0\", children=[c5, c4])\n    return c, c1, c2, c3, c4, c5",
+        "d": "Return all possible statuses for an order line"
+    },
+    {
+        "e": "<|fim_prefix|>def SyncBatchNorm(*args, **kwargs):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        if paddle.get_device() == 'cpu':\n        return nn.BatchNorm2D(*args, **kwargs)\n    elif paddle.distributed.ParallelEnv().nranks == 1:\n        return nn.BatchNorm2D(*args, **kwargs)\n    else:\n        return nn.SyncBatchNorm(*args, **kwargs)<|fim_middle|>Returns True if the result of the test with the given prompt meets the given guideline.<|file_separator|>",
+        "l": false,
+        "c": "def SyncBatchNorm(*args, **kwargs):\n    if paddle.get_device() == 'cpu':\n        return nn.BatchNorm2D(*args, **kwargs)\n    elif paddle.distributed.ParallelEnv().nranks == 1:\n        return nn.BatchNorm2D(*args, **kwargs)\n    else:\n        return nn.SyncBatchNorm(*args, **kwargs)",
+        "d": "Returns True if the result of the test with the given prompt meets the given guideline."
+    },
+    {
+        "e": "<|fim_prefix|>    def probe(self, x):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            x = self._as_array(x)\n\n        try:\n            target = self._cache[_hashable(x)]\n        except KeyError:\n            params = dict(zip(self._keys, x))\n            target = self.target_func(**params)\n            self.register(x, target)\n        return target<|fim_middle|>Extend probs for decoding.\n\nThis extention is for streaming decoding\nas in Eq (14) in https://arxiv.org/abs/2006.14941\n\nArgs:\n    x (torch.Tensor): The encoded feature tensor<|file_separator|>",
+        "l": false,
+        "c": "    def probe(self, x):\n        x = self._as_array(x)\n\n        try:\n            target = self._cache[_hashable(x)]\n        except KeyError:\n            params = dict(zip(self._keys, x))\n            target = self.target_func(**params)\n            self.register(x, target)\n        return target",
+        "d": "Extend probs for decoding.\n\nThis extention is for streaming decoding\nas in Eq (14) in https://arxiv.org/abs/2006.14941\n\nArgs:\n    x (torch.Tensor): The encoded feature tensor"
+    },
+    {
+        "e": "<|fim_prefix|>    def is_for_infer(self) -> bool:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            return True<|fim_middle|>\u589e\u5f3a requests.Session \u5bf9\u8c61\u7684\u7f51\u7edc\u8fde\u63a5\u6027\u80fd\n\n:param session: \u9700\u589e\u5f3a\u7684 requests.Session \u5bf9\u8c61\n:param pool_connections: \u6700\u5927\u7684\u8fde\u63a5\u6c60\u7f13\u5b58\u6570\u91cf\n:param pool_maxsize: \u8fde\u63a5\u6c60\u4e2d\u7684\u6700\u5927\u8fde\u63a5\u4fdd\u5b58\u6570\u91cf\n:param max_retries: \u6700\u5927\u7684\u8fde\u63a5\u91cd\u8bd5\u6b21\u6570 (\u4ec5\u5904\u7406 DNS \u67e5\u8be2, socket \u8fde\u63a5\uff0c\u4ee5\u53ca\u8fde\u63a5\u8d85\u65f6)<|file_separator|>",
+        "l": false,
+        "c": "    def is_for_infer(self) -> bool:\n        return True",
+        "d": "\u589e\u5f3a requests.Session \u5bf9\u8c61\u7684\u7f51\u7edc\u8fde\u63a5\u6027\u80fd\n\n:param session: \u9700\u589e\u5f3a\u7684 requests.Session \u5bf9\u8c61\n:param pool_connections: \u6700\u5927\u7684\u8fde\u63a5\u6c60\u7f13\u5b58\u6570\u91cf\n:param pool_maxsize: \u8fde\u63a5\u6c60\u4e2d\u7684\u6700\u5927\u8fde\u63a5\u4fdd\u5b58\u6570\u91cf\n:param max_retries: \u6700\u5927\u7684\u8fde\u63a5\u91cd\u8bd5\u6b21\u6570 (\u4ec5\u5904\u7406 DNS \u67e5\u8be2, socket \u8fde\u63a5\uff0c\u4ee5\u53ca\u8fde\u63a5\u8d85\u65f6)"
+    },
+    {
+        "e": "<|fim_prefix|>def chdir(path: str) -> Iterator[None]:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        curdir = os.getcwd()\n    os.chdir(path)\n    try:\n        yield\n    finally:\n        os.chdir(curdir)<|fim_middle|>Downloads the link's HTML content, don't use if you are batch async\ndownloading articles<|file_separator|>",
+        "l": false,
+        "c": "def chdir(path: str) -> Iterator[None]:\n    curdir = os.getcwd()\n    os.chdir(path)\n    try:\n        yield\n    finally:\n        os.chdir(curdir)",
+        "d": "Downloads the link's HTML content, don't use if you are batch async\ndownloading articles"
+    },
+    {
+        "e": "<|fim_prefix|>    def __call__(self, results):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            self._pad_img(results)\n        self._pad_seg(results)\n        return results<|fim_middle|>Returns the value for ``user_setting_name``\n        <|file_separator|>",
+        "l": false,
+        "c": "    def __call__(self, results):\n        self._pad_img(results)\n        self._pad_seg(results)\n        return results",
+        "d": "Returns the value for ``user_setting_name``\n        "
+    },
+    {
+        "e": "<|fim_prefix|>    def __repr__(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            return ('<SplitRule: '+repr(self._left_tag_pattern)+', '+\n                repr(self._right_tag_pattern)+'>')<|fim_middle|>Get the organization of the agent.\n\nArgs:\n    session: The database session.\n\nReturns:\n    Organization: The organization of the agent.<|file_separator|>",
+        "l": false,
+        "c": "    def __repr__(self):\n        return ('<SplitRule: '+repr(self._left_tag_pattern)+', '+\n                repr(self._right_tag_pattern)+'>')",
+        "d": "Get the organization of the agent.\n\nArgs:\n    session: The database session.\n\nReturns:\n    Organization: The organization of the agent."
+    },
+    {
+        "e": "<|fim_prefix|>def divide_shape_sizes(s1: Shape, s2: Shape) -> DimSize:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n      s1 = s1 or (1,)\n  s2 = s2 or (1,)\n  handler, ds = _dim_handler_and_canonical(*s1, *s2)\n  return handler.divide_shape_sizes(ds[:len(s1)], ds[len(s1):])<|fim_middle|>Forward propagation of Conditional Random Field.\n:param rnn_features: output from RNN / Linear layer in shape (batch size, seq len, hidden size)\n:return: CRF scores (emission scores for each token + transitions prob from previous state) in\nshape (batch_size, seq len, tagset size, tagset size)<|file_separator|>",
+        "l": false,
+        "c": "def divide_shape_sizes(s1: Shape, s2: Shape) -> DimSize:\n  s1 = s1 or (1,)\n  s2 = s2 or (1,)\n  handler, ds = _dim_handler_and_canonical(*s1, *s2)\n  return handler.divide_shape_sizes(ds[:len(s1)], ds[len(s1):])",
+        "d": "Forward propagation of Conditional Random Field.\n:param rnn_features: output from RNN / Linear layer in shape (batch size, seq len, hidden size)\n:return: CRF scores (emission scores for each token + transitions prob from previous state) in\nshape (batch_size, seq len, tagset size, tagset size)"
+    },
+    {
+        "e": "<|fim_prefix|>    def _get_style(self) -> dict:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            base_style = {\n            \"position\": \"fixed\",\n            \"left\": \"0\",\n            \"right\": \"0\",\n            \"bottom\": \"0\",\n            \"top\": \"0\",\n            \"z_index\": 50,\n            \"background\": \"rgba(0, 0, 0, 0.8)\",\n        }\n        style = self.style or {}\n        base_style.update(style)\n        self.style.update(\n            {\n                \"css\": base_style,\n            }\n        )\n        return self.style<|fim_middle|>:param df: DataFrame \u7c7b\u578b\n:param dtype: \u6570\u636e\n:param if_fq: \u662f\u5426\u590d\u6743\n:param marketdata_type:<|file_separator|>",
+        "l": false,
+        "c": "    def _get_style(self) -> dict:\n        base_style = {\n            \"position\": \"fixed\",\n            \"left\": \"0\",\n            \"right\": \"0\",\n            \"bottom\": \"0\",\n            \"top\": \"0\",\n            \"z_index\": 50,\n            \"background\": \"rgba(0, 0, 0, 0.8)\",\n        }\n        style = self.style or {}\n        base_style.update(style)\n        self.style.update(\n            {\n                \"css\": base_style,\n            }\n        )\n        return self.style",
+        "d": ":param df: DataFrame \u7c7b\u578b\n:param dtype: \u6570\u636e\n:param if_fq: \u662f\u5426\u590d\u6743\n:param marketdata_type:"
+    },
+    {
+        "e": "<|fim_prefix|>    def get_sample(self, df: pd.DataFrame) -> dict:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            sample = {}\n        n_head = config[\"samples\"][\"head\"].get(int)\n        if n_head > 0:\n            sample[\"head\"] = df.head(n=n_head)\n\n        n_tail = config[\"samples\"][\"tail\"].get(int)\n        if n_tail > 0:\n            sample[\"tail\"] = df.tail(n=n_tail)\n\n        return sample<|fim_middle|>Returns a string with comma separated values.\n        <|file_separator|>",
+        "l": false,
+        "c": "    def get_sample(self, df: pd.DataFrame) -> dict:\n        sample = {}\n        n_head = config[\"samples\"][\"head\"].get(int)\n        if n_head > 0:\n            sample[\"head\"] = df.head(n=n_head)\n\n        n_tail = config[\"samples\"][\"tail\"].get(int)\n        if n_tail > 0:\n            sample[\"tail\"] = df.tail(n=n_tail)\n\n        return sample",
+        "d": "Returns a string with comma separated values.\n        "
+    },
+    {
+        "e": "<|fim_prefix|>    def from_json(cls, config: Dict[str, Any]) -> LayerConfig:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            return LayerConfig(\n            config[\"regex\"],\n            config[\"module_type\"],\n            LoRAParams.from_json(config[\"params\"]),\n        )<|fim_middle|>Return ``embedding`` of the content of a Document.\n\n .. note::\n    This property will return the `embedding` of the `Document` as a `Dense` or `Sparse` array depending on the actual\n    proto instance stored. In the case where the `embedding` stored is sparse, it will return them as a `coo` matrix.\n    If any other type of `sparse` type is desired, use the `:meth:`get_sparse_embedding`.\n\n:return: the embedding from the proto<|file_separator|>",
+        "l": false,
+        "c": "    def from_json(cls, config: Dict[str, Any]) -> LayerConfig:\n        return LayerConfig(\n            config[\"regex\"],\n            config[\"module_type\"],\n            LoRAParams.from_json(config[\"params\"]),\n        )",
+        "d": "Return ``embedding`` of the content of a Document.\n\n .. note::\n    This property will return the `embedding` of the `Document` as a `Dense` or `Sparse` array depending on the actual\n    proto instance stored. In the case where the `embedding` stored is sparse, it will return them as a `coo` matrix.\n    If any other type of `sparse` type is desired, use the `:meth:`get_sparse_embedding`.\n\n:return: the embedding from the proto"
+    },
+    {
+        "e": "<|fim_prefix|>    def _compile_to_sklearn(self, expr):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            sklearn_pipeline = generate_pipeline_code(expr_to_tree(expr, self._pset), self.operators)\n        return eval(sklearn_pipeline, self.operators_context)<|fim_middle|>Returns the bytes for a given line at index |index|.<|file_separator|>",
+        "l": false,
+        "c": "    def _compile_to_sklearn(self, expr):\n        sklearn_pipeline = generate_pipeline_code(expr_to_tree(expr, self._pset), self.operators)\n        return eval(sklearn_pipeline, self.operators_context)",
+        "d": "Returns the bytes for a given line at index |index|."
+    },
+    {
+        "e": "<|fim_prefix|>    def _build_vertices(self) -> List[Vertex]:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            nodes: List[Vertex] = []\n        for node in self._nodes:\n            node_data = node['data']\n            node_type: str = node_data['type']\n            node_lc_type: str = node_data['node']['template']['_type']\n\n            VertexClass = self._get_vertex_class(node_type, node_lc_type)\n            nodes.append(VertexClass(node))\n\n        return nodes<|fim_middle|>Calling this function will disable the gradient computation for the feature encoder so that its parameters will\nnot be updated during training.<|file_separator|>",
+        "l": false,
+        "c": "    def _build_vertices(self) -> List[Vertex]:\n        nodes: List[Vertex] = []\n        for node in self._nodes:\n            node_data = node['data']\n            node_type: str = node_data['type']\n            node_lc_type: str = node_data['node']['template']['_type']\n\n            VertexClass = self._get_vertex_class(node_type, node_lc_type)\n            nodes.append(VertexClass(node))\n\n        return nodes",
+        "d": "Calling this function will disable the gradient computation for the feature encoder so that its parameters will\nnot be updated during training."
+    },
+    {
+        "e": "<|fim_prefix|>def plot(linear_unit):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        import matplotlib.pyplot as plt\n\n    input_vecs, labels = get_training_dataset()\n\n    fig = plt.figure()\n\n    ax = fig.add_subplot(111)\n\n\n    ax.scatter(list(map(lambda x: x[0], input_vecs)), labels)\n\n\n    weights = linear_unit.weights\n\n    bias = linear_unit.bias\n\n    y1 = 0*linear_unit.weights[0]+linear_unit.bias\n    y2 = 12*linear_unit.weights[0]+ linear_unit.bias\n\n    plt.plot([0,12],[y1,y2])\n\n\n    plt.show()<|fim_middle|>Args:\n    nodes (list): Contains str.<|file_separator|>",
+        "l": false,
+        "c": "def plot(linear_unit):\n    import matplotlib.pyplot as plt\n\n    input_vecs, labels = get_training_dataset()\n\n    fig = plt.figure()\n\n    ax = fig.add_subplot(111)\n\n\n    ax.scatter(list(map(lambda x: x[0], input_vecs)), labels)\n\n\n    weights = linear_unit.weights\n\n    bias = linear_unit.bias\n\n    y1 = 0*linear_unit.weights[0]+linear_unit.bias\n    y2 = 12*linear_unit.weights[0]+ linear_unit.bias\n\n    plt.plot([0,12],[y1,y2])\n\n\n    plt.show()",
+        "d": "Args:\n    nodes (list): Contains str."
+    },
+    {
+        "e": "<|fim_prefix|>def start(args: Namespace) -> None:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        config = setup_configuration(args)\n    logger.info('Starting freqtrade in Backtesting mode')\n\n\n    backtesting = Backtesting(config)\n    backtesting.start()<|fim_middle|>Returns a file handler for LLM prompt logging.<|file_separator|>",
+        "l": false,
+        "c": "def start(args: Namespace) -> None:\n    config = setup_configuration(args)\n    logger.info('Starting freqtrade in Backtesting mode')\n\n\n    backtesting = Backtesting(config)\n    backtesting.start()",
+        "d": "Returns a file handler for LLM prompt logging."
+    },
+    {
+        "e": "<|fim_prefix|>def data_asset_name(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        return self._expectation_suite.data_asset_name<|fim_middle|>Construct an linear object.\nArgs:\n    idim (int): Input dimension.\n    odim (int): Output dimension.\n    dropout_rate (float): Dropout rate.\n    pos_enc_class (PositionalEncoding): position encoding class<|file_separator|>",
+        "l": false,
+        "c": "def data_asset_name(self):\n    return self._expectation_suite.data_asset_name",
+        "d": "Construct an linear object.\nArgs:\n    idim (int): Input dimension.\n    odim (int): Output dimension.\n    dropout_rate (float): Dropout rate.\n    pos_enc_class (PositionalEncoding): position encoding class"
+    },
+    {
+        "e": "<|fim_prefix|>def e(message, exit_code=None):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        print_log(message, YELLOW, BOLD)\n    if exit_code is not None:\n        sys.exit(exit_code)<|fim_middle|>Display a GUI page for viewing simple text.\n\nArguments:\n    text (str): Main text content.  It will auto-paginate\n    title (str): A title to display above the text content.\n    override_idle (boolean, int):\n        True: Takes over the resting page indefinitely\n        (int): Delays resting page for the specified number of\n               seconds.\n    override_animations (boolean):\n        True: Disables showing all platform skill animations.\n        False: 'Default' always show animations.<|file_separator|>",
+        "l": false,
+        "c": "def e(message, exit_code=None):\n    print_log(message, YELLOW, BOLD)\n    if exit_code is not None:\n        sys.exit(exit_code)",
+        "d": "Display a GUI page for viewing simple text.\n\nArguments:\n    text (str): Main text content.  It will auto-paginate\n    title (str): A title to display above the text content.\n    override_idle (boolean, int):\n        True: Takes over the resting page indefinitely\n        (int): Delays resting page for the specified number of\n               seconds.\n    override_animations (boolean):\n        True: Disables showing all platform skill animations.\n        False: 'Default' always show animations."
+    },
+    {
+        "e": "<|fim_prefix|>def view_user_agent():\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        headers = get_headers()\n\n    return {'user-agent': headers['user-agent']}<|fim_middle|>get_json_data_stores returns a python dictionary of the data stores in yahoo finance web page.<|file_separator|>",
+        "l": false,
+        "c": "def view_user_agent():\n    headers = get_headers()\n\n    return {'user-agent': headers['user-agent']}",
+        "d": "get_json_data_stores returns a python dictionary of the data stores in yahoo finance web page."
+    },
+    {
+        "e": "<|fim_prefix|>def js_extractor(response):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        matches = findall(r'src=[\\'\"](.*?\\.js)[\"\\']', response)\n    for match in matches:\n        verb('JS file', match)\n        bad_scripts.add(match)<|fim_middle|>Value of the Expect header, or None if missing.<|file_separator|>",
+        "l": false,
+        "c": "def js_extractor(response):\n    matches = findall(r'src=[\\'\"](.*?\\.js)[\"\\']', response)\n    for match in matches:\n        verb('JS file', match)\n        bad_scripts.add(match)",
+        "d": "Value of the Expect header, or None if missing."
+    },
+    {
+        "e": "<|fim_prefix|>    def make(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            if self._entry_point is None:\n            raise error.Error('Attempting to make deprecated env {}. (HINT: is there a newer registered version of this env?)'.format(self.id))\n\n        cls = load(self._entry_point)\n        env = cls(**self._kwargs)\n\n\n        env.spec = self\n\n        env.env_exit_id = env_close_registry.register(env)\n        return env<|fim_middle|>Args:\n    img (PIL Image): Image to be cropped and resized.\nReturns:\n    PIL Image: Randomly cropped and resized image.<|file_separator|>",
+        "l": false,
+        "c": "    def make(self):\n        if self._entry_point is None:\n            raise error.Error('Attempting to make deprecated env {}. (HINT: is there a newer registered version of this env?)'.format(self.id))\n\n        cls = load(self._entry_point)\n        env = cls(**self._kwargs)\n\n\n        env.spec = self\n\n        env.env_exit_id = env_close_registry.register(env)\n        return env",
+        "d": "Args:\n    img (PIL Image): Image to be cropped and resized.\nReturns:\n    PIL Image: Randomly cropped and resized image."
+    },
+    {
+        "e": "<|fim_prefix|>def input(filename, **kwargs):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        kwargs['filename'] = filename\n    fmt = kwargs.pop('f', None)\n    if fmt:\n        if 'format' in kwargs:\n            raise ValueError(\"Can't specify both `format` and `f` kwargs\")\n        kwargs['format'] = fmt\n    return InputNode(input.__name__, **kwargs)<|fim_middle|>Delete old indexes.<|file_separator|>",
+        "l": false,
+        "c": "def input(filename, **kwargs):\n    kwargs['filename'] = filename\n    fmt = kwargs.pop('f', None)\n    if fmt:\n        if 'format' in kwargs:\n            raise ValueError(\"Can't specify both `format` and `f` kwargs\")\n        kwargs['format'] = fmt\n    return InputNode(input.__name__, **kwargs)",
+        "d": "Delete old indexes."
+    },
+    {
+        "e": "<|fim_prefix|>    def getDate(self, line, dateMatch=None, default_tz=None):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            if not dateMatch:\n            dateMatch = self.matchDate(line)\n        if dateMatch:\n            v = dateMatch.group(self._grpIdx)\n\n            if self._longFrm and len(v) >= 13:\n                if len(v) >= 16 and '.' not in v:\n                    v = float(v) / 1000000\n                else:\n                    v = float(v) / 1000\n            return (float(v), dateMatch)<|fim_middle|>Predict classes for X.\n\nParameters\n----------\nX : array-like or sparse matrix of shape = [n_samples, n_features]\n\nReturns\n-------\ny : array of shape = [n_samples] or [n_samples, n_labels]\n    The predicted classes.<|file_separator|>",
+        "l": false,
+        "c": "    def getDate(self, line, dateMatch=None, default_tz=None):\n        if not dateMatch:\n            dateMatch = self.matchDate(line)\n        if dateMatch:\n            v = dateMatch.group(self._grpIdx)\n\n            if self._longFrm and len(v) >= 13:\n                if len(v) >= 16 and '.' not in v:\n                    v = float(v) / 1000000\n                else:\n                    v = float(v) / 1000\n            return (float(v), dateMatch)",
+        "d": "Predict classes for X.\n\nParameters\n----------\nX : array-like or sparse matrix of shape = [n_samples, n_features]\n\nReturns\n-------\ny : array of shape = [n_samples] or [n_samples, n_labels]\n    The predicted classes."
+    },
+    {
+        "e": "<|fim_prefix|>    def add_module_config_arg(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            self.arg_config_group.add_argument('--use_gpu',\n                                           type=ast.literal_eval,\n                                           default=False,\n                                           help=\"whether use GPU for prediction\")\n\n        self.arg_config_group.add_argument('--batch_size', type=int, default=1, help=\"batch size for prediction\")<|fim_middle|>Events have been removed. Raise an error if we see dashEvents or\nfireEvents.\n\nParameters\n----------\nprops: dict\n    Dictionary with {propName: propMetadata} structure\n\nRaises\n-------\n?<|file_separator|>",
+        "l": false,
+        "c": "    def add_module_config_arg(self):\n        self.arg_config_group.add_argument('--use_gpu',\n                                           type=ast.literal_eval,\n                                           default=False,\n                                           help=\"whether use GPU for prediction\")\n\n        self.arg_config_group.add_argument('--batch_size', type=int, default=1, help=\"batch size for prediction\")",
+        "d": "Events have been removed. Raise an error if we see dashEvents or\nfireEvents.\n\nParameters\n----------\nprops: dict\n    Dictionary with {propName: propMetadata} structure\n\nRaises\n-------\n?"
+    },
+    {
+        "e": "<|fim_prefix|>def solve(x):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        return x<|fim_middle|>pytest -s -v create_data.py::test_scrape_dai_docs_all_pandoc\n:return:<|file_separator|>",
+        "l": false,
+        "c": "def solve(x):\n    return x",
+        "d": "pytest -s -v create_data.py::test_scrape_dai_docs_all_pandoc\n:return:"
+    },
+    {
+        "e": "<|fim_prefix|>def main() -> None:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n    <|fim_middle|>An instance of :class:`HeaderDict`, a case-insensitive dict-like\nview on the response headers. <|file_separator|>",
+        "l": false,
+        "c": "def main() -> None:\n",
+        "d": "An instance of :class:`HeaderDict`, a case-insensitive dict-like\nview on the response headers. "
+    },
+    {
+        "e": "<|fim_prefix|>def save(self, text, source_type: SourceType, dataset_id: str, document_id: str, paragraph_id: str, source_id: str,\n         is_active: bool,\n         embedding=None):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        if embedding is None:\n        embedding = EmbeddingModel.get_embedding_model()\n    self.save_pre_handler()\n    self._save(text, source_type, dataset_id, document_id, paragraph_id, source_id, is_active, embedding)<|fim_middle|>Forward function.\nArgs:\n    x (Tensor): Feature tensor with shape (b, c, h, w).\n    style (Tensor): Tensor with shape (b, num_style_feat).\n    skip (Tensor): Base/skip tensor. Default: None.\nReturns:\n    Tensor: RGB images.<|file_separator|>",
+        "l": false,
+        "c": "def save(self, text, source_type: SourceType, dataset_id: str, document_id: str, paragraph_id: str, source_id: str,\n         is_active: bool,\n         embedding=None):\n    if embedding is None:\n        embedding = EmbeddingModel.get_embedding_model()\n    self.save_pre_handler()\n    self._save(text, source_type, dataset_id, document_id, paragraph_id, source_id, is_active, embedding)",
+        "d": "Forward function.\nArgs:\n    x (Tensor): Feature tensor with shape (b, c, h, w).\n    style (Tensor): Tensor with shape (b, num_style_feat).\n    skip (Tensor): Base/skip tensor. Default: None.\nReturns:\n    Tensor: RGB images."
+    },
+    {
+        "e": "<|fim_prefix|>def __init__(\n    self,\n    color: Union[Color, ColorPalette] = ColorPalette.default(),\n    thickness: int = 2,\n    color_lookup: ColorLookup = ColorLookup.CLASS,\n):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        self.color: Union[Color, ColorPalette] = color\n    self.thickness: int = thickness\n    self.color_lookup: ColorLookup = color_lookup<|fim_middle|>Even if you're an admin, you can't remove people from private\nstreams you aren't on.<|file_separator|>",
+        "l": false,
+        "c": "def __init__(\n    self,\n    color: Union[Color, ColorPalette] = ColorPalette.default(),\n    thickness: int = 2,\n    color_lookup: ColorLookup = ColorLookup.CLASS,\n):\n    self.color: Union[Color, ColorPalette] = color\n    self.thickness: int = thickness\n    self.color_lookup: ColorLookup = color_lookup",
+        "d": "Even if you're an admin, you can't remove people from private\nstreams you aren't on."
+    },
+    {
+        "e": "<|fim_prefix|>  def start(self, game_version=None, data_version=None, **kwargs):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        game_version = game_version or FLAGS.sc2_version\n    if game_version and not data_version:\n      data_version = get_version(game_version)[1]\n    return super(LocalBase, self).start(game_version=game_version,\n                                        data_version=data_version, **kwargs)<|fim_middle|>Returns :obj:`True`, if graph edges are directed.<|file_separator|>",
+        "l": false,
+        "c": "  def start(self, game_version=None, data_version=None, **kwargs):\n    game_version = game_version or FLAGS.sc2_version\n    if game_version and not data_version:\n      data_version = get_version(game_version)[1]\n    return super(LocalBase, self).start(game_version=game_version,\n                                        data_version=data_version, **kwargs)",
+        "d": "Returns :obj:`True`, if graph edges are directed."
+    },
+    {
+        "e": "<|fim_prefix|>    def api_version(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            return self._api_version<|fim_middle|>Function that returns string width.\n\nIs used to calculate the place given string occupies when handling \n``width`` argument to ``.render()`` method. Must take east asian width \ninto account.\n\n:param unicode string:\n    String whose width will be calculated.\n\n:return: unsigned integer.<|file_separator|>",
+        "l": false,
+        "c": "    def api_version(self):\n        return self._api_version",
+        "d": "Function that returns string width.\n\nIs used to calculate the place given string occupies when handling \n``width`` argument to ``.render()`` method. Must take east asian width \ninto account.\n\n:param unicode string:\n    String whose width will be calculated.\n\n:return: unsigned integer."
+    },
+    {
+        "e": "<|fim_prefix|>    def submit(\n        self, fn: Callable, *args: Any, extra_context: dict = None, **kwargs: Any\n    ) -> \"dask.delayed\":\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            import dask\n\n        extra_kwargs = {}\n        key = _make_task_key(**(extra_context or {}))\n        if key is not None:\n            extra_kwargs[\"dask_key_name\"] = key\n        return dask.delayed(fn, pure=False)(*args, **kwargs, **extra_kwargs)<|fim_middle|>:param d_model:\n:param d_k:\n:param d_v:\n:param sequence_length:\n:param h:\n:param batch_size:\n:param embedded_words: shape:[batch_size*sequence_length,embed_size]<|file_separator|>",
+        "l": false,
+        "c": "    def submit(\n        self, fn: Callable, *args: Any, extra_context: dict = None, **kwargs: Any\n    ) -> \"dask.delayed\":\n        import dask\n\n        extra_kwargs = {}\n        key = _make_task_key(**(extra_context or {}))\n        if key is not None:\n            extra_kwargs[\"dask_key_name\"] = key\n        return dask.delayed(fn, pure=False)(*args, **kwargs, **extra_kwargs)",
+        "d": ":param d_model:\n:param d_k:\n:param d_v:\n:param sequence_length:\n:param h:\n:param batch_size:\n:param embedded_words: shape:[batch_size*sequence_length,embed_size]"
+    },
+    {
+        "e": "<|fim_prefix|>def get_per_pixel_mean():\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        a = SVHNDigit('train')\n    b = SVHNDigit('test')\n    c = SVHNDigit('extra')\n    return np.concatenate((a.X, b.X, c.X)).mean(axis=0)<|fim_middle|>Object to hold extra stored data.<|file_separator|>",
+        "l": false,
+        "c": "def get_per_pixel_mean():\n    a = SVHNDigit('train')\n    b = SVHNDigit('test')\n    c = SVHNDigit('extra')\n    return np.concatenate((a.X, b.X, c.X)).mean(axis=0)",
+        "d": "Object to hold extra stored data."
+    },
+    {
+        "e": "<|fim_prefix|>def get_slot_names(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        return super(_DistributedAdasumOptimizer, self).get_slot_names() +\\\n        self._optimizer.get_slot_names()<|fim_middle|>Convert Object To String.\n\nKeyword Arguments:\nself                   -- This object.\n\nReturn Value:\nNicely formatted string to get information about this object.<|file_separator|>",
+        "l": false,
+        "c": "def get_slot_names(self):\n    return super(_DistributedAdasumOptimizer, self).get_slot_names() +\\\n        self._optimizer.get_slot_names()",
+        "d": "Convert Object To String.\n\nKeyword Arguments:\nself                   -- This object.\n\nReturn Value:\nNicely formatted string to get information about this object."
+    },
+    {
+        "e": "<|fim_prefix|>def __init__(\n    self,\n    tokenizer: Callable[[str], Tuple[List[str], List[int]]],\n    sentence_splitter: Callable[[str], Tuple[List[str], List[int]]],\n):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        self.tokenizer = tokenizer\n    self.sentence_splitter = sentence_splitter<|fim_middle|>Convert the model to the noise prediction model or the data prediction model.<|file_separator|>",
+        "l": false,
+        "c": "def __init__(\n    self,\n    tokenizer: Callable[[str], Tuple[List[str], List[int]]],\n    sentence_splitter: Callable[[str], Tuple[List[str], List[int]]],\n):\n    self.tokenizer = tokenizer\n    self.sentence_splitter = sentence_splitter",
+        "d": "Convert the model to the noise prediction model or the data prediction model."
+    },
+    {
+        "e": "<|fim_prefix|>    def save_window(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            self.settingsManager.save_window()<|fim_middle|>Constant initializer, will fill in all values with the value of `constant`.\n\nParameters\n----------\nconstant\n    Constant value for initialization.<|file_separator|>",
+        "l": false,
+        "c": "    def save_window(self):\n        self.settingsManager.save_window()",
+        "d": "Constant initializer, will fill in all values with the value of `constant`.\n\nParameters\n----------\nconstant\n    Constant value for initialization."
+    },
+    {
+        "e": "<|fim_prefix|>def values(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        for item in self:\n        yield item[0]<|fim_middle|>Process a message from the user, internally calls step<|file_separator|>",
+        "l": false,
+        "c": "def values(self):\n    for item in self:\n        yield item[0]",
+        "d": "Process a message from the user, internally calls step"
+    },
+    {
+        "e": "<|fim_prefix|>    def strip_puncuation(text: str) -> str:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            text: str = str(text).translate(str.maketrans(\"\", \"\", punctuation))\n        return text<|fim_middle|>Return preferred output format: ansi, text, html or png\nbased on arguments and headers in `request`.\nReturn new location (can be rewritten)<|file_separator|>",
+        "l": false,
+        "c": "    def strip_puncuation(text: str) -> str:\n        text: str = str(text).translate(str.maketrans(\"\", \"\", punctuation))\n        return text",
+        "d": "Return preferred output format: ansi, text, html or png\nbased on arguments and headers in `request`.\nReturn new location (can be rewritten)"
+    },
+    {
+        "e": "<|fim_prefix|>def state_dict(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        state_dict = self.wrapped_optimizer.state_dict()\n    state_dict['loss_scale'] = self.scaler.loss_scale\n    return state_dict<|fim_middle|>Calculate the remaining time for a start date and a timedelta.\n\ne.g. \"how many seconds left for 30 seconds after start?\"\n\n:param start: Start :class:`~datetime.datetime`.\n:param ends_in: The end delta as a :class:`~datetime.timedelta`.\n:keyword relative: If enabled the end time will be\n    calculated using :func:`delta_resolution` (i.e. rounded to the\n    resolution of `ends_in`).\n:keyword now: Function returning the current time and date,\n    defaults to :func:`datetime.utcnow`.<|file_separator|>",
+        "l": false,
+        "c": "def state_dict(self):\n    state_dict = self.wrapped_optimizer.state_dict()\n    state_dict['loss_scale'] = self.scaler.loss_scale\n    return state_dict",
+        "d": "Calculate the remaining time for a start date and a timedelta.\n\ne.g. \"how many seconds left for 30 seconds after start?\"\n\n:param start: Start :class:`~datetime.datetime`.\n:param ends_in: The end delta as a :class:`~datetime.timedelta`.\n:keyword relative: If enabled the end time will be\n    calculated using :func:`delta_resolution` (i.e. rounded to the\n    resolution of `ends_in`).\n:keyword now: Function returning the current time and date,\n    defaults to :func:`datetime.utcnow`."
+    },
+    {
+        "e": "<|fim_prefix|>def test_common_failures_reset():\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        env = IdentityEnvBox()\n\n    check_reset_assert_error(env, np.ones((3,)))\n\n    check_reset_assert_error(env, 1)\n\n\n    check_reset_assert_error(env, (env.observation_space.sample(), False))<|fim_middle|>Lists the currently available models, and provides basic information about each\none such as the owner and availability.<|file_separator|>",
+        "l": false,
+        "c": "def test_common_failures_reset():\n    env = IdentityEnvBox()\n\n    check_reset_assert_error(env, np.ones((3,)))\n\n    check_reset_assert_error(env, 1)\n\n\n    check_reset_assert_error(env, (env.observation_space.sample(), False))",
+        "d": "Lists the currently available models, and provides basic information about each\none such as the owner and availability."
+    },
+    {
+        "e": "<|fim_prefix|>    def __exit__(self, exc_type, exc_value, exc_traceback) -> None:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            self.running = False\n        if self.spinner_thread is not None:\n            self.spinner_thread.join()\n        sys.stdout.write(f\"\\r{' ' * (len(self.message) + 2)}\\r\")\n        sys.stdout.flush()<|fim_middle|>:param data: The data to send to the docker container for testing. This is either a\n             Pandas dataframe or a JSON-formatted string.<|file_separator|>",
+        "l": false,
+        "c": "    def __exit__(self, exc_type, exc_value, exc_traceback) -> None:\n        self.running = False\n        if self.spinner_thread is not None:\n            self.spinner_thread.join()\n        sys.stdout.write(f\"\\r{' ' * (len(self.message) + 2)}\\r\")\n        sys.stdout.flush()",
+        "d": ":param data: The data to send to the docker container for testing. This is either a\n             Pandas dataframe or a JSON-formatted string."
+    },
+    {
+        "e": "<|fim_prefix|>def request(self, key, user, priority, callback):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        if key not in self._scheduler_map:\n        self._scheduler_map[key] = self.create_scheduler(key)\n    self._scheduler_map[key].request(user, priority, callback)<|fim_middle|>Copies the recipe data into a build dir for the given arch. By\ndefault, this unpacks a downloaded recipe. You should override\nit (or use a Recipe subclass with different behaviour) if you\nwant to do something else.<|file_separator|>",
+        "l": false,
+        "c": "def request(self, key, user, priority, callback):\n    if key not in self._scheduler_map:\n        self._scheduler_map[key] = self.create_scheduler(key)\n    self._scheduler_map[key].request(user, priority, callback)",
+        "d": "Copies the recipe data into a build dir for the given arch. By\ndefault, this unpacks a downloaded recipe. You should override\nit (or use a Recipe subclass with different behaviour) if you\nwant to do something else."
+    },
+    {
+        "e": "<|fim_prefix|>  def identity(cls, shape, dtype=jnp.float32) -> Rot3Array:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        ones = jnp.ones(shape, dtype=dtype)\n    zeros = jnp.zeros(shape, dtype=dtype)\n    return cls(ones, zeros, zeros, zeros, ones, zeros, zeros, zeros, ones)<|fim_middle|>char tokenizer (wordpiece english)\nnormed txt(space seperated or not) => list of word-piece<|file_separator|>",
+        "l": false,
+        "c": "  def identity(cls, shape, dtype=jnp.float32) -> Rot3Array:\n    ones = jnp.ones(shape, dtype=dtype)\n    zeros = jnp.zeros(shape, dtype=dtype)\n    return cls(ones, zeros, zeros, zeros, ones, zeros, zeros, zeros, ones)",
+        "d": "char tokenizer (wordpiece english)\nnormed txt(space seperated or not) => list of word-piece"
+    },
+    {
+        "e": "<|fim_prefix|>def safe_str(v):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        try:\n        return str(v)\n    except UnicodeError:\n        if not isinstance(v, text_type):\n            v = text_type(v)\n        errors = \"replace\"\n        return v.encode(\"utf-8\", errors)<|fim_middle|>Translate constant `py_val` to a constant, canonicalizing its dtype.\n\nArgs:\n  py_val: a Python value to be translated to a constant.\n\nReturns:\n  A representation of the constant, either a ComputationDataHandle or None<|file_separator|>",
+        "l": false,
+        "c": "def safe_str(v):\n    try:\n        return str(v)\n    except UnicodeError:\n        if not isinstance(v, text_type):\n            v = text_type(v)\n        errors = \"replace\"\n        return v.encode(\"utf-8\", errors)",
+        "d": "Translate constant `py_val` to a constant, canonicalizing its dtype.\n\nArgs:\n  py_val: a Python value to be translated to a constant.\n\nReturns:\n  A representation of the constant, either a ComputationDataHandle or None"
+    },
+    {
+        "e": "<|fim_prefix|>def test_post(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        url = reverse(\n        \"authentik_api:flow-executor\", kwargs={\"flow_slug\": self.flow.slug}\n    )\n    response = self.client.post(url, {})\n    self.assertEqual(response.status_code, 200)\n    self.assertJSONEqual(\n        force_str(response.content),\n        {\"to\": reverse(\"authentik_core:shell\"), \"type\": \"redirect\"},\n    )<|fim_middle|>Helper function for cleaning up database after tests.<|file_separator|>",
+        "l": false,
+        "c": "def test_post(self):\n    url = reverse(\n        \"authentik_api:flow-executor\", kwargs={\"flow_slug\": self.flow.slug}\n    )\n    response = self.client.post(url, {})\n    self.assertEqual(response.status_code, 200)\n    self.assertJSONEqual(\n        force_str(response.content),\n        {\"to\": reverse(\"authentik_core:shell\"), \"type\": \"redirect\"},\n    )",
+        "d": "Helper function for cleaning up database after tests."
+    },
+    {
+        "e": "<|fim_prefix|>    def parse(self, x):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            return list(json.loads(x, object_pairs_hook=_FrozenOrderedDict))<|fim_middle|>Header encoding is mandated as ascii, but we allow fallbacks to utf-8\nor iso-8859-1.<|file_separator|>",
+        "l": false,
+        "c": "    def parse(self, x):\n        return list(json.loads(x, object_pairs_hook=_FrozenOrderedDict))",
+        "d": "Header encoding is mandated as ascii, but we allow fallbacks to utf-8\nor iso-8859-1."
+    },
+    {
+        "e": "<|fim_prefix|>    def get(self, path):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            mountpoint, chunks = self.get_mountpoint(path)\n\n        if mountpoint is None:\n            return self._files.get(self._join_chunks(chunks))\n        else:\n            return mountpoint.get(chunks)<|fim_middle|>Delete LightingWork component and shuts down hardware provisioned via L.CloudCompute.\n\nLocally, the work.delete() behaves as work.stop().<|file_separator|>",
+        "l": false,
+        "c": "    def get(self, path):\n        mountpoint, chunks = self.get_mountpoint(path)\n\n        if mountpoint is None:\n            return self._files.get(self._join_chunks(chunks))\n        else:\n            return mountpoint.get(chunks)",
+        "d": "Delete LightingWork component and shuts down hardware provisioned via L.CloudCompute.\n\nLocally, the work.delete() behaves as work.stop()."
+    },
+    {
+        "e": "<|fim_prefix|>def replace_non_letters_non_numbers_with_whitespace(cls, a_string):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        return cls.regex.sub(\" \", a_string)<|fim_middle|>M\u00e9todo para fazer o p\u00e1ssaro pular<|file_separator|>",
+        "l": false,
+        "c": "def replace_non_letters_non_numbers_with_whitespace(cls, a_string):\n    return cls.regex.sub(\" \", a_string)",
+        "d": "M\u00e9todo para fazer o p\u00e1ssaro pular"
+    },
+    {
+        "e": "<|fim_prefix|>def add_fast_rcnn_outputs(model, blob_in, dim):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        model.FC(\n        blob_in,\n        'cls_score',\n        dim,\n        model.num_classes,\n        weight_init=gauss_fill(0.01),\n        bias_init=const_fill(0.0)\n    )\n    if not model.train:\n\n\n        model.Softmax('cls_score', 'cls_prob', engine='CUDNN')\n    model.FC(\n        blob_in,\n        'bbox_pred',\n        dim,\n        model.num_classes * 4,\n        weight_init=gauss_fill(0.001),\n        bias_init=const_fill(0.0)\n    )<|fim_middle|>Returns raw repository data<|file_separator|>",
+        "l": false,
+        "c": "def add_fast_rcnn_outputs(model, blob_in, dim):\n    model.FC(\n        blob_in,\n        'cls_score',\n        dim,\n        model.num_classes,\n        weight_init=gauss_fill(0.01),\n        bias_init=const_fill(0.0)\n    )\n    if not model.train:\n\n\n        model.Softmax('cls_score', 'cls_prob', engine='CUDNN')\n    model.FC(\n        blob_in,\n        'bbox_pred',\n        dim,\n        model.num_classes * 4,\n        weight_init=gauss_fill(0.001),\n        bias_init=const_fill(0.0)\n    )",
+        "d": "Returns raw repository data"
+    },
+    {
+        "e": "<|fim_prefix|>def shuffle_data_sources(self, seed: Optional[int]) -> \"CyclingMultiSourcesExamplesIterable\":\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        ex_iterables = [ex_iterable.shuffle_data_sources(seed) for ex_iterable in self.ex_iterables]\n    return CyclingMultiSourcesExamplesIterable(ex_iterables)<|fim_middle|>will execute either _instance_method_1 or _instance_method_2\n\ndepending on self.param value<|file_separator|>",
+        "l": false,
+        "c": "def shuffle_data_sources(self, seed: Optional[int]) -> \"CyclingMultiSourcesExamplesIterable\":\n    ex_iterables = [ex_iterable.shuffle_data_sources(seed) for ex_iterable in self.ex_iterables]\n    return CyclingMultiSourcesExamplesIterable(ex_iterables)",
+        "d": "will execute either _instance_method_1 or _instance_method_2\n\ndepending on self.param value"
+    },
+    {
+        "e": "<|fim_prefix|>    def __init__(self, name, value, minval=None, maxval=None, check_fn=None):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            self.default = self.value = value\n        self.name = name\n        self.type = type(value)\n        self.maxval, self.minval = maxval, minval\n        self.check_fn = check_fn\n        self.require_known_player = False\n        self.allowed_values = []<|fim_middle|>Create a Config instance.\n\nArgs:\n    filename (str): Optional filename of the config file. If empty,\n                    defaults to MACKUP_CONFIG_FILE<|file_separator|>",
+        "l": false,
+        "c": "    def __init__(self, name, value, minval=None, maxval=None, check_fn=None):\n        self.default = self.value = value\n        self.name = name\n        self.type = type(value)\n        self.maxval, self.minval = maxval, minval\n        self.check_fn = check_fn\n        self.require_known_player = False\n        self.allowed_values = []",
+        "d": "Create a Config instance.\n\nArgs:\n    filename (str): Optional filename of the config file. If empty,\n                    defaults to MACKUP_CONFIG_FILE"
+    },
+    {
+        "e": "<|fim_prefix|>    def _bwd(self, dLdy, X):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            W = self.parameters[\"W\"]\n        b = self.parameters[\"b\"]\n\n        Z = X @ W + b\n        dZ = dLdy * self.act_fn.grad(Z)\n\n        dX = dZ @ W.T\n        dW = X.T @ dZ\n        dB = dZ.sum(axis=0, keepdims=True)\n        return dX, dW, dB<|fim_middle|>Print message to stdout if not in quiet mode.<|file_separator|>",
+        "l": false,
+        "c": "    def _bwd(self, dLdy, X):\n        W = self.parameters[\"W\"]\n        b = self.parameters[\"b\"]\n\n        Z = X @ W + b\n        dZ = dLdy * self.act_fn.grad(Z)\n\n        dX = dZ @ W.T\n        dW = X.T @ dZ\n        dB = dZ.sum(axis=0, keepdims=True)\n        return dX, dW, dB",
+        "d": "Print message to stdout if not in quiet mode."
+    },
+    {
+        "e": "<|fim_prefix|>def dispatch(self, request: HttpRequest, source_slug: str) -> HttpResponse:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        source: SAMLSource = get_object_or_404(SAMLSource, slug=source_slug)\n    metadata = MetadataProcessor(source, request).build_entity_descriptor()\n    return HttpResponse(metadata, content_type=\"text/xml\")<|fim_middle|>Similar to *forward* but only return features.\n\nReturns:\n    tuple:\n        - the decoder's features of shape `(batch, seq_len, embed_dim)`\n        - a dictionary with any model-specific outputs<|file_separator|>",
+        "l": false,
+        "c": "def dispatch(self, request: HttpRequest, source_slug: str) -> HttpResponse:\n    source: SAMLSource = get_object_or_404(SAMLSource, slug=source_slug)\n    metadata = MetadataProcessor(source, request).build_entity_descriptor()\n    return HttpResponse(metadata, content_type=\"text/xml\")",
+        "d": "Similar to *forward* but only return features.\n\nReturns:\n    tuple:\n        - the decoder's features of shape `(batch, seq_len, embed_dim)`\n        - a dictionary with any model-specific outputs"
+    },
+    {
+        "e": "<|fim_prefix|>    def forward(self, x: torch.Tensor):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            self.extend_pe(x)\n        x = x * self.xscale + self.pe[:, : x.size(1)]\n        return self.dropout(x)<|fim_middle|>vis_root (string): Root directory of images (e.g. coco/images/)\nann_root (string): directory to store the annotation file\nsplit (string): val or test<|file_separator|>",
+        "l": false,
+        "c": "    def forward(self, x: torch.Tensor):\n        self.extend_pe(x)\n        x = x * self.xscale + self.pe[:, : x.size(1)]\n        return self.dropout(x)",
+        "d": "vis_root (string): Root directory of images (e.g. coco/images/)\nann_root (string): directory to store the annotation file\nsplit (string): val or test"
+    },
+    {
+        "e": "<|fim_prefix|>def delete_clusters(user: User):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        print(\"[INFO] deleting all clusters\")\n    cluster: Cluster\n    for cluster in Cluster.objects.filter(owner=user):\n        if cluster != ClusterManager.get_unknown_cluster():\n            ClusterManager.delete_cluster(cluster)<|fim_middle|>Test for leaking Model._meta.db_table monkeypatching on SQLite (#3891).<|file_separator|>",
+        "l": false,
+        "c": "def delete_clusters(user: User):\n    print(\"[INFO] deleting all clusters\")\n    cluster: Cluster\n    for cluster in Cluster.objects.filter(owner=user):\n        if cluster != ClusterManager.get_unknown_cluster():\n            ClusterManager.delete_cluster(cluster)",
+        "d": "Test for leaking Model._meta.db_table monkeypatching on SQLite (#3891)."
+    },
+    {
+        "e": "<|fim_prefix|>def clause_with_joiner(self, joiner):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        clause_parts = []\n    subvals = []\n    for subq in self.subqueries:\n        subq_clause, subq_subvals = subq.clause()\n        clause_parts.append('(' + subq_clause + ')')\n        subvals += subq_subvals\n    clause = (' ' + joiner + ' ').join(clause_parts)\n    return clause, subvals<|fim_middle|>Function to randomly sample a new configuration which must be valid.\n   TODO: may loop indefinitely due to no termination condition (like RandomSearcher.get_config() )\nArgs:\n    returns: config<|file_separator|>",
+        "l": false,
+        "c": "def clause_with_joiner(self, joiner):\n    clause_parts = []\n    subvals = []\n    for subq in self.subqueries:\n        subq_clause, subq_subvals = subq.clause()\n        clause_parts.append('(' + subq_clause + ')')\n        subvals += subq_subvals\n    clause = (' ' + joiner + ' ').join(clause_parts)\n    return clause, subvals",
+        "d": "Function to randomly sample a new configuration which must be valid.\n   TODO: may loop indefinitely due to no termination condition (like RandomSearcher.get_config() )\nArgs:\n    returns: config"
+    },
+    {
+        "e": "<|fim_prefix|>def maskrcnn_inference(x, labels):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        mask_prob = x.sigmoid()\n\n\n    num_masks = x.shape[0]\n    boxes_per_image = [len(l) for l in labels]\n    labels = torch.cat(labels)\n    index = torch.arange(num_masks, device=labels.device)\n    mask_prob = mask_prob[index, labels][:, None]\n\n    if len(boxes_per_image) == 1:\n\n        mask_prob = (mask_prob,)\n    else:\n        mask_prob = mask_prob.split(boxes_per_image, dim=0)\n\n    return mask_prob<|fim_middle|>Sets local attantion layout used by the given head in the sparse attention.\n\nArguments:\n     h: required: an integer determining head index\n     layout: required: a tensor of dimension (num_heads, num_blocks, num_blocks) containing sparsity layout of all head; may not be completly set at this step\n\nReturn:\n     layout: a tensor of dimension (num_heads, num_blocks, num_blocks) containing sparsity layout of all head in which local layout is set<|file_separator|>",
+        "l": false,
+        "c": "def maskrcnn_inference(x, labels):\n    mask_prob = x.sigmoid()\n\n\n    num_masks = x.shape[0]\n    boxes_per_image = [len(l) for l in labels]\n    labels = torch.cat(labels)\n    index = torch.arange(num_masks, device=labels.device)\n    mask_prob = mask_prob[index, labels][:, None]\n\n    if len(boxes_per_image) == 1:\n\n        mask_prob = (mask_prob,)\n    else:\n        mask_prob = mask_prob.split(boxes_per_image, dim=0)\n\n    return mask_prob",
+        "d": "Sets local attantion layout used by the given head in the sparse attention.\n\nArguments:\n     h: required: an integer determining head index\n     layout: required: a tensor of dimension (num_heads, num_blocks, num_blocks) containing sparsity layout of all head; may not be completly set at this step\n\nReturn:\n     layout: a tensor of dimension (num_heads, num_blocks, num_blocks) containing sparsity layout of all head in which local layout is set"
+    },
+    {
+        "e": "<|fim_prefix|>def scroll_behavior(self, value: ScrollBehavior) -> 'Tailwind':\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        self.element.classes('scroll-' + value)\n    return self<|fim_middle|>When dumb-init is not running in setsid mode, it should only signal its\nimmediate child.<|file_separator|>",
+        "l": false,
+        "c": "def scroll_behavior(self, value: ScrollBehavior) -> 'Tailwind':\n    self.element.classes('scroll-' + value)\n    return self",
+        "d": "When dumb-init is not running in setsid mode, it should only signal its\nimmediate child."
+    }
+]

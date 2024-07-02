@@ -1,0 +1,12 @@
+[{
+        "e": "<|fim_prefix|>def parse(self, text: str) -> str:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        return text<|fim_middle|>Returns the input text with no changes.<|file_separator|>",
+        "l": true,
+        "c": "def parse(self, text: str) -> str:\n    return text",
+        "d": "Returns the input text with no changes."
+    },
+    {
+        "e": "<|fim_prefix|>def parse(self, text: str) -> str:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        return text<|fim_middle|>Returns the input text with no changes.<|file_separator|>",
+        "l": true,
+        "c": "def parse(self, text: str) -> str:\n    return text",
+        "d": "Returns the input text with no changes."
+    }]

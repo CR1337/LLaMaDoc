@@ -1,0 +1,602 @@
+[
+    {
+        "e": "<|fim_prefix|>def once(\n    self,\n    event: Literal[\"close\"],\n    f: typing.Callable[\n        [\"BrowserContext\"], \"typing.Union[typing.Awaitable[None], None]\"\n    ],\n) -> None:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n    <|fim_middle|>Builds PredictedAlignedErrorHead module.\n\nArguments:\n  representations: Dictionary of representations, must contain:\n    * 'pair': pair representation, shape [N_res, N_res, c_z].\n  batch: Batch, unused.\n  is_training: Whether the module is in training mode.\n\nReturns:\n  Dictionary containing:\n    * logits: logits for aligned error, shape [N_res, N_res, N_bins].\n    * bin_breaks: array containing bin breaks, shape [N_bins - 1].<|file_separator|>",
+        "l": false,
+        "c": "def once(\n    self,\n    event: Literal[\"close\"],\n    f: typing.Callable[\n        [\"BrowserContext\"], \"typing.Union[typing.Awaitable[None], None]\"\n    ],\n) -> None:\n",
+        "d": "Builds PredictedAlignedErrorHead module.\n\nArguments:\n  representations: Dictionary of representations, must contain:\n    * 'pair': pair representation, shape [N_res, N_res, c_z].\n  batch: Batch, unused.\n  is_training: Whether the module is in training mode.\n\nReturns:\n  Dictionary containing:\n    * logits: logits for aligned error, shape [N_res, N_res, N_bins].\n    * bin_breaks: array containing bin breaks, shape [N_bins - 1]."
+    },
+    {
+        "e": "<|fim_prefix|>    def __exit__(self, exc_type, exc_value, exc_traceback) -> None:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            self.running = False\n        if self.spinner_thread is not None:\n            self.spinner_thread.join()\n        sys.stdout.write(f\"\\r{' ' * (len(self.message) + 2)}\\r\")\n        sys.stdout.flush()<|fim_middle|>:param data: The data to send to the docker container for testing. This is either a\n             Pandas dataframe or a JSON-formatted string.<|file_separator|>",
+        "l": false,
+        "c": "    def __exit__(self, exc_type, exc_value, exc_traceback) -> None:\n        self.running = False\n        if self.spinner_thread is not None:\n            self.spinner_thread.join()\n        sys.stdout.write(f\"\\r{' ' * (len(self.message) + 2)}\\r\")\n        sys.stdout.flush()",
+        "d": ":param data: The data to send to the docker container for testing. This is either a\n             Pandas dataframe or a JSON-formatted string."
+    },
+    {
+        "e": "<|fim_prefix|>    def _save2stack(self, erase=False):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            bar = [line[0] for line in self.itersize()]\n        self._barstack.append(bar)\n\n        if erase:\n            self.backwards()<|fim_middle|>Get the environment selected by this project<|file_separator|>",
+        "l": false,
+        "c": "    def _save2stack(self, erase=False):\n        bar = [line[0] for line in self.itersize()]\n        self._barstack.append(bar)\n\n        if erase:\n            self.backwards()",
+        "d": "Get the environment selected by this project"
+    },
+    {
+        "e": "<|fim_prefix|>def raw(self, files=None):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        return concat([open(filename).read()\n                   for filename in self.abspaths(files)])<|fim_middle|>:param _pytest.terminal.TerminalReporter terminal_reporter:\n:param _pytest.capture.CaptureManager capture_manager:<|file_separator|>",
+        "l": false,
+        "c": "def raw(self, files=None):\n    return concat([open(filename).read()\n                   for filename in self.abspaths(files)])",
+        "d": ":param _pytest.terminal.TerminalReporter terminal_reporter:\n:param _pytest.capture.CaptureManager capture_manager:"
+    },
+    {
+        "e": "<|fim_prefix|>def get_r_type(type_object, is_flow_type=False, indent_num=0):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        js_type_name = type_object[\"name\"]\n    js_to_r_types = get_r_prop_types(type_object=type_object)\n    if (\n        \"computed\" in type_object\n        and type_object[\"computed\"]\n        or type_object.get(\"type\", \"\") == \"function\"\n    ):\n        return \"\"\n    if js_type_name in js_to_r_types:\n        prop_type = js_to_r_types[js_type_name]()\n        return prop_type\n    return \"\"<|fim_middle|>Validate the given interface\n\n:param interface: Name of an interface\n:type interface: str\n:return: None\n:rtype: None\n:raises: argparse.ArgumentTypeError in case of invalid interface<|file_separator|>",
+        "l": false,
+        "c": "def get_r_type(type_object, is_flow_type=False, indent_num=0):\n    js_type_name = type_object[\"name\"]\n    js_to_r_types = get_r_prop_types(type_object=type_object)\n    if (\n        \"computed\" in type_object\n        and type_object[\"computed\"]\n        or type_object.get(\"type\", \"\") == \"function\"\n    ):\n        return \"\"\n    if js_type_name in js_to_r_types:\n        prop_type = js_to_r_types[js_type_name]()\n        return prop_type\n    return \"\"",
+        "d": "Validate the given interface\n\n:param interface: Name of an interface\n:type interface: str\n:return: None\n:rtype: None\n:raises: argparse.ArgumentTypeError in case of invalid interface"
+    },
+    {
+        "e": "<|fim_prefix|>    def get_pipeline(self, pipeline_name):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            check.str_param(pipeline_name, \"pipeline_name\")\n\n        return self._pipelines.get_definition(pipeline_name)<|fim_middle|># Returns\n\nThe accumulated mean absolute error.<|file_separator|>",
+        "l": false,
+        "c": "    def get_pipeline(self, pipeline_name):\n        check.str_param(pipeline_name, \"pipeline_name\")\n\n        return self._pipelines.get_definition(pipeline_name)",
+        "d": "# Returns\n\nThe accumulated mean absolute error."
+    },
+    {
+        "e": "<|fim_prefix|>def get_action_from_string(command_string: str) -> Action:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        vars = command_string.split(' ')\n    cmd = vars[0]\n    args = [] if len(vars) == 1 else vars[0:]\n    bg = True if '--background' in args else False\n\n    if 'exit' == cmd:\n        return AgentFinishAction()\n\n\n\n    else:\n        return CmdRunAction(command_string, background=bg)<|fim_middle|>Initialize Siren uniform initializer for the first layer.\n\nIt draws values from a uniform distribtion `[-limit, limit]`\nwhere `limit=sqrt(6 / fan_in) / w0` where `fan_in` is the number\nof input features.<|file_separator|>",
+        "l": false,
+        "c": "def get_action_from_string(command_string: str) -> Action:\n    vars = command_string.split(' ')\n    cmd = vars[0]\n    args = [] if len(vars) == 1 else vars[0:]\n    bg = True if '--background' in args else False\n\n    if 'exit' == cmd:\n        return AgentFinishAction()\n\n\n\n    else:\n        return CmdRunAction(command_string, background=bg)",
+        "d": "Initialize Siren uniform initializer for the first layer.\n\nIt draws values from a uniform distribtion `[-limit, limit]`\nwhere `limit=sqrt(6 / fan_in) / w0` where `fan_in` is the number\nof input features."
+    },
+    {
+        "e": "<|fim_prefix|>def _check_import_package(package_helper: CondaPackageHelper, command: list[str]):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        LOGGER.debug(f\"Trying to import a package with [{command}] ...\")\n    exec_result = package_helper.running_container.exec_run(command)\n    assert (\n        exec_result.exit_code == 0\n    ), f\"Import package failed, output: {exec_result.output}\"<|fim_middle|>Stop workers\n\n:attr graceful: boolean, If True (the default) workers will be\nkilled gracefully  (ie. trying to wait for the current connection)<|file_separator|>",
+        "l": false,
+        "c": "def _check_import_package(package_helper: CondaPackageHelper, command: list[str]):\n    LOGGER.debug(f\"Trying to import a package with [{command}] ...\")\n    exec_result = package_helper.running_container.exec_run(command)\n    assert (\n        exec_result.exit_code == 0\n    ), f\"Import package failed, output: {exec_result.output}\"",
+        "d": "Stop workers\n\n:attr graceful: boolean, If True (the default) workers will be\nkilled gracefully  (ie. trying to wait for the current connection)"
+    },
+    {
+        "e": "<|fim_prefix|>def __add_obsolete_options(parser):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        g = parser.add_option_group('Obsolete options (not used anymore)')\n    g.add_option(*_OLD_OPTIONS,\n                 **{'action': 'callback',\n                    'callback': __obsolete_option,\n                    'help': 'These options do not exist anymore.'})<|fim_middle|>Test if the set_speak_mode() method updates the speak_mode attribute.<|file_separator|>",
+        "l": false,
+        "c": "def __add_obsolete_options(parser):\n    g = parser.add_option_group('Obsolete options (not used anymore)')\n    g.add_option(*_OLD_OPTIONS,\n                 **{'action': 'callback',\n                    'callback': __obsolete_option,\n                    'help': 'These options do not exist anymore.'})",
+        "d": "Test if the set_speak_mode() method updates the speak_mode attribute."
+    },
+    {
+        "e": "<|fim_prefix|>def get_working_if():\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        for i in get_if_list():\n        if i == LOOPBACK_NAME:\n            continue\n        ifflags = struct.unpack(\"16xH14x\", get_if(i, SIOCGIFFLAGS))[0]\n        if ifflags & IFF_UP:\n            return i\n    return LOOPBACK_NAME<|fim_middle|>Format dataframe values.\n\nArgs:\n    value: The value to format.\n\nReturns:\n    Format data<|file_separator|>",
+        "l": false,
+        "c": "def get_working_if():\n    for i in get_if_list():\n        if i == LOOPBACK_NAME:\n            continue\n        ifflags = struct.unpack(\"16xH14x\", get_if(i, SIOCGIFFLAGS))[0]\n        if ifflags & IFF_UP:\n            return i\n    return LOOPBACK_NAME",
+        "d": "Format dataframe values.\n\nArgs:\n    value: The value to format.\n\nReturns:\n    Format data"
+    },
+    {
+        "e": "<|fim_prefix|>def begin_inference_session(self) -> RemoteTransformerBlockInferenceSession:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        return RemoteExpertWorker.run_coroutine(RemoteTransformerBlockInferenceSession._create(self))<|fim_middle|>Build any cython components, then install the Python module by\ncalling setup.py install with the target Python dir.<|file_separator|>",
+        "l": false,
+        "c": "def begin_inference_session(self) -> RemoteTransformerBlockInferenceSession:\n    return RemoteExpertWorker.run_coroutine(RemoteTransformerBlockInferenceSession._create(self))",
+        "d": "Build any cython components, then install the Python module by\ncalling setup.py install with the target Python dir."
+    },
+    {
+        "e": "<|fim_prefix|>def typename(self) -> str:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        return self._node['__typename']<|fim_middle|>Construct a new BroadcastGlobalVariablesHook that will broadcast all\nglobal variables from root rank to all other processes during initialization.\n\nArgs:\n  root_rank:\n    Rank that will send data, other ranks will receive data.\n  device:\n    Device to be used for broadcasting. Uses GPU by default\n    if Horovod was build with HOROVOD_GPU_BROADCAST.<|file_separator|>",
+        "l": false,
+        "c": "def typename(self) -> str:\n    return self._node['__typename']",
+        "d": "Construct a new BroadcastGlobalVariablesHook that will broadcast all\nglobal variables from root rank to all other processes during initialization.\n\nArgs:\n  root_rank:\n    Rank that will send data, other ranks will receive data.\n  device:\n    Device to be used for broadcasting. Uses GPU by default\n    if Horovod was build with HOROVOD_GPU_BROADCAST."
+    },
+    {
+        "e": "<|fim_prefix|>    def gitignore_template(github, language):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            github.gitignore_template(language)<|fim_middle|>Find all HTML elements matching a given selector async.\n\nIf there's an error, the callback is called with a webelem.Error\ninstance.\n\nArgs:\n    callback: The callback to be called when the search finished.\n    selector: The CSS selector to search for.\n    only_visible: Only show elements which are visible on screen.<|file_separator|>",
+        "l": false,
+        "c": "    def gitignore_template(github, language):\n        github.gitignore_template(language)",
+        "d": "Find all HTML elements matching a given selector async.\n\nIf there's an error, the callback is called with a webelem.Error\ninstance.\n\nArgs:\n    callback: The callback to be called when the search finished.\n    selector: The CSS selector to search for.\n    only_visible: Only show elements which are visible on screen."
+    },
+    {
+        "e": "<|fim_prefix|>  def get_train_examples(self, data_dir):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        return self._create_examples(\n        self._read_tsv(os.path.join(data_dir, \"train.tsv\")), \"train\")<|fim_middle|>Requeues the job with the given job ID.  The job ID should refer to\na failed job (i.e. it should be on the failed queue).  If no such (failed)\njob exists, a NoSuchJobError is raised.<|file_separator|>",
+        "l": false,
+        "c": "  def get_train_examples(self, data_dir):\n    return self._create_examples(\n        self._read_tsv(os.path.join(data_dir, \"train.tsv\")), \"train\")",
+        "d": "Requeues the job with the given job ID.  The job ID should refer to\na failed job (i.e. it should be on the failed queue).  If no such (failed)\njob exists, a NoSuchJobError is raised."
+    },
+    {
+        "e": "<|fim_prefix|>    def has_output(self, context):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n    <|fim_middle|>Retrieve a ``VecEnvWrapper`` object by recursively searching.\n\n:param env:\n:param vec_wrapper_class:\n:return:<|file_separator|>",
+        "l": false,
+        "c": "    def has_output(self, context):\n",
+        "d": "Retrieve a ``VecEnvWrapper`` object by recursively searching.\n\n:param env:\n:param vec_wrapper_class:\n:return:"
+    },
+    {
+        "e": "<|fim_prefix|>def get_final_answer(numbers) -> float:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        return 42<|fim_middle|>Add a new axis of given size.<|file_separator|>",
+        "l": false,
+        "c": "def get_final_answer(numbers) -> float:\n    return 42",
+        "d": "Add a new axis of given size."
+    },
+    {
+        "e": "<|fim_prefix|>def getNumPages(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        pages = self.getObject(self._pages)\n    return int(pages[NameObject(\"/Count\")])<|fim_middle|>Look up style in the style map.<|file_separator|>",
+        "l": false,
+        "c": "def getNumPages(self):\n    pages = self.getObject(self._pages)\n    return int(pages[NameObject(\"/Count\")])",
+        "d": "Look up style in the style map."
+    },
+    {
+        "e": "<|fim_prefix|>def _(event):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n    <|fim_middle|>Main text parsing function\n\nParameters:\n\n    data:        (string)  text data to parse\n    raw:         (boolean) output preprocessed JSON if True\n    quiet:       (boolean) suppress warning messages if True\n\nReturns:\n\n    List of dictionaries. Raw or processed structured data.<|file_separator|>",
+        "l": false,
+        "c": "def _(event):\n",
+        "d": "Main text parsing function\n\nParameters:\n\n    data:        (string)  text data to parse\n    raw:         (boolean) output preprocessed JSON if True\n    quiet:       (boolean) suppress warning messages if True\n\nReturns:\n\n    List of dictionaries. Raw or processed structured data."
+    },
+    {
+        "e": "<|fim_prefix|>def plot(linear_unit):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        import matplotlib.pyplot as plt\n\n    input_vecs, labels = get_training_dataset()\n\n    fig = plt.figure()\n\n    ax = fig.add_subplot(111)\n\n\n    ax.scatter(list(map(lambda x: x[0], input_vecs)), labels)\n\n\n    weights = linear_unit.weights\n\n    bias = linear_unit.bias\n\n    y1 = 0*linear_unit.weights[0]+linear_unit.bias\n    y2 = 12*linear_unit.weights[0]+ linear_unit.bias\n\n    plt.plot([0,12],[y1,y2])\n\n\n    plt.show()<|fim_middle|>Args:\n    nodes (list): Contains str.<|file_separator|>",
+        "l": false,
+        "c": "def plot(linear_unit):\n    import matplotlib.pyplot as plt\n\n    input_vecs, labels = get_training_dataset()\n\n    fig = plt.figure()\n\n    ax = fig.add_subplot(111)\n\n\n    ax.scatter(list(map(lambda x: x[0], input_vecs)), labels)\n\n\n    weights = linear_unit.weights\n\n    bias = linear_unit.bias\n\n    y1 = 0*linear_unit.weights[0]+linear_unit.bias\n    y2 = 12*linear_unit.weights[0]+ linear_unit.bias\n\n    plt.plot([0,12],[y1,y2])\n\n\n    plt.show()",
+        "d": "Args:\n    nodes (list): Contains str."
+    },
+    {
+        "e": "<|fim_prefix|>    def get_n_splits(self, y: Optional[ACCEPTED_Y_TYPES] = None) -> int:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            raise NotImplementedError(\"abstract method\")<|fim_middle|>Test: no gyroscope message for the entire segment\nExpected Result:\n  - yaw_rate: 0\n  - roll: 0\n  - sensorsOK: False<|file_separator|>",
+        "l": false,
+        "c": "    def get_n_splits(self, y: Optional[ACCEPTED_Y_TYPES] = None) -> int:\n        raise NotImplementedError(\"abstract method\")",
+        "d": "Test: no gyroscope message for the entire segment\nExpected Result:\n  - yaw_rate: 0\n  - roll: 0\n  - sensorsOK: False"
+    },
+    {
+        "e": "<|fim_prefix|>    def band_penalty(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            fc_ix = np.argmin(np.abs(self.f - self.fc))\n\n        n = min(fc_ix, self.ix10k - fc_ix)\n        if n == 0:\n            return 0.0\n        return np.mean(np.square(self.fr[fc_ix - n:fc_ix] - self.fr[fc_ix + n - 1:fc_ix - 1:-1]))<|fim_middle|>:param buffer: The media buffer\n\n:param successful: True when the media has been loaded.\n:type successful: bool\n\n:param error: Error code\n:type error: str\n\n:param metadata: Dictionary of metadata about the buffer\n:type metadata: dict<|file_separator|>",
+        "l": false,
+        "c": "    def band_penalty(self):\n        fc_ix = np.argmin(np.abs(self.f - self.fc))\n\n        n = min(fc_ix, self.ix10k - fc_ix)\n        if n == 0:\n            return 0.0\n        return np.mean(np.square(self.fr[fc_ix - n:fc_ix] - self.fr[fc_ix + n - 1:fc_ix - 1:-1]))",
+        "d": ":param buffer: The media buffer\n\n:param successful: True when the media has been loaded.\n:type successful: bool\n\n:param error: Error code\n:type error: str\n\n:param metadata: Dictionary of metadata about the buffer\n:type metadata: dict"
+    },
+    {
+        "e": "<|fim_prefix|>def reset(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        for workerid, worker in iteritems(self.workers):\n        logger.info(\"resetting worker %s\", workerid)\n        worker.reset()\n        worker.requestjob()\n    self._jobsdone = 0\n    self._jobsreceived = 0<|fim_middle|>Sets themes dict with names and paths to all found themes<|file_separator|>",
+        "l": false,
+        "c": "def reset(self):\n    for workerid, worker in iteritems(self.workers):\n        logger.info(\"resetting worker %s\", workerid)\n        worker.reset()\n        worker.requestjob()\n    self._jobsdone = 0\n    self._jobsreceived = 0",
+        "d": "Sets themes dict with names and paths to all found themes"
+    },
+    {
+        "e": "<|fim_prefix|>    def rotate_dataset(self, images, angle):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            rotation = transforms.Compose(\n            [\n                transforms.ToPILImage(),\n                transforms.Lambda(lambda x: transforms.functional.rotate(x, int(angle), fill=(0,))),\n                transforms.ToTensor(),\n            ]\n        )\n\n        x = torch.zeros(len(images), 14, 14)\n        for i in range(len(images)):\n            x[i] = rotation(images[i].float().div_(255.0))\n        return x<|fim_middle|>:return: the labelMap of this ImageSet, None if the ImageSet does not have a labelMap<|file_separator|>",
+        "l": false,
+        "c": "    def rotate_dataset(self, images, angle):\n        rotation = transforms.Compose(\n            [\n                transforms.ToPILImage(),\n                transforms.Lambda(lambda x: transforms.functional.rotate(x, int(angle), fill=(0,))),\n                transforms.ToTensor(),\n            ]\n        )\n\n        x = torch.zeros(len(images), 14, 14)\n        for i in range(len(images)):\n            x[i] = rotation(images[i].float().div_(255.0))\n        return x",
+        "d": ":return: the labelMap of this ImageSet, None if the ImageSet does not have a labelMap"
+    },
+    {
+        "e": "<|fim_prefix|>def _cache_file(path, query):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        digest = hashlib.sha1((\"%s %s\" % (path, query)).encode(\"utf-8\")).hexdigest()\n    digest_number = ord(digest[0].upper())\n    expiry_interval = 60*(digest_number+20)\n\n    timestamp = \"%010d\" % (int(time.time())//expiry_interval*expiry_interval)\n    filename = os.path.join(PROXY_CACHEDIR, timestamp, path, query)\n\n    return filename<|fim_middle|>Note exit status of 124 is exected, passed from the timeout command<|file_separator|>",
+        "l": false,
+        "c": "def _cache_file(path, query):\n    digest = hashlib.sha1((\"%s %s\" % (path, query)).encode(\"utf-8\")).hexdigest()\n    digest_number = ord(digest[0].upper())\n    expiry_interval = 60*(digest_number+20)\n\n    timestamp = \"%010d\" % (int(time.time())//expiry_interval*expiry_interval)\n    filename = os.path.join(PROXY_CACHEDIR, timestamp, path, query)\n\n    return filename",
+        "d": "Note exit status of 124 is exected, passed from the timeout command"
+    },
+    {
+        "e": "<|fim_prefix|>def validate(self, value):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        if self.required and not value:\n        raise ValidationError(self.error_messages['required'], code='required')\n\n    for val in value:\n        if not self.valid_value(val):\n            raise ValidationError(\n                self.error_messages['invalid_choice'],\n                code='invalid_choice',\n                params={'value': val},\n            )<|fim_middle|>Concatenates a list of PolygonMasks into a single PolygonMasks\n\nArguments:\n    polymasks_list (list[PolygonMasks])\n\nReturns:\n    PolygonMasks: the concatenated PolygonMasks<|file_separator|>",
+        "l": false,
+        "c": "def validate(self, value):\n    if self.required and not value:\n        raise ValidationError(self.error_messages['required'], code='required')\n\n    for val in value:\n        if not self.valid_value(val):\n            raise ValidationError(\n                self.error_messages['invalid_choice'],\n                code='invalid_choice',\n                params={'value': val},\n            )",
+        "d": "Concatenates a list of PolygonMasks into a single PolygonMasks\n\nArguments:\n    polymasks_list (list[PolygonMasks])\n\nReturns:\n    PolygonMasks: the concatenated PolygonMasks"
+    },
+    {
+        "e": "<|fim_prefix|>def forward(self, feats):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        priors = [stage(feats, feats) for stage in self.stages]\n    context = torch.stack(priors, dim=0).sum(dim=0)\n    output = self.bottleneck(torch.cat([context, feats], 1))\n    return output<|fim_middle|>Draws samples for the fitted model.<|file_separator|>",
+        "l": false,
+        "c": "def forward(self, feats):\n    priors = [stage(feats, feats) for stage in self.stages]\n    context = torch.stack(priors, dim=0).sum(dim=0)\n    output = self.bottleneck(torch.cat([context, feats], 1))\n    return output",
+        "d": "Draws samples for the fitted model."
+    },
+    {
+        "e": "<|fim_prefix|>def created_at(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        return utils.snowflake_time(self.id)<|fim_middle|>Register a new model in this mapping.<|file_separator|>",
+        "l": false,
+        "c": "def created_at(self):\n    return utils.snowflake_time(self.id)",
+        "d": "Register a new model in this mapping."
+    },
+    {
+        "e": "<|fim_prefix|>def apply(self, dataset: pd.DataFrame) -> pd.DataFrame:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        dataset[self.target_column] = dataset[self.target_column].apply(\n        lambda spans: sorted(span.to_tuple() for span in spans)\n    )\n    return dataset<|fim_middle|>\u6b63\u5219\u5339\u914d\u54cd\u5e94\u5934\u4e2d\u7684\u5185\u5bb9\u5b89\u5168\u7b56\u7565\u5b57\u6bb5\u4ee5\u53d1\u73b0\u5b50\u57df\u540d<|file_separator|>",
+        "l": false,
+        "c": "def apply(self, dataset: pd.DataFrame) -> pd.DataFrame:\n    dataset[self.target_column] = dataset[self.target_column].apply(\n        lambda spans: sorted(span.to_tuple() for span in spans)\n    )\n    return dataset",
+        "d": "\u6b63\u5219\u5339\u914d\u54cd\u5e94\u5934\u4e2d\u7684\u5185\u5bb9\u5b89\u5168\u7b56\u7565\u5b57\u6bb5\u4ee5\u53d1\u73b0\u5b50\u57df\u540d"
+    },
+    {
+        "e": "<|fim_prefix|>def from_jvalue(jvalue, bigdl_type=\"float\"):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        model = Model([], [], jvalue=jvalue)\n    model.value = jvalue\n    return model<|fim_middle|>if c then t else f\n\nIn this function, if any of c, t, or f are True and False the resulting\nexpression is resolved.<|file_separator|>",
+        "l": false,
+        "c": "def from_jvalue(jvalue, bigdl_type=\"float\"):\n    model = Model([], [], jvalue=jvalue)\n    model.value = jvalue\n    return model",
+        "d": "if c then t else f\n\nIn this function, if any of c, t, or f are True and False the resulting\nexpression is resolved."
+    },
+    {
+        "e": "<|fim_prefix|>def interactTreap():\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        root = None\n    while True:\n        cmd = input().split()\n        cmd[1] = int(cmd[1])\n        if cmd[0] == \"+\":\n            root = insert(root, cmd[1])\n        elif cmd[0] == \"-\":\n            root = erase(root, cmd[1])\n        else:\n            print(\"Unknown command\")\n        node_print(root)<|fim_middle|>A list of resource identifiers.\n\n:type: list(:py:class:`Identifier`)<|file_separator|>",
+        "l": false,
+        "c": "def interactTreap():\n    root = None\n    while True:\n        cmd = input().split()\n        cmd[1] = int(cmd[1])\n        if cmd[0] == \"+\":\n            root = insert(root, cmd[1])\n        elif cmd[0] == \"-\":\n            root = erase(root, cmd[1])\n        else:\n            print(\"Unknown command\")\n        node_print(root)",
+        "d": "A list of resource identifiers.\n\n:type: list(:py:class:`Identifier`)"
+    },
+    {
+        "e": "<|fim_prefix|>def check_for_usable_backup_env(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        self._check_for_usable_environment()\n    self.create_mackup_home()<|fim_middle|>Construct a Hugging Face NER backend.\n\n:param model_name_or_path:\n    Name of the model or a path to the Hugging Face\n    model on the local disk.\n:param device:\n    The device on which the model is loaded. If `None`,\n    the default device is automatically selected.\n\n    If a device/device map is specified in `pipeline_kwargs`,\n    it overrides this parameter.\n:param pipeline_kwargs:\n    Keyword arguments passed to the pipeline. The\n    pipeline can override these arguments.<|file_separator|>",
+        "l": false,
+        "c": "def check_for_usable_backup_env(self):\n    self._check_for_usable_environment()\n    self.create_mackup_home()",
+        "d": "Construct a Hugging Face NER backend.\n\n:param model_name_or_path:\n    Name of the model or a path to the Hugging Face\n    model on the local disk.\n:param device:\n    The device on which the model is loaded. If `None`,\n    the default device is automatically selected.\n\n    If a device/device map is specified in `pipeline_kwargs`,\n    it overrides this parameter.\n:param pipeline_kwargs:\n    Keyword arguments passed to the pipeline. The\n    pipeline can override these arguments."
+    },
+    {
+        "e": "<|fim_prefix|>def masked_softmax_cross_entropy(preds, labels, mask):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        loss = tf.nn.softmax_cross_entropy_with_logits(logits=preds, lables=labels)\n    mask = tf.cast(mask, dtype=tf.float32)\n    mask /= tf.reduce_mean(mask)\n    loss *= mask\n    return tf.reduce_mean(loss)<|fim_middle|>Initializes and returns a dependency tree for DEPS files\n\nThe DEPS tree is a dict has the following format:\nkey - pathlib.Path relative to the DEPS file's path\nvalue - tuple(repo_url, version, recursive dict here)\n    repo_url is the URL to the dependency's repository root\n    If the recursive dict is a string, then it is a string to the DEPS file to load\n        if needed\n\ndownload_session is an active requests.Session() object<|file_separator|>",
+        "l": false,
+        "c": "def masked_softmax_cross_entropy(preds, labels, mask):\n    loss = tf.nn.softmax_cross_entropy_with_logits(logits=preds, lables=labels)\n    mask = tf.cast(mask, dtype=tf.float32)\n    mask /= tf.reduce_mean(mask)\n    loss *= mask\n    return tf.reduce_mean(loss)",
+        "d": "Initializes and returns a dependency tree for DEPS files\n\nThe DEPS tree is a dict has the following format:\nkey - pathlib.Path relative to the DEPS file's path\nvalue - tuple(repo_url, version, recursive dict here)\n    repo_url is the URL to the dependency's repository root\n    If the recursive dict is a string, then it is a string to the DEPS file to load\n        if needed\n\ndownload_session is an active requests.Session() object"
+    },
+    {
+        "e": "<|fim_prefix|>def parse(self, html, url=\"\"):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        if html is None:\n        return None\n    self._url  = url\n    self._data = []\n    self.feed(self.clean(html))\n    self.close()\n    self.reset()\n    return self._data<|fim_middle|>Retrieve a single Report identified as \"<module>.<report>\".<|file_separator|>",
+        "l": false,
+        "c": "def parse(self, html, url=\"\"):\n    if html is None:\n        return None\n    self._url  = url\n    self._data = []\n    self.feed(self.clean(html))\n    self.close()\n    self.reset()\n    return self._data",
+        "d": "Retrieve a single Report identified as \"<module>.<report>\"."
+    },
+    {
+        "e": "<|fim_prefix|>    def __init__(self, params=None, model_file=None):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            params = deepcopy(params)\n        if params is None:\n            params = {}\n\n        _process_synonyms(params)\n\n        self._check_params(params)\n        params = self._params_type_cast(params)\n        super(CatBoost, self).__init__(params)\n        if model_file is not None:\n            self.load_model(model_file)<|fim_middle|>Initialize the centroids as random samples <|file_separator|>",
+        "l": false,
+        "c": "    def __init__(self, params=None, model_file=None):\n        params = deepcopy(params)\n        if params is None:\n            params = {}\n\n        _process_synonyms(params)\n\n        self._check_params(params)\n        params = self._params_type_cast(params)\n        super(CatBoost, self).__init__(params)\n        if model_file is not None:\n            self.load_model(model_file)",
+        "d": "Initialize the centroids as random samples "
+    },
+    {
+        "e": "<|fim_prefix|>    def _prepare_reconciliation_move(self, move_name):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            return {\n            'statement_line_id': self.id,\n            'journal_id': self.statement_id.journal_id.id,\n            'date': self.date,\n            'name': move_name,\n            'ref': self.ref,\n        }<|fim_middle|>`input_ids_shape` is expected to be [bsz x seqlen].<|file_separator|>",
+        "l": false,
+        "c": "    def _prepare_reconciliation_move(self, move_name):\n        return {\n            'statement_line_id': self.id,\n            'journal_id': self.statement_id.journal_id.id,\n            'date': self.date,\n            'name': move_name,\n            'ref': self.ref,\n        }",
+        "d": "`input_ids_shape` is expected to be [bsz x seqlen]."
+    },
+    {
+        "e": "<|fim_prefix|>def validate_configuration(config):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        routes = config.chalice_app.routes\n    validate_routes(routes)\n    _validate_manage_iam_role(config)\n    validate_python_version(config)<|fim_middle|>Handle any pending relations to the sending model. Sent from class_prepared.<|file_separator|>",
+        "l": false,
+        "c": "def validate_configuration(config):\n    routes = config.chalice_app.routes\n    validate_routes(routes)\n    _validate_manage_iam_role(config)\n    validate_python_version(config)",
+        "d": "Handle any pending relations to the sending model. Sent from class_prepared."
+    },
+    {
+        "e": "<|fim_prefix|>def build_sdist(sdist_directory, config_settings=None):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        path = SdistBuilder(poetry, SystemEnv(sys.prefix), NullIO()).build(\n        Path(sdist_directory)\n    )\n\n    return path.name<|fim_middle|>Return the _EPROCESS if its process or thread owned<|file_separator|>",
+        "l": false,
+        "c": "def build_sdist(sdist_directory, config_settings=None):\n    path = SdistBuilder(poetry, SystemEnv(sys.prefix), NullIO()).build(\n        Path(sdist_directory)\n    )\n\n    return path.name",
+        "d": "Return the _EPROCESS if its process or thread owned"
+    },
+    {
+        "e": "<|fim_prefix|>def assert_tx_hash(value: str) -> None:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        try:\n        if len(util.hex_to_bytes(value)) == 32:\n            return\n    except Exception:\n        pass\n    raise RPCError(BAD_REQUEST, f'{value} should be a transaction hash')<|fim_middle|>See SequenceLayerBase.get_train_input for details.<|file_separator|>",
+        "l": false,
+        "c": "def assert_tx_hash(value: str) -> None:\n    try:\n        if len(util.hex_to_bytes(value)) == 32:\n            return\n    except Exception:\n        pass\n    raise RPCError(BAD_REQUEST, f'{value} should be a transaction hash')",
+        "d": "See SequenceLayerBase.get_train_input for details."
+    },
+    {
+        "e": "<|fim_prefix|>def extract_headers(headers):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        sorted_headers = {}\n    matches = findall(r'(.*):\\s(.*)', headers)\n    for match in matches:\n        header = match[0]\n        value = match[1]\n        try:\n            if value[-1] == ',':\n                value = value[:-1]\n            sorted_headers[header] = value\n        except IndexError:\n            pass\n    return sorted_headers<|fim_middle|>Show the status of experiment<|file_separator|>",
+        "l": false,
+        "c": "def extract_headers(headers):\n    sorted_headers = {}\n    matches = findall(r'(.*):\\s(.*)', headers)\n    for match in matches:\n        header = match[0]\n        value = match[1]\n        try:\n            if value[-1] == ',':\n                value = value[:-1]\n            sorted_headers[header] = value\n        except IndexError:\n            pass\n    return sorted_headers",
+        "d": "Show the status of experiment"
+    },
+    {
+        "e": "<|fim_prefix|>def test_insert_content(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        t = Template(\"{{ object }}\")\n    c = Context({\"object\": NonAsciiRepr()})\n    t.render(c)\n    self.panel.process_response(self.request, self.response)\n\n    self.assertNotIn(\"n\u00f4t \u00e5sc\u00ed\u00ec\", self.panel.content)\n    self.panel.generate_stats(self.request, self.response)\n\n    self.assertIn(\"n\u00f4t \u00e5sc\u00ed\u00ec\", self.panel.content)\n    self.assertValidHTML(self.panel.content)<|fim_middle|>List of topics returned on /:list<|file_separator|>",
+        "l": false,
+        "c": "def test_insert_content(self):\n    t = Template(\"{{ object }}\")\n    c = Context({\"object\": NonAsciiRepr()})\n    t.render(c)\n    self.panel.process_response(self.request, self.response)\n\n    self.assertNotIn(\"n\u00f4t \u00e5sc\u00ed\u00ec\", self.panel.content)\n    self.panel.generate_stats(self.request, self.response)\n\n    self.assertIn(\"n\u00f4t \u00e5sc\u00ed\u00ec\", self.panel.content)\n    self.assertValidHTML(self.panel.content)",
+        "d": "List of topics returned on /:list"
+    },
+    {
+        "e": "<|fim_prefix|>    def c_no_compile_args(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            raise utils.MethodNotDefined(\"c_no_compile_args\", type(self), self.__class__.__name__)<|fim_middle|>Redundant method, call the method best(). Kept for BC reasons.<|file_separator|>",
+        "l": false,
+        "c": "    def c_no_compile_args(self):\n        raise utils.MethodNotDefined(\"c_no_compile_args\", type(self), self.__class__.__name__)",
+        "d": "Redundant method, call the method best(). Kept for BC reasons."
+    },
+    {
+        "e": "<|fim_prefix|>def get(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        return {'status': 'ok'}<|fim_middle|>Construct a layernorm module in the TF style (epsilon inside the square root).\n            <|file_separator|>",
+        "l": false,
+        "c": "def get(self):\n    return {'status': 'ok'}",
+        "d": "Construct a layernorm module in the TF style (epsilon inside the square root).\n            "
+    },
+    {
+        "e": "<|fim_prefix|>def test_init(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        assert self.service.version == 1\n    assert self.service.raise_on == (500, )\n    assert self.service.timeout == 100<|fim_middle|>Replace placeholders with actual values. <|file_separator|>",
+        "l": false,
+        "c": "def test_init(self):\n    assert self.service.version == 1\n    assert self.service.raise_on == (500, )\n    assert self.service.timeout == 100",
+        "d": "Replace placeholders with actual values. "
+    },
+    {
+        "e": "<|fim_prefix|>    def authorize_redirect(self, extended_permissions, callback_uri=None,\n                           cancel_uri=None):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            self.authenticate_redirect(callback_uri, cancel_uri,\n                                   extended_permissions)<|fim_middle|>Non-ASCII unicode decimals raise an error.<|file_separator|>",
+        "l": false,
+        "c": "    def authorize_redirect(self, extended_permissions, callback_uri=None,\n                           cancel_uri=None):\n        self.authenticate_redirect(callback_uri, cancel_uri,\n                                   extended_permissions)",
+        "d": "Non-ASCII unicode decimals raise an error."
+    },
+    {
+        "e": "<|fim_prefix|>    def delete(self, dashboard_slug):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            dashboard = models.Dashboard.get_by_slug_and_org(dashboard_slug, self.current_org)\n        dashboard.is_archived = True\n        dashboard.record_changes(changed_by=self.current_user)\n        models.db.session.add(dashboard)\n        d = serialize_dashboard(dashboard, with_widgets=True, user=self.current_user)\n        models.db.session.commit()\n        return d<|fim_middle|>Sets lookups not in lookup_indices to None.<|file_separator|>",
+        "l": false,
+        "c": "    def delete(self, dashboard_slug):\n        dashboard = models.Dashboard.get_by_slug_and_org(dashboard_slug, self.current_org)\n        dashboard.is_archived = True\n        dashboard.record_changes(changed_by=self.current_user)\n        models.db.session.add(dashboard)\n        d = serialize_dashboard(dashboard, with_widgets=True, user=self.current_user)\n        models.db.session.commit()\n        return d",
+        "d": "Sets lookups not in lookup_indices to None."
+    },
+    {
+        "e": "<|fim_prefix|>    def major_dimension(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            return self._json[\"majorDimension\"]<|fim_middle|>Initialize the handler.<|file_separator|>",
+        "l": false,
+        "c": "    def major_dimension(self):\n        return self._json[\"majorDimension\"]",
+        "d": "Initialize the handler."
+    },
+    {
+        "e": "<|fim_prefix|>def get_non_provider_id(name):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        m = sha1()\n    m.update(name.encode('utf-8'))\n    return m.hexdigest()<|fim_middle|>T iterator version of `generate` function.<|file_separator|>",
+        "l": false,
+        "c": "def get_non_provider_id(name):\n    m = sha1()\n    m.update(name.encode('utf-8'))\n    return m.hexdigest()",
+        "d": "T iterator version of `generate` function."
+    },
+    {
+        "e": "<|fim_prefix|>def pop(self, index=-1):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        v = self[index]\n    del self[index]\n    return v<|fim_middle|>Make sure we're not executing as root\n:return:<|file_separator|>",
+        "l": false,
+        "c": "def pop(self, index=-1):\n    v = self[index]\n    del self[index]\n    return v",
+        "d": "Make sure we're not executing as root\n:return:"
+    },
+    {
+        "e": "<|fim_prefix|>def __init__(self, tensors, image_sizes):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        self.tensors = tensors\n    self.image_sizes = image_sizes<|fim_middle|>One step for training, which should be called as forward computation.\n\nArgs:\n    batch(list[paddle.Tensor]): The one batch data, which contains images, ground truth boxes, labels and scores.\n    batch_idx(int): The index of batch.\n\nReturns:\n    results(dict): The model outputs, such as loss.<|file_separator|>",
+        "l": false,
+        "c": "def __init__(self, tensors, image_sizes):\n    self.tensors = tensors\n    self.image_sizes = image_sizes",
+        "d": "One step for training, which should be called as forward computation.\n\nArgs:\n    batch(list[paddle.Tensor]): The one batch data, which contains images, ground truth boxes, labels and scores.\n    batch_idx(int): The index of batch.\n\nReturns:\n    results(dict): The model outputs, such as loss."
+    },
+    {
+        "e": "<|fim_prefix|>def step(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        for optimizer in self.optimizers.values():\n        optimizer.step()<|fim_middle|>Delete conversation\n:param id: UUID of conversation<|file_separator|>",
+        "l": false,
+        "c": "def step(self):\n    for optimizer in self.optimizers.values():\n        optimizer.step()",
+        "d": "Delete conversation\n:param id: UUID of conversation"
+    },
+    {
+        "e": "<|fim_prefix|>def test_describe_trusted_advisor_checks_returns_amount_of_checks():\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        client = boto3.client(\"support\", \"us-east-1\")\n    response = client.describe_trusted_advisor_checks(language=\"en\",)\n\n    response[\"checks\"].should.be.length_of(104)<|fim_middle|>Receives the input given by the user from create_payloadS.py <|file_separator|>",
+        "l": false,
+        "c": "def test_describe_trusted_advisor_checks_returns_amount_of_checks():\n    client = boto3.client(\"support\", \"us-east-1\")\n    response = client.describe_trusted_advisor_checks(language=\"en\",)\n\n    response[\"checks\"].should.be.length_of(104)",
+        "d": "Receives the input given by the user from create_payloadS.py "
+    },
+    {
+        "e": "<|fim_prefix|>def wide_resnet50_2(pretrained=False, num_classes=1000, in_chans=3, **kwargs):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        model = ResNet(\n        Bottleneck, [3, 4, 6, 3], base_width=128,\n        num_classes=num_classes, in_chans=in_chans, **kwargs)\n    model.default_cfg = default_cfgs['wide_resnet50_2']\n    if pretrained:\n        load_pretrained(model, model.default_cfg, num_classes, in_chans)\n    return model<|fim_middle|>Create a new budget.\n\nArgs:\n    budget: Budget details.\n\nReturns:\n    Budget: Created budget.<|file_separator|>",
+        "l": false,
+        "c": "def wide_resnet50_2(pretrained=False, num_classes=1000, in_chans=3, **kwargs):\n    model = ResNet(\n        Bottleneck, [3, 4, 6, 3], base_width=128,\n        num_classes=num_classes, in_chans=in_chans, **kwargs)\n    model.default_cfg = default_cfgs['wide_resnet50_2']\n    if pretrained:\n        load_pretrained(model, model.default_cfg, num_classes, in_chans)\n    return model",
+        "d": "Create a new budget.\n\nArgs:\n    budget: Budget details.\n\nReturns:\n    Budget: Created budget."
+    },
+    {
+        "e": "<|fim_prefix|>def refresh(cls):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        cls.themes = { \"Default\" : \"Default\" }\n    try:\n        for d in (THEME_DIR, USER_THEME_DIR):\n            if not d: continue\n            for f in os.listdir(d):\n                if f.endswith(\".theme\"):\n                    cls.themes[f'{\"\" if d == THEME_DIR else \"+\"}{f[:-6]}'] = f'{d}/{f}'\n    except Exception as e:\n        errlog.exception(str(e))<|fim_middle|>Save the last query `query` for the client `client_id`<|file_separator|>",
+        "l": false,
+        "c": "def refresh(cls):\n    cls.themes = { \"Default\" : \"Default\" }\n    try:\n        for d in (THEME_DIR, USER_THEME_DIR):\n            if not d: continue\n            for f in os.listdir(d):\n                if f.endswith(\".theme\"):\n                    cls.themes[f'{\"\" if d == THEME_DIR else \"+\"}{f[:-6]}'] = f'{d}/{f}'\n    except Exception as e:\n        errlog.exception(str(e))",
+        "d": "Save the last query `query` for the client `client_id`"
+    },
+    {
+        "e": "<|fim_prefix|>def sma(self, n: int, array: bool = False) -> Union[float, np.ndarray]:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        result = talib.SMA(self.close, n)\n    if array:\n        return result\n    return result[-1]<|fim_middle|>Returns a dense matrix representing the same value.\n\nArgs:\n    order ({'C', 'F', None}): Whether to store data in C (row-major)\n        order or F (column-major) order. Default is C-order.\n    out: Not supported.\n\nReturns:\n    cupy.ndarray: Dense array representing the same matrix.\n\n.. seealso:: :meth:`scipy.sparse.csc_matrix.toarray`<|file_separator|>",
+        "l": false,
+        "c": "def sma(self, n: int, array: bool = False) -> Union[float, np.ndarray]:\n    result = talib.SMA(self.close, n)\n    if array:\n        return result\n    return result[-1]",
+        "d": "Returns a dense matrix representing the same value.\n\nArgs:\n    order ({'C', 'F', None}): Whether to store data in C (row-major)\n        order or F (column-major) order. Default is C-order.\n    out: Not supported.\n\nReturns:\n    cupy.ndarray: Dense array representing the same matrix.\n\n.. seealso:: :meth:`scipy.sparse.csc_matrix.toarray`"
+    },
+    {
+        "e": "<|fim_prefix|>    def __init__(self, fg, bg, attrs=0):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            self.fg = fg\n        self.bg = bg\n        self.attrs = attrs<|fim_middle|>Move the cursor or selection to the previous word.\n\nArgs:\n    count: How many words to move.<|file_separator|>",
+        "l": false,
+        "c": "    def __init__(self, fg, bg, attrs=0):\n        self.fg = fg\n        self.bg = bg\n        self.attrs = attrs",
+        "d": "Move the cursor or selection to the previous word.\n\nArgs:\n    count: How many words to move."
+    },
+    {
+        "e": "<|fim_prefix|>    def finished(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            try:\n            return self[\"_task_ok\"].data\n        except KeyError:\n            return False<|fim_middle|>Decode from the discrete codes to continuous latent space.<|file_separator|>",
+        "l": false,
+        "c": "    def finished(self):\n        try:\n            return self[\"_task_ok\"].data\n        except KeyError:\n            return False",
+        "d": "Decode from the discrete codes to continuous latent space."
+    },
+    {
+        "e": "<|fim_prefix|>    def _get_style(self) -> dict:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            base_style = {\n            \"position\": \"fixed\",\n            \"left\": \"0\",\n            \"right\": \"0\",\n            \"bottom\": \"0\",\n            \"top\": \"0\",\n            \"z_index\": 50,\n            \"background\": \"rgba(0, 0, 0, 0.8)\",\n        }\n        style = self.style or {}\n        base_style.update(style)\n        self.style.update(\n            {\n                \"css\": base_style,\n            }\n        )\n        return self.style<|fim_middle|>:param df: DataFrame \u7c7b\u578b\n:param dtype: \u6570\u636e\n:param if_fq: \u662f\u5426\u590d\u6743\n:param marketdata_type:<|file_separator|>",
+        "l": false,
+        "c": "    def _get_style(self) -> dict:\n        base_style = {\n            \"position\": \"fixed\",\n            \"left\": \"0\",\n            \"right\": \"0\",\n            \"bottom\": \"0\",\n            \"top\": \"0\",\n            \"z_index\": 50,\n            \"background\": \"rgba(0, 0, 0, 0.8)\",\n        }\n        style = self.style or {}\n        base_style.update(style)\n        self.style.update(\n            {\n                \"css\": base_style,\n            }\n        )\n        return self.style",
+        "d": ":param df: DataFrame \u7c7b\u578b\n:param dtype: \u6570\u636e\n:param if_fq: \u662f\u5426\u590d\u6743\n:param marketdata_type:"
+    },
+    {
+        "e": "<|fim_prefix|>def parse_series(series_path):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        with series_path.open(encoding=ENCODING) as series_file:\n        series_lines = series_file.read().splitlines()\n\n    series_lines = filter(len, series_lines)\n\n    series_lines = filter((lambda x: x.startswith('\n\n    series_lines = map((lambda x: x.strip().split('\n    return series_lines<|fim_middle|>Adds SpendBundles that have failed to be added to the pool in potential tx set.\nThis is later used to retry to add them.<|file_separator|>",
+        "l": false,
+        "c": "def parse_series(series_path):\n    with series_path.open(encoding=ENCODING) as series_file:\n        series_lines = series_file.read().splitlines()\n\n    series_lines = filter(len, series_lines)\n\n    series_lines = filter((lambda x: x.startswith('\n\n    series_lines = map((lambda x: x.strip().split('\n    return series_lines",
+        "d": "Adds SpendBundles that have failed to be added to the pool in potential tx set.\nThis is later used to retry to add them."
+    },
+    {
+        "e": "<|fim_prefix|>    def forward(self, x: Tensor):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            x = F.gelu(self.conv1(x))\n        x = F.gelu(self.conv2(x))\n        x = x.permute(0, 2, 1)\n\n        assert x.shape[1:] == self.positional_embedding.shape, \"incorrect audio shape\"\n        x = (x + self.positional_embedding).to(x.dtype)\n\n        for block in self.blocks:\n            x = block(x)\n\n        x = self.ln_post(x)\n        return x<|fim_middle|>Function that attempts to \"canonicalize\" the given ARN. This includes converting\nresource names to ARNs, replacing incorrect regions, account IDs, etc.<|file_separator|>",
+        "l": false,
+        "c": "    def forward(self, x: Tensor):\n        x = F.gelu(self.conv1(x))\n        x = F.gelu(self.conv2(x))\n        x = x.permute(0, 2, 1)\n\n        assert x.shape[1:] == self.positional_embedding.shape, \"incorrect audio shape\"\n        x = (x + self.positional_embedding).to(x.dtype)\n\n        for block in self.blocks:\n            x = block(x)\n\n        x = self.ln_post(x)\n        return x",
+        "d": "Function that attempts to \"canonicalize\" the given ARN. This includes converting\nresource names to ARNs, replacing incorrect regions, account IDs, etc."
+    },
+    {
+        "e": "<|fim_prefix|>def cleaned_text_to_sequence(cleaned_text, tones, language):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        phones = []\n    for symbol in cleaned_text:\n        try:\n            phones.append(_symbol_to_id[symbol])\n        except KeyError:\n            phones.append(0)\n    tone_start = language_tone_start_map[language]\n    tones = [i + tone_start for i in tones]\n    lang_id = language_id_map[language]\n    lang_ids = [lang_id for i in phones]\n    return phones, tones, lang_ids<|fim_middle|>Delete a job.\n\nThis function deletes the specified job. If the job is not completed and\n*force* is not set to True, a `JobNotDeletedException^` may be raised.\n\nParameters:\n    job (Job^): The job to delete.\n    force (Optional[bool]): If True, forces the deletion of _job_, even\n        if it is not completed yet.\nRaises:\n    JobNotDeletedException^: If the job is not finished.<|file_separator|>",
+        "l": false,
+        "c": "def cleaned_text_to_sequence(cleaned_text, tones, language):\n    phones = []\n    for symbol in cleaned_text:\n        try:\n            phones.append(_symbol_to_id[symbol])\n        except KeyError:\n            phones.append(0)\n    tone_start = language_tone_start_map[language]\n    tones = [i + tone_start for i in tones]\n    lang_id = language_id_map[language]\n    lang_ids = [lang_id for i in phones]\n    return phones, tones, lang_ids",
+        "d": "Delete a job.\n\nThis function deletes the specified job. If the job is not completed and\n*force* is not set to True, a `JobNotDeletedException^` may be raised.\n\nParameters:\n    job (Job^): The job to delete.\n    force (Optional[bool]): If True, forces the deletion of _job_, even\n        if it is not completed yet.\nRaises:\n    JobNotDeletedException^: If the job is not finished."
+    },
+    {
+        "e": "<|fim_prefix|>def apatch(client: AsyncOpenAI):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        warn(\n        \"instructor.apatch is deprecated, use instructor.patch instead\",\n        DeprecationWarning,\n    )\n    return patch(client)<|fim_middle|>Get the title from the meta data and create a HTML <title>\n        <|file_separator|>",
+        "l": false,
+        "c": "def apatch(client: AsyncOpenAI):\n    warn(\n        \"instructor.apatch is deprecated, use instructor.patch instead\",\n        DeprecationWarning,\n    )\n    return patch(client)",
+        "d": "Get the title from the meta data and create a HTML <title>\n        "
+    },
+    {
+        "e": "<|fim_prefix|>  def __init__(self, stretch_factors, name=None):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        super(StretchPipeline, self).__init__(name=name)\n    self._stretch_factors = stretch_factors<|fim_middle|>Evaluates the function on the given points. Useful to guide the optimizer.\n\nParameters\n----------\nparams: dict or list\n    The parameters where the optimizer will evaluate the function.\n\nlazy: bool, optional(default=True)\n    If True, the optimizer will evaluate the points when calling\n    maximize(). Otherwise it will evaluate it at the moment.<|file_separator|>",
+        "l": false,
+        "c": "  def __init__(self, stretch_factors, name=None):\n    super(StretchPipeline, self).__init__(name=name)\n    self._stretch_factors = stretch_factors",
+        "d": "Evaluates the function on the given points. Useful to guide the optimizer.\n\nParameters\n----------\nparams: dict or list\n    The parameters where the optimizer will evaluate the function.\n\nlazy: bool, optional(default=True)\n    If True, the optimizer will evaluate the points when calling\n    maximize(). Otherwise it will evaluate it at the moment."
+    },
+    {
+        "e": "<|fim_prefix|>def configure_module(ulimit_value=8192):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        try:\n        import resource\n        rlimit = resource.getrlimit(resource.RLIMIT_NOFILE)\n        resource.setrlimit(resource.RLIMIT_NOFILE, (ulimit_value, rlimit[1]))\n    except Exception:\n\n\n        pass\n\n\n\n    os.environ[\"OPENCV_OPENCL_RUNTIME\"] = \"disabled\"\n    try:\n        cv2.setNumThreads(0)\n        cv2.ocl.setUseOpenCL(False)\n    except Exception:\n\n        pass<|fim_middle|>abfunc(fillx, filly) must be defined.\nabfunc(x, filly) = x for all x to enable reduce.<|file_separator|>",
+        "l": false,
+        "c": "def configure_module(ulimit_value=8192):\n    try:\n        import resource\n        rlimit = resource.getrlimit(resource.RLIMIT_NOFILE)\n        resource.setrlimit(resource.RLIMIT_NOFILE, (ulimit_value, rlimit[1]))\n    except Exception:\n\n\n        pass\n\n\n\n    os.environ[\"OPENCV_OPENCL_RUNTIME\"] = \"disabled\"\n    try:\n        cv2.setNumThreads(0)\n        cv2.ocl.setUseOpenCL(False)\n    except Exception:\n\n        pass",
+        "d": "abfunc(fillx, filly) must be defined.\nabfunc(x, filly) = x for all x to enable reduce."
+    },
+    {
+        "e": "<|fim_prefix|>def __init__(self, *lists):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        LazyMap.__init__(self, lambda *elts: elts, *lists)<|fim_middle|>Define new topic.\n\nArguments:\n    *topics: str:  List of topic names.\n\nKeyword Arguments:\n    pattern (Union[str, Pattern]): Regular expression to match.\n        You cannot specify both topics and a pattern.\n    type (Type): MessageType/V used for messages in this topic.\n    key_serializer (SerializerArg): Serializer name, or serializer object\n        to use for keys from this topic.\n\nRaises:\n    TypeError: if both `topics` and `pattern` is provided.\n\nReturns:\n    faust.types.Topic: a named tuple.<|file_separator|>",
+        "l": false,
+        "c": "def __init__(self, *lists):\n    LazyMap.__init__(self, lambda *elts: elts, *lists)",
+        "d": "Define new topic.\n\nArguments:\n    *topics: str:  List of topic names.\n\nKeyword Arguments:\n    pattern (Union[str, Pattern]): Regular expression to match.\n        You cannot specify both topics and a pattern.\n    type (Type): MessageType/V used for messages in this topic.\n    key_serializer (SerializerArg): Serializer name, or serializer object\n        to use for keys from this topic.\n\nRaises:\n    TypeError: if both `topics` and `pattern` is provided.\n\nReturns:\n    faust.types.Topic: a named tuple."
+    },
+    {
+        "e": "<|fim_prefix|>def get_final_answer(anything: str) -> float:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        return 42<|fim_middle|>Suppress the diagonal+- of a distance matrix<|file_separator|>",
+        "l": false,
+        "c": "def get_final_answer(anything: str) -> float:\n    return 42",
+        "d": "Suppress the diagonal+- of a distance matrix"
+    },
+    {
+        "e": "<|fim_prefix|>def func2(a: int, b: int) -> int:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n    <|fim_middle|>Return 'string' as unicode instance.<|file_separator|>",
+        "l": false,
+        "c": "def func2(a: int, b: int) -> int:\n",
+        "d": "Return 'string' as unicode instance."
+    },
+    {
+        "e": "<|fim_prefix|>def raw_to_proto(self, raw):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        ids = [int(s) for s in raw.split(b' ')]\n    fe = feature_pb2.Feature(int64_list=feature_pb2.Int64List(value=ids))\n    return fe<|fim_middle|>Render the line.<|file_separator|>",
+        "l": false,
+        "c": "def raw_to_proto(self, raw):\n    ids = [int(s) for s in raw.split(b' ')]\n    fe = feature_pb2.Feature(int64_list=feature_pb2.Int64List(value=ids))\n    return fe",
+        "d": "Render the line."
+    },
+    {
+        "e": "<|fim_prefix|>def infer_operator_assignment_method(type: Type, operator: str) -> str:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        method = nodes.op_methods[operator]\n    if isinstance(type, Instance):\n        if operator in nodes.ops_with_inplace_method:\n            inplace = '__i' + method[2:]\n            if type.type.has_readable_member(inplace):\n                method = inplace\n    return method<|fim_middle|>kwargs\u4e2d\u53ef\u4ee5\u5305\u542b: \u53c2\u6570sell_n\uff1a\u4ee3\u8868\u4e70\u5165\u540e\u6301\u6709\u7684\u5929\u6570\uff0c\u9ed8\u8ba41\u5929<|file_separator|>",
+        "l": false,
+        "c": "def infer_operator_assignment_method(type: Type, operator: str) -> str:\n    method = nodes.op_methods[operator]\n    if isinstance(type, Instance):\n        if operator in nodes.ops_with_inplace_method:\n            inplace = '__i' + method[2:]\n            if type.type.has_readable_member(inplace):\n                method = inplace\n    return method",
+        "d": "kwargs\u4e2d\u53ef\u4ee5\u5305\u542b: \u53c2\u6570sell_n\uff1a\u4ee3\u8868\u4e70\u5165\u540e\u6301\u6709\u7684\u5929\u6570\uff0c\u9ed8\u8ba41\u5929"
+    },
+    {
+        "e": "<|fim_prefix|>def positive_integer(value):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        try:\n        value = int(value)\n    except Exception:\n        raise argparse.ArgumentTypeError('Invalid int value: \\'{}\\''.format(value))\n    if value < 0:\n        raise argparse.ArgumentTypeError('Invalid positive int value: \\'{}\\''.format(value))\n    return value<|fim_middle|>Returns whether the most recent epoch iterator has been exhausted<|file_separator|>",
+        "l": false,
+        "c": "def positive_integer(value):\n    try:\n        value = int(value)\n    except Exception:\n        raise argparse.ArgumentTypeError('Invalid int value: \\'{}\\''.format(value))\n    if value < 0:\n        raise argparse.ArgumentTypeError('Invalid positive int value: \\'{}\\''.format(value))\n    return value",
+        "d": "Returns whether the most recent epoch iterator has been exhausted"
+    },
+    {
+        "e": "<|fim_prefix|>    def __init__(\n        self, models, tgt_dict, left_pad_target=False, print_alignment=\"hard\", **kwargs\n    ):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            super().__init__(EnsembleModelWithAlignment(models), tgt_dict, **kwargs)\n        self.left_pad_target = left_pad_target\n\n        if print_alignment == \"hard\":\n            self.extract_alignment = utils.extract_hard_alignment\n        elif print_alignment == \"soft\":\n            self.extract_alignment = utils.extract_soft_alignment<|fim_middle|>:return: BentoService name<|file_separator|>",
+        "l": false,
+        "c": "    def __init__(\n        self, models, tgt_dict, left_pad_target=False, print_alignment=\"hard\", **kwargs\n    ):\n        super().__init__(EnsembleModelWithAlignment(models), tgt_dict, **kwargs)\n        self.left_pad_target = left_pad_target\n\n        if print_alignment == \"hard\":\n            self.extract_alignment = utils.extract_hard_alignment\n        elif print_alignment == \"soft\":\n            self.extract_alignment = utils.extract_soft_alignment",
+        "d": ":return: BentoService name"
+    },
+    {
+        "e": "<|fim_prefix|>def expand_includes(a: List[str], base_path: str) -> List[str]:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        res = []\n    for s in a:\n        if s.startswith('@include '):\n            fn = s.split(' ', 1)[1].strip()\n            f = open(os.path.join(base_path, fn))\n            res.extend(f.readlines())\n            f.close()\n        else:\n            res.append(s)\n    return res<|fim_middle|>Return the number of tokens to be processed (chunk size).<|file_separator|>",
+        "l": false,
+        "c": "def expand_includes(a: List[str], base_path: str) -> List[str]:\n    res = []\n    for s in a:\n        if s.startswith('@include '):\n            fn = s.split(' ', 1)[1].strip()\n            f = open(os.path.join(base_path, fn))\n            res.extend(f.readlines())\n            f.close()\n        else:\n            res.append(s)\n    return res",
+        "d": "Return the number of tokens to be processed (chunk size)."
+    },
+    {
+        "e": "<|fim_prefix|>def bot_prefix_modifier(string):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        return string + params[\"bot prefix\"]<|fim_middle|>fetch messages\nfor fetching\n    - method blocks for sometime util\n        - new messages are to be received\n        - or anytime they like\n    - synckey is updated with returned synccheckkey\nit is defined in components/login.py<|file_separator|>",
+        "l": false,
+        "c": "def bot_prefix_modifier(string):\n    return string + params[\"bot prefix\"]",
+        "d": "fetch messages\nfor fetching\n    - method blocks for sometime util\n        - new messages are to be received\n        - or anytime they like\n    - synckey is updated with returned synccheckkey\nit is defined in components/login.py"
+    },
+    {
+        "e": "<|fim_prefix|>    def _is_path_exist(self,path:str)->bool:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            full_path = os.path.join(self.work_directory, path)\n        if not self._is_path_within_workspace(full_path):\n            raise ValueError(f\"Path {path} is not within workspace.\")\n        return os.path.exists(full_path)<|fim_middle|>This will be called if the script is directly invoked.<|file_separator|>",
+        "l": false,
+        "c": "    def _is_path_exist(self,path:str)->bool:\n        full_path = os.path.join(self.work_directory, path)\n        if not self._is_path_within_workspace(full_path):\n            raise ValueError(f\"Path {path} is not within workspace.\")\n        return os.path.exists(full_path)",
+        "d": "This will be called if the script is directly invoked."
+    },
+    {
+        "e": "<|fim_prefix|>def dump(self) -> str:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        return self.json(exclude_none=True)<|fim_middle|>Stop the spinner\n\nArgs:\n    exc_type (Exception): The exception type.\n    exc_value (Exception): The exception value.\n    exc_traceback (Exception): The exception traceback.<|file_separator|>",
+        "l": false,
+        "c": "def dump(self) -> str:\n    return self.json(exclude_none=True)",
+        "d": "Stop the spinner\n\nArgs:\n    exc_type (Exception): The exception type.\n    exc_value (Exception): The exception value.\n    exc_traceback (Exception): The exception traceback."
+    },
+    {
+        "e": "<|fim_prefix|>def parley(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        acts = self.acts\n    for index, agent in enumerate(self.agents):\n\n        acts[index] = agent.act()\n\n        self.execute(agent, acts[index])\n\n        for other_agent in self.agents:\n            obs = self.observe(other_agent, acts[index])\n            if obs is not None:\n                other_agent.observe(obs)\n    self.update_counters()<|fim_middle|>Slider\n\n:param min: lower bound of the slider\n:param max: upper bound of the slider\n:param step: step size\n:param value: initial value to set position of the slider\n:param on_change: callback which is invoked when the user releases the slider<|file_separator|>",
+        "l": false,
+        "c": "def parley(self):\n    acts = self.acts\n    for index, agent in enumerate(self.agents):\n\n        acts[index] = agent.act()\n\n        self.execute(agent, acts[index])\n\n        for other_agent in self.agents:\n            obs = self.observe(other_agent, acts[index])\n            if obs is not None:\n                other_agent.observe(obs)\n    self.update_counters()",
+        "d": "Slider\n\n:param min: lower bound of the slider\n:param max: upper bound of the slider\n:param step: step size\n:param value: initial value to set position of the slider\n:param on_change: callback which is invoked when the user releases the slider"
+    },
+    {
+        "e": "<|fim_prefix|>def condition_mean(self, cond_fn, mean,variance, x, t, guidance_kwargs=None):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        gradient = cond_fn(x, t, **guidance_kwargs)\n    new_mean = (\n        mean.float() + variance * gradient.float()\n    )\n    print(\"gradient: \",(variance * gradient.float()).mean())\n    return new_mean<|fim_middle|>Calculate the prior of class c\n(samples where class == c / total number of samples)<|file_separator|>",
+        "l": false,
+        "c": "def condition_mean(self, cond_fn, mean,variance, x, t, guidance_kwargs=None):\n    gradient = cond_fn(x, t, **guidance_kwargs)\n    new_mean = (\n        mean.float() + variance * gradient.float()\n    )\n    print(\"gradient: \",(variance * gradient.float()).mean())\n    return new_mean",
+        "d": "Calculate the prior of class c\n(samples where class == c / total number of samples)"
+    },
+    {
+        "e": "<|fim_prefix|>def url_for(self, *args: str, **kwargs: str) -> URL:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n    <|fim_middle|>Insert a note. The note is attached to a certain cell.\n\n:param str cell: A string with cell coordinates in A1 notation,\n    e.g. 'D7'.\n:param str content: The text note to insert.\n\nAlternatively, you may specify numeric boundaries. All values\nindex from 1 (one):\n\n:param int first_row: First row number\n:param int first_col: First column number\n:param int last_row: Last row number\n:param int last_col: Last column number\n\n.. versionadded:: 3.7<|file_separator|>",
+        "l": false,
+        "c": "def url_for(self, *args: str, **kwargs: str) -> URL:\n",
+        "d": "Insert a note. The note is attached to a certain cell.\n\n:param str cell: A string with cell coordinates in A1 notation,\n    e.g. 'D7'.\n:param str content: The text note to insert.\n\nAlternatively, you may specify numeric boundaries. All values\nindex from 1 (one):\n\n:param int first_row: First row number\n:param int first_col: First column number\n:param int last_row: Last row number\n:param int last_col: Last column number\n\n.. versionadded:: 3.7"
+    },
+    {
+        "e": "<|fim_prefix|>def get_mainmarket_ip(ip, port):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        global best_ip\n    if ip is None and port is None and best_ip['stock']['ip'] is None and best_ip['stock']['port'] is None:\n        best_ip = select_best_ip()\n        ip = best_ip['stock']['ip']\n        port = best_ip['stock']['port']\n    elif ip is None and port is None and best_ip['stock']['ip'] is not None and best_ip['stock']['port'] is not None:\n        ip = best_ip['stock']['ip']\n        port = best_ip['stock']['port']\n    else:\n        pass\n    return ip, port<|fim_middle|>Clears multiple ranges of cells with 1 API call.\n\n`Batch Clear`_\n\n.. _Batch Clear: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchClear\n\nExamples::\n\n    worksheet.batch_clear(['A1:B1','my_range'])\n\n    # Note: named ranges are defined in the scope of\n    # a spreadsheet, so even if `my_range` does not belong to\n    # this sheet it is still updated\n\n.. versionadded:: 3.8.0<|file_separator|>",
+        "l": false,
+        "c": "def get_mainmarket_ip(ip, port):\n    global best_ip\n    if ip is None and port is None and best_ip['stock']['ip'] is None and best_ip['stock']['port'] is None:\n        best_ip = select_best_ip()\n        ip = best_ip['stock']['ip']\n        port = best_ip['stock']['port']\n    elif ip is None and port is None and best_ip['stock']['ip'] is not None and best_ip['stock']['port'] is not None:\n        ip = best_ip['stock']['ip']\n        port = best_ip['stock']['port']\n    else:\n        pass\n    return ip, port",
+        "d": "Clears multiple ranges of cells with 1 API call.\n\n`Batch Clear`_\n\n.. _Batch Clear: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchClear\n\nExamples::\n\n    worksheet.batch_clear(['A1:B1','my_range'])\n\n    # Note: named ranges are defined in the scope of\n    # a spreadsheet, so even if `my_range` does not belong to\n    # this sheet it is still updated\n\n.. versionadded:: 3.8.0"
+    },
+    {
+        "e": "<|fim_prefix|>    def sample(self, batch_size: int) -> Batch:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            import warnings\n        warnings.warn(\n            'Collector.sample is deprecated and will cause error if you use '\n            'prioritized experience replay! Collector.sample will be removed '\n            'upon version 0.3. Use policy.update instead!', Warning)\n        batch_data, indice = self.buffer.sample(batch_size)\n        batch_data = self.process_fn(batch_data, self.buffer, indice)\n        return batch_data<|fim_middle|>Returns the album distance calculated by plugins.<|file_separator|>",
+        "l": false,
+        "c": "    def sample(self, batch_size: int) -> Batch:\n        import warnings\n        warnings.warn(\n            'Collector.sample is deprecated and will cause error if you use '\n            'prioritized experience replay! Collector.sample will be removed '\n            'upon version 0.3. Use policy.update instead!', Warning)\n        batch_data, indice = self.buffer.sample(batch_size)\n        batch_data = self.process_fn(batch_data, self.buffer, indice)\n        return batch_data",
+        "d": "Returns the album distance calculated by plugins."
+    },
+    {
+        "e": "<|fim_prefix|>def cols_etc(table, schema=None, alias=None, is_function=False, parent=None):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        return set([\n        Column(table_refs=(TableReference(schema, table, alias, is_function),),\n               qualifiable=True),\n        Function(schema=parent),\n        Keyword()])<|fim_middle|>This used to generate a server 500:\nDiscoveryFailure: No usable OpenID services found for http://www.google.com/<|file_separator|>",
+        "l": false,
+        "c": "def cols_etc(table, schema=None, alias=None, is_function=False, parent=None):\n    return set([\n        Column(table_refs=(TableReference(schema, table, alias, is_function),),\n               qualifiable=True),\n        Function(schema=parent),\n        Keyword()])",
+        "d": "This used to generate a server 500:\nDiscoveryFailure: No usable OpenID services found for http://www.google.com/"
+    },
+    {
+        "e": "<|fim_prefix|>def setup_streamlink():\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        global streamlink\n\n    streamlink = Streamlink()<|fim_middle|>Hack around python `repr` to deterministically represent dictionaries.\n\nThis is able to represent more things than json.dumps, since it does not require things to be JSON serializable\n(e.g. datetimes).<|file_separator|>",
+        "l": false,
+        "c": "def setup_streamlink():\n    global streamlink\n\n    streamlink = Streamlink()",
+        "d": "Hack around python `repr` to deterministically represent dictionaries.\n\nThis is able to represent more things than json.dumps, since it does not require things to be JSON serializable\n(e.g. datetimes)."
+    },
+    {
+        "e": "<|fim_prefix|>    def show_page(self, name, override_idle=None):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            self.show_pages([name], 0, override_idle)<|fim_middle|>Returns the collate function for supervised finetuning (needed in the DataLoader).\n\nThe collate function gets a list of dicts with keys `input_ids` and `labels`.\nIt returns a dict with batched `input_ids` and `labels`. Also pads short sequences to the longest element in\nthe batch. Optionally truncates all sequences to the specified maximum length.<|file_separator|>",
+        "l": false,
+        "c": "    def show_page(self, name, override_idle=None):\n        self.show_pages([name], 0, override_idle)",
+        "d": "Returns the collate function for supervised finetuning (needed in the DataLoader).\n\nThe collate function gets a list of dicts with keys `input_ids` and `labels`.\nIt returns a dict with batched `input_ids` and `labels`. Also pads short sequences to the longest element in\nthe batch. Optionally truncates all sequences to the specified maximum length."
+    },
+    {
+        "e": "<|fim_prefix|>def safe_str(v):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        try:\n        return str(v)\n    except UnicodeError:\n        if not isinstance(v, text_type):\n            v = text_type(v)\n        errors = \"replace\"\n        return v.encode(\"utf-8\", errors)<|fim_middle|>Translate constant `py_val` to a constant, canonicalizing its dtype.\n\nArgs:\n  py_val: a Python value to be translated to a constant.\n\nReturns:\n  A representation of the constant, either a ComputationDataHandle or None<|file_separator|>",
+        "l": false,
+        "c": "def safe_str(v):\n    try:\n        return str(v)\n    except UnicodeError:\n        if not isinstance(v, text_type):\n            v = text_type(v)\n        errors = \"replace\"\n        return v.encode(\"utf-8\", errors)",
+        "d": "Translate constant `py_val` to a constant, canonicalizing its dtype.\n\nArgs:\n  py_val: a Python value to be translated to a constant.\n\nReturns:\n  A representation of the constant, either a ComputationDataHandle or None"
+    },
+    {
+        "e": "<|fim_prefix|>def transform_keypoints_(self, M: Tensor) -> \"Keypoints\":\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        return self.transform_keypoints(M, inplace=True)<|fim_middle|>\u7279\u6b8a\u9759\u97f3\u6bb5sp\u7b26\u53f7\u5904\u7406<|file_separator|>",
+        "l": false,
+        "c": "def transform_keypoints_(self, M: Tensor) -> \"Keypoints\":\n    return self.transform_keypoints(M, inplace=True)",
+        "d": "\u7279\u6b8a\u9759\u97f3\u6bb5sp\u7b26\u53f7\u5904\u7406"
+    },
+    {
+        "e": "<|fim_prefix|>def app(environ, start_response):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        data = b'Hello, World!\\n'\n    status = '200 OK'\n\n    response_headers = [\n        ('Content-type','text/plain'),\n        ('Content-Length', str(len(data))),\n        ('X-Gunicorn-Version', __version__),\n        (\"Test\", \"test \u0442\u0435\u0441\u0442\"),\n    ]\n    start_response(status, response_headers)\n    return iter([data])<|fim_middle|>\u52a0\u8f7d\u9999\u8549\u68c0\u6d4b\u6570\u636e\u96c6\n\nDefined in :numref:`sec_object-detection-dataset`<|file_separator|>",
+        "l": false,
+        "c": "def app(environ, start_response):\n    data = b'Hello, World!\\n'\n    status = '200 OK'\n\n    response_headers = [\n        ('Content-type','text/plain'),\n        ('Content-Length', str(len(data))),\n        ('X-Gunicorn-Version', __version__),\n        (\"Test\", \"test \u0442\u0435\u0441\u0442\"),\n    ]\n    start_response(status, response_headers)\n    return iter([data])",
+        "d": "\u52a0\u8f7d\u9999\u8549\u68c0\u6d4b\u6570\u636e\u96c6\n\nDefined in :numref:`sec_object-detection-dataset`"
+    },
+    {
+        "e": "<|fim_prefix|>def make_optional(\n        name: str,\n        elem_type: OptionalProto.DataType,\n        value: Optional[Any],\n) -> OptionalProto:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        optional = OptionalProto()\n    optional.name = name\n    optional.elem_type = elem_type\n    if elem_type != 0:\n        values_field = mapping.OPTIONAL_ELEMENT_TYPE_TO_FIELD[elem_type]\n        getattr(optional, values_field).CopyFrom(value)\n    return optional<|fim_middle|>Parse a query string into key-value pairs<|file_separator|>",
+        "l": false,
+        "c": "def make_optional(\n        name: str,\n        elem_type: OptionalProto.DataType,\n        value: Optional[Any],\n) -> OptionalProto:\n    optional = OptionalProto()\n    optional.name = name\n    optional.elem_type = elem_type\n    if elem_type != 0:\n        values_field = mapping.OPTIONAL_ELEMENT_TYPE_TO_FIELD[elem_type]\n        getattr(optional, values_field).CopyFrom(value)\n    return optional",
+        "d": "Parse a query string into key-value pairs"
+    },
+    {
+        "e": "<|fim_prefix|>    def from_search_term(cls, search_term: str):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            list_type = cls.__name__.lower()\n        raw_search_results = cls.search(search_term)\n\n        return cls.create_basic_list(\n            f\"http://open.spotify.com/{list_type}/\"\n            + raw_search_results[f\"{list_type}s\"][\"items\"][0][\"id\"]\n        )<|fim_middle|>Like :meth:`link` but *callback* is only notified when the greenlet dies because of unhandled exception<|file_separator|>",
+        "l": false,
+        "c": "    def from_search_term(cls, search_term: str):\n        list_type = cls.__name__.lower()\n        raw_search_results = cls.search(search_term)\n\n        return cls.create_basic_list(\n            f\"http://open.spotify.com/{list_type}/\"\n            + raw_search_results[f\"{list_type}s\"][\"items\"][0][\"id\"]\n        )",
+        "d": "Like :meth:`link` but *callback* is only notified when the greenlet dies because of unhandled exception"
+    },
+    {
+        "e": "<|fim_prefix|>def __init__(self, d_model, dropout_rate, max_len=5000):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        super().__init__(d_model, dropout_rate, max_len, reverse=True)<|fim_middle|>Check if user has access to this xmodule.\n\nValid actions:\n  - same as the valid actions for xmodule.descriptor<|file_separator|>",
+        "l": false,
+        "c": "def __init__(self, d_model, dropout_rate, max_len=5000):\n    super().__init__(d_model, dropout_rate, max_len, reverse=True)",
+        "d": "Check if user has access to this xmodule.\n\nValid actions:\n  - same as the valid actions for xmodule.descriptor"
+    },
+    {
+        "e": "<|fim_prefix|>def get_all_param_names(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        return self._params.keys()<|fim_middle|>Produce an empty collection for an un-initialized attribute<|file_separator|>",
+        "l": false,
+        "c": "def get_all_param_names(self):\n    return self._params.keys()",
+        "d": "Produce an empty collection for an un-initialized attribute"
+    },
+    {
+        "e": "<|fim_prefix|>    def _extract_code(self, response: str, separator: str = \"```\") -> str:\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            code = response\n        if len(code.split(separator)) > 1:\n            code = code.split(separator)[1]\n        code = self._polish_code(code)\n        if not self._is_python_code(code):\n            raise NoCodeFoundError(\"No code found in the response\")\n\n        return code<|fim_middle|>bool: Whether all steps in the execution were successful.<|file_separator|>",
+        "l": false,
+        "c": "    def _extract_code(self, response: str, separator: str = \"```\") -> str:\n        code = response\n        if len(code.split(separator)) > 1:\n            code = code.split(separator)[1]\n        code = self._polish_code(code)\n        if not self._is_python_code(code):\n            raise NoCodeFoundError(\"No code found in the response\")\n\n        return code",
+        "d": "bool: Whether all steps in the execution were successful."
+    },
+    {
+        "e": "<|fim_prefix|>def set_alphas(self, step):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        ssim_alpha = self._set_alpha(step, self.ssim_alpha)\n    dur_loss_alpha = self._set_alpha(step, self.dur_loss_alpha)\n    spec_loss_alpha = self._set_alpha(step, self.spec_loss_alpha)\n    mdn_alpha = self._set_alpha(step, self.mdn_alpha)\n    return ssim_alpha, dur_loss_alpha, spec_loss_alpha, mdn_alpha<|fim_middle|>roundrobin(*iterables)\n\nTake elements from `iterables` in a round-robin fashion.\n\nArguments:\n  *iterables:  One or more iterables.\n\nReturns:\n  An iterator whoose elements are taken from `iterables` in a round-robin\n  fashion.\n\nExamples:\n  >>> ''.join(roundrobin('ABC', 'D', 'EF'))\n  'ADEBFC'\n  >>> ''.join(take(10, roundrobin('ABC', 'DE', repeat('x'))))\n  'ADxBExCxxx'<|file_separator|>",
+        "l": false,
+        "c": "def set_alphas(self, step):\n    ssim_alpha = self._set_alpha(step, self.ssim_alpha)\n    dur_loss_alpha = self._set_alpha(step, self.dur_loss_alpha)\n    spec_loss_alpha = self._set_alpha(step, self.spec_loss_alpha)\n    mdn_alpha = self._set_alpha(step, self.mdn_alpha)\n    return ssim_alpha, dur_loss_alpha, spec_loss_alpha, mdn_alpha",
+        "d": "roundrobin(*iterables)\n\nTake elements from `iterables` in a round-robin fashion.\n\nArguments:\n  *iterables:  One or more iterables.\n\nReturns:\n  An iterator whoose elements are taken from `iterables` in a round-robin\n  fashion.\n\nExamples:\n  >>> ''.join(roundrobin('ABC', 'D', 'EF'))\n  'ADEBFC'\n  >>> ''.join(take(10, roundrobin('ABC', 'DE', repeat('x'))))\n  'ADxBExCxxx'"
+    },
+    {
+        "e": "<|fim_prefix|>def target_mask(ys_in_pad, ignore_id):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        ys_mask = ys_in_pad != ignore_id\n    m = subsequent_mask(ys_mask.size(-1), device=ys_mask.device).unsqueeze(0)\n    return ys_mask.unsqueeze(-2) & m<|fim_middle|>Create a hash of\n\n>>> strhash(\"Hello\", 10)\n'hello9_+ei'\n>>> strhash(\"Goodbye\", 5, obfuscate=\"mysalt\")\n'voxpj'\n\nKeyword arguments:\ns -- The string to be hashed\nlength -- The length of the hash to create.\n                    Might be limited by the hash method\nobfuscate -- None to disable SHA512 obfuscation,\n                         or a salt to append to the string\n                         before hashing<|file_separator|>",
+        "l": false,
+        "c": "def target_mask(ys_in_pad, ignore_id):\n    ys_mask = ys_in_pad != ignore_id\n    m = subsequent_mask(ys_mask.size(-1), device=ys_mask.device).unsqueeze(0)\n    return ys_mask.unsqueeze(-2) & m",
+        "d": "Create a hash of\n\n>>> strhash(\"Hello\", 10)\n'hello9_+ei'\n>>> strhash(\"Goodbye\", 5, obfuscate=\"mysalt\")\n'voxpj'\n\nKeyword arguments:\ns -- The string to be hashed\nlength -- The length of the hash to create.\n                    Might be limited by the hash method\nobfuscate -- None to disable SHA512 obfuscation,\n                         or a salt to append to the string\n                         before hashing"
+    },
+    {
+        "e": "<|fim_prefix|>    def __init__(self, func, regex='.*'):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            args = inspect.getargspec(func).args\n        arg_num = len(args) - inspect.ismethod(func)\n        assert arg_num in [1, 2], \\\n            \"The function must take 1 or 2 arguments!  ({})\".format(args)\n        if arg_num == 1:\n            self.func = lambda grad, var: func(grad)\n        else:\n            self.func = func\n\n        if not regex.endswith('$'):\n            regex = regex + '$'\n        self.regex = regex\n        super(MapGradient, self).__init__()<|fim_middle|>Call function to collect keys in results. The keys in ``meta_keys``\nwill be converted to :obj:mmcv.DataContainer.\n\nArgs:\n    results (dict): Result dict contains the data to collect.\n\nReturns:\n    dict: The result dict contains the following keys\n        - keys in``self.keys``\n        - ``img_metas``<|file_separator|>",
+        "l": false,
+        "c": "    def __init__(self, func, regex='.*'):\n        args = inspect.getargspec(func).args\n        arg_num = len(args) - inspect.ismethod(func)\n        assert arg_num in [1, 2], \\\n            \"The function must take 1 or 2 arguments!  ({})\".format(args)\n        if arg_num == 1:\n            self.func = lambda grad, var: func(grad)\n        else:\n            self.func = func\n\n        if not regex.endswith('$'):\n            regex = regex + '$'\n        self.regex = regex\n        super(MapGradient, self).__init__()",
+        "d": "Call function to collect keys in results. The keys in ``meta_keys``\nwill be converted to :obj:mmcv.DataContainer.\n\nArgs:\n    results (dict): Result dict contains the data to collect.\n\nReturns:\n    dict: The result dict contains the following keys\n        - keys in``self.keys``\n        - ``img_metas``"
+    },
+    {
+        "e": "<|fim_prefix|>def mouseInfo():\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        mouseinfo.MouseInfoWindow()<|fim_middle|>Use greedy sampling.<|file_separator|>",
+        "l": false,
+        "c": "def mouseInfo():\n    mouseinfo.MouseInfoWindow()",
+        "d": "Use greedy sampling."
+    },
+    {
+        "e": "<|fim_prefix|>    def matches_data_dir(self, dirname):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n            if not self.dist_type == 'wheel':\n            return False\n        name, version = dirname.split('-')[:2]\n        comparison_data_dir = '%s-%s' % (self._normalize_name(name), version)\n        comparison_data_dir += dirname[len(comparison_data_dir):]\n        return self.data_dir == comparison_data_dir<|fim_middle|>Retrieves passages from the RM for the query and returns the top k passages.<|file_separator|>",
+        "l": false,
+        "c": "    def matches_data_dir(self, dirname):\n        if not self.dist_type == 'wheel':\n            return False\n        name, version = dirname.split('-')[:2]\n        comparison_data_dir = '%s-%s' % (self._normalize_name(name), version)\n        comparison_data_dir += dirname[len(comparison_data_dir):]\n        return self.data_dir == comparison_data_dir",
+        "d": "Retrieves passages from the RM for the query and returns the top k passages."
+    },
+    {
+        "e": "<|fim_prefix|>def token_sort_ratio(s1, s2, force_ascii=True):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        return _token_sort(s1, s2, partial=False, force_ascii=force_ascii)<|fim_middle|>See base class.<|file_separator|>",
+        "l": false,
+        "c": "def token_sort_ratio(s1, s2, force_ascii=True):\n    return _token_sort(s1, s2, partial=False, force_ascii=force_ascii)",
+        "d": "See base class."
+    },
+    {
+        "e": "<|fim_prefix|>def test_match():\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        assert match(Command(u'ps -ef |\u00a0grep foo',\n                         stderr=u'-bash: \u00a0grep: command not found'))\n    assert not match(Command('ps -ef | grep foo'))\n    assert not match(Command())<|fim_middle|>This makes 100 submissions to test pagination on the forms submissions page<|file_separator|>",
+        "l": false,
+        "c": "def test_match():\n    assert match(Command(u'ps -ef |\u00a0grep foo',\n                         stderr=u'-bash: \u00a0grep: command not found'))\n    assert not match(Command('ps -ef | grep foo'))\n    assert not match(Command())",
+        "d": "This makes 100 submissions to test pagination on the forms submissions page"
+    },
+    {
+        "e": "<|fim_prefix|>def resolve_data_reference(\n    data_connector_name: str,\n    execution_engine_name: str,\n    template_arguments: dict,\n):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        storage_name: str = DataConnectorStorageDataReferenceResolver.DATA_CONNECTOR_NAME_TO_STORAGE_NAME_MAP[\n        data_connector_name\n    ]\n    return DataConnectorStorageDataReferenceResolver.STORAGE_NAME_EXECUTION_ENGINE_NAME_PATH_RESOLVERS[\n        (storage_name, execution_engine_name)\n    ](\n        template_arguments\n    )<|fim_middle|>Init.\n\nArgs:\n    features (int): number of features<|file_separator|>",
+        "l": false,
+        "c": "def resolve_data_reference(\n    data_connector_name: str,\n    execution_engine_name: str,\n    template_arguments: dict,\n):\n    storage_name: str = DataConnectorStorageDataReferenceResolver.DATA_CONNECTOR_NAME_TO_STORAGE_NAME_MAP[\n        data_connector_name\n    ]\n    return DataConnectorStorageDataReferenceResolver.STORAGE_NAME_EXECUTION_ENGINE_NAME_PATH_RESOLVERS[\n        (storage_name, execution_engine_name)\n    ](\n        template_arguments\n    )",
+        "d": "Init.\n\nArgs:\n    features (int): number of features"
+    },
+    {
+        "e": "<|fim_prefix|>def get_indexes(self):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        return random.randint(0, len(self.dataset) - 1)<|fim_middle|>Returns an MSBuild tool dictionary.  Creates it if needed.<|file_separator|>",
+        "l": false,
+        "c": "def get_indexes(self):\n    return random.randint(0, len(self.dataset) - 1)",
+        "d": "Returns an MSBuild tool dictionary.  Creates it if needed."
+    },
+    {
+        "e": "<|fim_prefix|>def save(self, name, resp):\n\n    \"\"\"<|fim_suffix|>\"\"\"\n        if hasattr(self, 'key'):\n        resp.set_cookie(name, self.key, max_age=COOKIE_MAX_AGE)<|fim_middle|>Return the lemma of each word in this WordList.<|file_separator|>",
+        "l": false,
+        "c": "def save(self, name, resp):\n    if hasattr(self, 'key'):\n        resp.set_cookie(name, self.key, max_age=COOKIE_MAX_AGE)",
+        "d": "Return the lemma of each word in this WordList."
+    }
+]
