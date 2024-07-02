@@ -1,7 +1,7 @@
 #!/bin/sh
 
 export GROUP=2
-export GPU=$((AI_GROUP % 4))
+export GPU=$((GROUP % 4))
 export CACHE_DIR=/var/opt/huggingface
 export PORT=$((9000 + GROUP))
 
