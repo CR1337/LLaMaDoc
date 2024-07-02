@@ -5,6 +5,7 @@ import gc
 from huggingface_hub import login
 from transformers import AutoModelForCausalLM, AutoTokenizer, PreTrainedTokenizer
 from sentence_transformers import SentenceTransformer
+from peft import PeftModel
 
 
 on_server: bool = not os.path.exists("not-on-server")
@@ -26,6 +27,7 @@ else:
 
 class ModelProvider:
     
+    
     generative_model_ids: List[str] = [
         "google/codegemma-2b",
         "checkpoints/finetuned_0"
@@ -33,6 +35,11 @@ class ModelProvider:
     embedding_model_ids: List[str] = [
         "microsoft/codebert-base"
     ]
+
+    generative_model_base_models: Dict[str, str | None] = {
+        "google/codegemma-2b": None,
+        "checkpoints/finetuned_0": "google/codegemma-2b"
+    }
 
     _loaded_generative_models: Dict[str, Tuple[AutoModelForCausalLM, PreTrainedTokenizer] | None] = {
         model_id: None
@@ -46,14 +53,26 @@ class ModelProvider:
     @classmethod
     def get_generative_model(cls, model_id: str) -> Tuple[AutoModelForCausalLM, PreTrainedTokenizer]:
         if cls._loaded_generative_models[model_id] is None:
-            cls._loaded_generative_models[model_id] = (
-                AutoModelForCausalLM.from_pretrained(
-                    model_id,
+            if (base_model_id := cls.generative_model_base_models[model_id]) is not None:
+                model = AutoModelForCausalLM.from_pretrained(
+                    base_model_id,
                     device_map=device,
                     torch_dtype=(torch.bfloat16 if on_server else torch.float32)
-                ),
-                AutoTokenizer.from_pretrained(model_id)
-            )
+                )
+                cls._loaded_generative_models[model_id] = PeftModel.from_pretrained(
+                    model,
+                    model_id
+                )
+
+            else:
+                cls._loaded_generative_models[model_id] = (
+                    AutoModelForCausalLM.from_pretrained(
+                        model_id,
+                        device_map=device,
+                        torch_dtype=(torch.bfloat16 if on_server else torch.float32)
+                    ),
+                    AutoTokenizer.from_pretrained(model_id)
+                )
         return cls._loaded_generative_models[model_id]
     
     @classmethod
