@@ -11,6 +11,8 @@ WORKDIR /server
 COPY --chown=llm_user:llm_group requirements.txt /server/requirements.txt
 RUN pip3 install --no-cache-dir -r /server/requirements.txt
 
+ENV PATH="/home/llm_user/.local/bin:${PATH}"
+
 COPY --chown=llm_user:llm_group . /server/
 COPY --chown=llm_user:llm_group entrypoint.sh /usr/local/bin/
 
