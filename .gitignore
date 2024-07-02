@@ -13,3 +13,5 @@ github-scraper/*.pkl
 github-scraper/*.json
 llm-server/checkpoints/**
 !llm-server/checkpoints/.gitkeep
+llm-server/eval_out_of_date_test/*.json
+**/*.secret
