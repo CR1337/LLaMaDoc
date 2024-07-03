@@ -13,18 +13,14 @@ from tqdm import tqdm
 from dataclasses import dataclass
 import pandas as pd
 import pickle
+import os
+import stat
 
 from typing import List, Tuple
 
 
 BATCH_SIZE: int = 32
-
-with open("eval_out_of_date_test/test_data.json") as f:
-    test_data = [
-        {'c': item['c'], 'd': item['d'], 'l': item['l']} 
-        for item in json.load(f)
-    ]
-test_data_batches = itertools.batched(test_data, BATCH_SIZE)
+test_data_batches = None
 
 
 def get_generation_parameter() -> GenerationParameters:
@@ -271,12 +267,23 @@ def optimize_parameters() -> Tuple[pd.DataFrame, pd.DataFrame]:
 
 
 def store_results(prediction_df: pd.DataFrame, distance_df: pd.DataFrame):
-    with open("eval_out_of_date_test/prediction_results.pkl", "wb") as f:
+    with open("cache/prediction_eval_results.pkl", "wb") as f:
         pickle.dump(prediction_df, f)
-    with open("eval_out_of_date_test/distance_results.pkl", "wb") as f:
+    with open("cache/distance_eval_results.pkl", "wb") as f:
         pickle.dump(distance_df, f)
 
+    os.chmod("cache/prediction_eval_results.pkl", stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
+    os.chmod("cache/distance_eval_results.pkl", stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
 
-if __name__ == "__main__":
+
+def do_eval():
+    with open("eval_out_of_date_test/test_data.json") as f:
+        test_data = [
+            {'c': item['c'], 'd': item['d'], 'l': item['l']} 
+            for item in json.load(f)
+        ]
+    global test_data_batches
+    test_data_batches = itertools.batched(test_data, BATCH_SIZE)
+
     prediction_df, distance_df = optimize_parameters()
     store_results(prediction_df, distance_df)

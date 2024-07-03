@@ -56,5 +56,5 @@ def run_tests():
             test.test(codes, docstrings, parameters)
 
 
-if __name__ == "__main__":
+def do_precaching():
     run_tests()
