@@ -12,6 +12,9 @@ from out_of_date_test.prediction_test import PredictionTest
 from out_of_date_test.distance_test import DistanceTest
 from out_of_date_test.none_test import NoneTest
 
+from eval_out_of_date_test.precache_for_eval import do_precaching
+from eval_out_of_date_test.eval import do_eval
+
 server = FastAPI()    
 
 @server.get("/")
@@ -109,6 +112,18 @@ async def unload(mid: str):
         return Response(status_code=status.HTTP_204_NO_CONTENT)
     else:
         return Response(status_code=status.HTTP_404_NOT_FOUND)
+    
+
+@server.post("/eval/precaching/run")
+async def run_eval_precaching():
+    do_precaching()
+    return Response(status_code=status.HTTP_200_OK)
+
+
+@server.post("/eval/run")
+async def run_eval():
+    do_eval()
+    return Response(status_code=status.HTTP_200_OK)
 
 
 if __name__ == "__main__":
