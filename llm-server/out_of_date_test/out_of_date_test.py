@@ -2,11 +2,13 @@ from abc import ABC, abstractmethod
 import torch
 import re
 from typing import List, Tuple, Generator
-from out_of_date_test.model import TestParameters, TestResult, GenerationParameters
+from out_of_date_test.model import TestParameters, TestResult, GenerationParameters, TestCachingConfiguration
 from torch.nn.utils.rnn import pad_sequence
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from out_of_date_test.model_provider import ModelProvider, device
 import gc
+import lzma
+import json
 
 
 class OutOfDateTest(ABC):
@@ -56,7 +58,13 @@ class OutOfDateTest(ABC):
             for header, body in self._split_codes(codes)
         ]
     
-    def _get_updated_docstrings(self, prompts: List[str], parameters: GenerationParameters) ->List[str]:
+    def _get_updated_docstrings(self, prompts: List[str], parameters: GenerationParameters, cache_config: TestCachingConfiguration | None = None) ->List[str]:
+        if cache_config is not None and cache_config.load:
+            with lzma.open("cache/" + cache_config.cache_identifier + "_updated_docstrings.txt.xz", "r") as f:
+                for i, line in enumerate(f):
+                    if i == cache_config.item_index:
+                        return json.loads(line.strip())
+        
         prompt_tokens = self._tokenizer(prompts)['input_ids']
         prompt_tokens_tensor = pad_sequence(
             [torch.tensor(tokens) for tokens in prompt_tokens], 
@@ -80,4 +88,9 @@ class OutOfDateTest(ABC):
         del prompt_tokens_tensor, prompt_attention_masks, updated_docstring_token_tensor
         gc.collect()
         torch.cuda.empty_cache()
+
+        if cache_config is not None and cache_config.save:
+            with lzma.open("cache/" + cache_config.cache_identifier + "_updated_docstrings.txt.xz", "a") as f:
+                f.write(json.dumps(updated_docstrings) + "\n")
+
         return updated_docstrings
