@@ -112,20 +112,6 @@ def check_out_of_date(functions: List[Function]) -> List[Function]:
         List[Function]: The updated list of Function objects.
     """
 
-    # TODO: connect to backend
-
-    # --- comment this out to connect to the backend ---
-    # for i in range(len(functions)):
-    #     if not functions[i].has_docstring:
-    #         continue
-    #     if i % 2 == 0:
-    #         functions[i].up_to_date = True
-    #     else:
-    #         functions[i].up_to_date = False
-    # return functions
-    # ---------------------------------------------------
-
-    # --- uncomment this to connect to the backend ---
     codes = [function.code for function in functions if function.has_docstring]
     docstrings = [function.docstring for function in functions if function.has_docstring]
     function_indices = [i for i, function in enumerate(functions) if function.has_docstring]
