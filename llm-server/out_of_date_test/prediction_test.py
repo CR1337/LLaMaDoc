@@ -42,6 +42,9 @@ class PredictionTest(OutOfDateTest):
             parameters.test_threshold
         )
 
+        if parameters.caching_configuration is not None:
+            self._set_cache_file_permissions()
+
         return [
             TestResult(
                 out_of_date=out_of_date,

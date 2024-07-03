@@ -16,6 +16,9 @@ class NoneTest(OutOfDateTest):
         prompts = self._build_prompts(codes)
         updated_docstrings = self._get_updated_docstrings(prompts, parameters.generation_parameters)
 
+        if parameters.caching_configuration is not None:
+            self._set_cache_file_permissions()
+
         return [
             TestResult(
                 updated_docstring=updated_docstring

@@ -9,6 +9,8 @@ from out_of_date_test.model_provider import ModelProvider, device
 import gc
 import lzma
 import json
+import os
+import stat
 
 
 class OutOfDateTest(ABC):
@@ -41,6 +43,10 @@ class OutOfDateTest(ABC):
         parameters: TestParameters
     ) -> List[TestResult]:
         raise NotImplementedError("@abstractmethod def test(...)")
+    
+    def _set_cache_file_permissions(self):
+        for filename in os.listdir("cache"):
+            os.chmod("cache/" + filename, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
     
     def _split_codes(self, codes: List[str]) -> Generator[Tuple[str, str], None, None]:
         for code in codes:
