@@ -15,12 +15,19 @@ import pandas as pd
 import pickle
 import os
 import stat
+from itertools import islice
 
 from typing import List, Tuple
 
 
 BATCH_SIZE: int = 32
 test_data_batches = None
+
+
+def batched(iterable, n):
+    it = iter(iterable)
+    while batch := list(islice(it, n)):
+        yield batch
 
 
 def get_generation_parameter() -> GenerationParameters:
@@ -283,7 +290,7 @@ def do_eval():
             for item in json.load(f)
         ]
     global test_data_batches
-    test_data_batches = itertools.batched(test_data, BATCH_SIZE)
+    test_data_batches = batched(test_data, BATCH_SIZE)
 
     prediction_df, distance_df = optimize_parameters()
     store_results(prediction_df, distance_df)

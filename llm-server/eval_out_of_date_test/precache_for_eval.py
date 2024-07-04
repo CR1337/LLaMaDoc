@@ -10,6 +10,7 @@ from typing import Dict, Generator, List
 import json
 import itertools
 from tqdm import tqdm
+from eval_out_of_date_test.eval import batched
 
 
 def test_parameter_generator(
@@ -46,7 +47,7 @@ def run_tests():
     length = len(data) // BATCH_SIZE
 
     for mid in ModelProvider.generative_model_ids:
-        batches = itertools.batched(data, BATCH_SIZE)
+        batches = batched(data, BATCH_SIZE)
         test = PredictionTest(mid)
         for batch, parameters in tqdm(zip(
             batches, test_parameter_generator(length, f"test_data-{mid}", load=False)
