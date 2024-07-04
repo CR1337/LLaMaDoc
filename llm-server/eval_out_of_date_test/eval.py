@@ -139,7 +139,7 @@ def prediction_objective_function(params: Tuple[float, float, float], mid: str, 
 
     confusion_matrices.append(confusion_matrix)
 
-    return confusion_matrix.matthews_correlation_coefficient()
+    return -confusion_matrix.matthews_correlation_coefficient()
 
 
 def distance_objective_function(params: Tuple[float], distance_function: DistanceFunction, normalize: bool, sample_many: bool, mid: str, confusion_matrices: List[ConfusionMatrix]) -> float:
@@ -173,7 +173,7 @@ def distance_objective_function(params: Tuple[float], distance_function: Distanc
 
     confusion_matrices.append(confusion_matrix)
 
-    return confusion_matrix.matthews_correlation_coefficient()
+    return -confusion_matrix.matthews_correlation_coefficient()
 
 
 class ProgressCallback:
