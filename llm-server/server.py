@@ -116,13 +116,29 @@ async def unload(mid: str):
 
 @server.post("/eval/precaching/run")
 async def run_eval_precaching():
-    do_precaching()
+    try:
+        do_precaching()
+    except torch.cuda.OutOfMemoryError:
+        mem_summary = gpu_memory_summary(long=True)
+        print(mem_summary)
+        return PlainTextResponse(
+            content=mem_summary,
+            status_code=status.HTTP_507_INSUFFICIENT_STORAGE
+        )
     return Response(status_code=status.HTTP_200_OK)
 
 
 @server.post("/eval/run")
 async def run_eval():
-    do_eval()
+    try:
+        do_eval()
+    except torch.cuda.OutOfMemoryError:
+        mem_summary = gpu_memory_summary(long=True)
+        print(mem_summary)
+        return PlainTextResponse(
+            content=mem_summary,
+            status_code=status.HTTP_507_INSUFFICIENT_STORAGE
+        )
     return Response(status_code=status.HTTP_200_OK)
 
 
