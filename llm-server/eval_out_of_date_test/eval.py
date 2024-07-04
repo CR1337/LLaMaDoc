@@ -20,7 +20,7 @@ from itertools import islice
 from typing import List, Tuple
 
 
-BATCH_SIZE: int = 32
+BATCH_SIZE: int = 16
 test_data_batches = None
 
 
