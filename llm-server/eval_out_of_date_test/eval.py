@@ -223,9 +223,11 @@ def optimize_prediction() -> List[List[IterationResult]]:
     print("Starting prediction optimization...")
     n_iterations = len(ModelProvider.generative_model_ids)
     for i, mid in enumerate(ModelProvider.generative_model_ids):
-        print(f"Optimizing for model {mid}... ({i + 1} / {n_iterations}")
+        print(f"Optimizing for model {mid}... ({i + 1} / {n_iterations})")
         progress_callback = ProgressCallback(max_iter)
         confusion_matrices = []
+        print(f"{options['bounds']=}")
+        print(f"{initial_guess=}")
         results = minimize(
             prediction_objective_function,
             initial_guess,
