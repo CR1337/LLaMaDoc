@@ -143,7 +143,10 @@ def prediction_objective_function(params: Tuple[float, float, float], mid: str, 
             weight_decay=weight_decay,
             frequency_importance=frequency_importance
         )
-        test = PredictionTest(mid)
+        try:
+            test = PredictionTest(mid)
+        except torch.cuda.OutOfMemoryError:
+            return 100
         results = test.test(codes, docstrings, test_parameters)
         del test
         gc.collect()
@@ -181,7 +184,10 @@ def distance_objective_function(params: Tuple[float], distance_function: Distanc
             normalize=normalize,
             sample_many=sample_many
         )
-        test = DistanceTest(mid)
+        try:
+            test = DistanceTest(mid)
+        except torch.cuda.OutOfMemoryError:
+            return 100
         results = test.test(codes, docstrings, test_parameters)
         del test
         gc.collect()
