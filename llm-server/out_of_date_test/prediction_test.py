@@ -209,16 +209,19 @@ class PredictionTest(OutOfDateTest):
 
         if cache_config is not None and cache_config.store:
             with h5py.File("cache/" + cache_config.cache_identifier + "_probability_distributions.h5", "a") as f:
+                data_shape = result.cpu().detach().numpy().shape
                 if "probability_distributions" not in f:
                     f.create_dataset(
                         "probability_distributions", 
-                        (0,), 
-                        maxshape=(None,), 
+                        (0,) + data_shape, 
+                        maxshape=(None,) + data_shape, 
                         chunks=True, 
                         dtype='f'
                     )
-                f['probability_distributions'].resize((f['probability_distributions'].shape[0] + 1,))
-                f['probability_distributions'][-1] = result.cpu().detach().numpy()
+                current_size = f['probability_distributions'].shape[0]
+                f['probability_distributions'].resize((current_size + 1,) + data_shape)
+                f['probability_distributions'][current_size] = result.cpu().detach().numpy()
+
 
         return result
 
