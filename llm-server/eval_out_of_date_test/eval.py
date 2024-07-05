@@ -226,8 +226,8 @@ def optimize_prediction() -> List[List[IterationResult]]:
         print(f"Optimizing for model {mid}... ({i + 1} / {n_iterations})")
         progress_callback = ProgressCallback(max_iter)
         confusion_matrices = []
-        print(f"{options['bounds']=}")
-        print(f"{initial_guess=}")
+        # print(f"{options['bounds']=}")
+        # print(f"{initial_guess=}")
         results = minimize(
             prediction_objective_function,
             initial_guess,
