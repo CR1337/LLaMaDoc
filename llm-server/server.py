@@ -135,6 +135,10 @@ async def run_eval():
     except torch.cuda.OutOfMemoryError:
         mem_summary = gpu_memory_summary(long=True)
         print(mem_summary)
+        #print traceback:
+        import traceback
+        traceback.print_exc()
+
         return PlainTextResponse(
             content=mem_summary,
             status_code=status.HTTP_507_INSUFFICIENT_STORAGE
