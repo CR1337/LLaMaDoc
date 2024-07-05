@@ -12,7 +12,7 @@ from out_of_date_test.prediction_test import PredictionTest
 from out_of_date_test.distance_test import DistanceTest
 from out_of_date_test.none_test import NoneTest
 
-from eval_out_of_date_test.precache_for_eval import do_precaching
+# from eval_out_of_date_test.precache_for_eval import do_precaching
 from eval_out_of_date_test.eval import do_eval
 
 server = FastAPI()    
