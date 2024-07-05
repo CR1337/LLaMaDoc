@@ -214,7 +214,7 @@ def optimize_prediction() -> List[List[IterationResult]]:
     initial_guess = [sum(vs) / 2 for vs in get_prediction_bounds()]
     options = {
         'return_all': True,
-        'bounds': get_prediction_bounds(),
+        # 'bounds': get_prediction_bounds(),
         'xatol': 1e-2,
         'fatol': 1e-2,
         'maxiter': max_iter
@@ -249,7 +249,7 @@ def optimize_distance() -> List[List[IterationResult]]:
     initial_guess = [sum(vs) / 2 for vs in get_distance_bounds()]
     options = {
         'return_all': True,
-        'bounds': get_distance_bounds(),
+        # 'bounds': get_distance_bounds(),
         'xatol': 1e-2,
         'fatol': 1e-2,
         'maxiter': max_iter  
