@@ -65,11 +65,11 @@ class OutOfDateTest(ABC):
         ]
     
     def _get_updated_docstrings(self, prompts: List[str], parameters: GenerationParameters, cache_config: TestCachingConfiguration | None = None) ->List[str]:
-        if cache_config is not None and cache_config.load:
-            with lzma.open("cache/" + cache_config.cache_identifier + "_updated_docstrings.txt.xz", "r") as f:
-                for i, line in enumerate(f):
-                    if i == cache_config.item_index:
-                        return json.loads(line.strip())
+        # if cache_config is not None and cache_config.load:
+        #     with lzma.open("cache/" + cache_config.cache_identifier + "_updated_docstrings.txt.xz", "r") as f:
+        #         for i, line in enumerate(f):
+        #             if i == cache_config.item_index:
+        #                 return json.loads(line.strip())
         
         prompt_tokens = self._tokenizer(prompts)['input_ids']
         prompt_tokens_tensor = pad_sequence(
@@ -95,8 +95,8 @@ class OutOfDateTest(ABC):
         gc.collect()
         torch.cuda.empty_cache()
 
-        if cache_config is not None and cache_config.store:
-            with lzma.open("cache/" + cache_config.cache_identifier + "_updated_docstrings.txt.xz", "a") as f:
-                f.write(json.dumps(updated_docstrings) + "\n")
+        # if cache_config is not None and cache_config.store:
+        #     with lzma.open("cache/" + cache_config.cache_identifier + "_updated_docstrings.txt.xz", "a") as f:
+        #         f.write(json.dumps(updated_docstrings) + "\n")
 
         return updated_docstrings

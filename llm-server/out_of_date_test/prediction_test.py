@@ -184,10 +184,10 @@ class PredictionTest(OutOfDateTest):
         attention_masks: torch.Tensor, 
         cache_config: TestCachingConfiguration | None = None
     ) -> torch.Tensor:
-        if cache_config is not None and cache_config.load:
-            with h5py.File("cache/" + cache_config.cache_identifier + "_probability_distributions.h5", "r") as f:
-                tensor_data = f['probability_distributions'][cache_config.item_index].to(self._device)
-                return torch.from_numpy(tensor_data)
+        # if cache_config is not None and cache_config.load:
+        #     with h5py.File("cache/" + cache_config.cache_identifier + "_probability_distributions.h5", "r") as f:
+        #         tensor_data = f['probability_distributions'][cache_config.item_index].to(self._device)
+        #         return torch.from_numpy(tensor_data)
         
         # Reshape tensors to fit the model input requirements
         n_batches, n_sequences, n_tokens = all_sequences.shape
@@ -207,20 +207,20 @@ class PredictionTest(OutOfDateTest):
 
         result = probabilities.view(n_batches, n_sequences, n_tokens, -1)
 
-        if cache_config is not None and cache_config.store:
-            with h5py.File("cache/" + cache_config.cache_identifier + "_probability_distributions.h5", "a") as f:
-                data_shape = result.cpu().detach().numpy().shape
-                if "probability_distributions" not in f:
-                    f.create_dataset(
-                        "probability_distributions", 
-                        (0,) + data_shape, 
-                        maxshape=(None,) + data_shape, 
-                        chunks=True, 
-                        dtype='f'
-                    )
-                current_size = f['probability_distributions'].shape[0]
-                f['probability_distributions'].resize((current_size + 1,) + data_shape)
-                f['probability_distributions'][current_size] = result.cpu().detach().numpy()
+        # if cache_config is not None and cache_config.store:
+        #     with h5py.File("cache/" + cache_config.cache_identifier + "_probability_distributions.h5", "a") as f:
+        #         data_shape = result.cpu().detach().numpy().shape
+        #         if "probability_distributions" not in f:
+        #             f.create_dataset(
+        #                 "probability_distributions", 
+        #                 (0,) + data_shape, 
+        #                 maxshape=(None,) + data_shape, 
+        #                 chunks=True, 
+        #                 dtype='f'
+        #             )
+        #         current_size = f['probability_distributions'].shape[0]
+        #         f['probability_distributions'].resize((current_size + 1,) + data_shape)
+        #         f['probability_distributions'][current_size] = result.cpu().detach().numpy()
 
 
         return result

@@ -18,11 +18,14 @@ import stat
 from itertools import islice
 import torch
 import gc
+from random import Random
 
 from typing import List, Tuple
 
 
 BATCH_SIZE: int = 1
+SAMPLE_SIZE: int = 100
+SEED: int = 42
 test_data_batches = None
 
 
@@ -134,7 +137,7 @@ def prediction_objective_function(params: Tuple[float, float, float], mid: str, 
                 cache_identifier=f"test-data_{mid.replace('/', '-')}",
                 item_index=i,
                 store=False,
-                load=True
+                load=False
             ),
             test_threshold=threshold,
             weight_decay=weight_decay,
@@ -170,7 +173,7 @@ def distance_objective_function(params: Tuple[float], distance_function: Distanc
                 cache_identifier=f"test-data_{mid.replace('/', '-')}",
                 item_index=i,
                 store=False,
-                load=True
+                load=False
             ),
             mid=ModelProvider.embedding_model_ids[0],
             test_threshold=threshold,
@@ -299,6 +302,8 @@ def do_eval():
             {'c': item['c'], 'd': item['d'], 'l': item['l']} 
             for item in json.load(f)
         ]
+    rng = Random(SEED)
+    test_data = rng.sample(test_data, SAMPLE_SIZE)
     global test_data_batches
     test_data_batches = batched(test_data, BATCH_SIZE)
 
