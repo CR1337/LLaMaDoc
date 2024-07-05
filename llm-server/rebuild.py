@@ -21,3 +21,7 @@ def main():
     stdout, _ = process.communicate()
     print(stdout.decode('utf-8'))
     
+
+if __name__ == '__main__':
+    main()
+    
