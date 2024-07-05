@@ -22,7 +22,7 @@ import gc
 from typing import List, Tuple
 
 
-BATCH_SIZE: int = 8
+BATCH_SIZE: int = 1
 test_data_batches = None
 
 
