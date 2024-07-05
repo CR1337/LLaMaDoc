@@ -16,6 +16,8 @@ import pickle
 import os
 import stat
 from itertools import islice
+import torch
+import gc
 
 from typing import List, Tuple
 
@@ -140,6 +142,10 @@ def prediction_objective_function(params: Tuple[float, float, float], mid: str, 
         )
         test = PredictionTest(mid)
         results = test.test(codes, docstrings, test_parameters)
+        del test
+        gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
         for result, label in zip(results, labels):
             classification = result.out_of_date
             confusion_matrix.update(classification, label)
@@ -174,6 +180,10 @@ def distance_objective_function(params: Tuple[float], distance_function: Distanc
         )
         test = DistanceTest(mid)
         results = test.test(codes, docstrings, test_parameters)
+        del test
+        gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
         for result, label in zip(results, labels):
             classification = result.out_of_date
             confusion_matrix.update(classification, label)
