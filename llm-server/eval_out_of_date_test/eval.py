@@ -145,9 +145,9 @@ def prediction_objective_function(params: Tuple[float, float, float], mid: str, 
         )
         try:
             test = PredictionTest(mid)
+            results = test.test(codes, docstrings, test_parameters)
         except torch.cuda.OutOfMemoryError:
             return 100
-        results = test.test(codes, docstrings, test_parameters)
         del test
         gc.collect()
         if torch.cuda.is_available():
@@ -186,9 +186,9 @@ def distance_objective_function(params: Tuple[float], distance_function: Distanc
         )
         try:
             test = DistanceTest(mid)
+            results = test.test(codes, docstrings, test_parameters)
         except torch.cuda.OutOfMemoryError:
             return 100
-        results = test.test(codes, docstrings, test_parameters)
         del test
         gc.collect()
         if torch.cuda.is_available():
