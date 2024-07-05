@@ -8,10 +8,13 @@ def main():
         if 'llm_server_llamadoc' in line:
             container_id = line.split()[0]
             break
+    else:
+        container_id = None
 
-    process = subprocess.Popen(['docker', 'stop', container_id], stdout=subprocess.PIPE)
-    stdout, _ = process.communicate()
-    print(stdout.decode('utf-8'))
+    if container_id is not None:
+        process = subprocess.Popen(['docker', 'stop', container_id], stdout=subprocess.PIPE)
+        stdout, _ = process.communicate()
+        print(stdout.decode('utf-8'))
 
     process = subprocess.Popen(['git', 'pull'], stdout=subprocess.PIPE)
     stdout, _ = process.communicate()
