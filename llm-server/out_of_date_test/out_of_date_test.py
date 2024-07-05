@@ -95,7 +95,7 @@ class OutOfDateTest(ABC):
         gc.collect()
         torch.cuda.empty_cache()
 
-        if cache_config is not None and cache_config.save:
+        if cache_config is not None and cache_config.store:
             with lzma.open("cache/" + cache_config.cache_identifier + "_updated_docstrings.txt.xz", "a") as f:
                 f.write(json.dumps(updated_docstrings) + "\n")
 

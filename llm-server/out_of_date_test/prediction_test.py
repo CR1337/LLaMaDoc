@@ -207,7 +207,7 @@ class PredictionTest(OutOfDateTest):
 
         result = probabilities.view(n_batches, n_sequences, n_tokens, -1)
 
-        if cache_config is not None and cache_config.save:
+        if cache_config is not None and cache_config.store:
             with h5py.File("cache/" + cache_config.cache_identifier + "_probability_distributions.h5", "a") as f:
                 if "probability_distributions" not in f:
                     f.create_dataset(
