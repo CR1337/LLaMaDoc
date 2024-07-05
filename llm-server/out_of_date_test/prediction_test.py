@@ -186,7 +186,7 @@ class PredictionTest(OutOfDateTest):
     ) -> torch.Tensor:
         if cache_config is not None and cache_config.load:
             with h5py.File("cache/" + cache_config.cache_identifier + "_probability_distributions.h5", "r") as f:
-                tensor_data = f['probability_distributions'][cache_config.item_index]
+                tensor_data = f['probability_distributions'][cache_config.item_index].to(self._device)
                 return torch.from_numpy(tensor_data)
         
         # Reshape tensors to fit the model input requirements
@@ -218,7 +218,7 @@ class PredictionTest(OutOfDateTest):
                         dtype='f'
                     )
                 f['probability_distributions'].resize((f['probability_distributions'].shape[0] + 1,))
-                f['probability_distributions'][-1] = result.cpu().numpy()
+                f['probability_distributions'][-1] = result.cpu().detach().numpy()
 
         return result
 
