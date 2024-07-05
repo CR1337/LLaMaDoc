@@ -50,7 +50,7 @@ def run_tests():
     for mid in ModelProvider.generative_model_ids:
         batches = batched(data, BATCH_SIZE)
         for batch, parameters in tqdm(zip(
-            batches, test_parameter_generator(length, f"test_data-{mid.replace("/", "-")}", load=False)
+            batches, test_parameter_generator(length, f"test_data-{mid.replace('/', '-')}", load=False)
         ), total=length):
             test = PredictionTest(mid)
             codes = [item['c'] for item in batch]

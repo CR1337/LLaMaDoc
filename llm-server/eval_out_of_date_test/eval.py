@@ -131,7 +131,7 @@ def prediction_objective_function(params: Tuple[float, float, float], mid: str, 
         test_parameters = PredictionTestParameters(
             generation_parameters=get_generation_parameter(),
             caching_configuration=TestCachingConfiguration(
-                cache_identifier=f"test-data_{mid.replace("/", "-")}",
+                cache_identifier=f"test-data_{mid.replace('/', '-')}",
                 item_index=i,
                 store=False,
                 load=True
@@ -167,7 +167,7 @@ def distance_objective_function(params: Tuple[float], distance_function: Distanc
         test_parameters = DistanceTestParameters(
             generation_parameters=get_generation_parameter(),
             caching_configuration=TestCachingConfiguration(
-                cache_identifier=f"test-data_{mid.replace("/", "-")}",
+                cache_identifier=f"test-data_{mid.replace('/', '-')}",
                 item_index=i,
                 store=False,
                 load=True
