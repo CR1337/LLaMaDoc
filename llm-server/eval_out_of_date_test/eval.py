@@ -184,15 +184,14 @@ def distance_objective_function(params: Tuple[float], distance_function: Distanc
             normalize=normalize,
             sample_many=sample_many
         )
-        try:
-            test = DistanceTest(mid)
-            results = test.test(codes, docstrings, test_parameters)
-        except torch.cuda.OutOfMemoryError:
-            return 100
+        test = DistanceTest(mid)
+        results = test.test(codes, docstrings, test_parameters)
         del test
         gc.collect()
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
+        if any(x < min_x or x > max_x for x, (min_x, max_x) in zip(results.x, get_distance_bounds())):
+            return 100
         for result, label in zip(results, labels):
             classification = result.out_of_date
             confusion_matrix.update(classification, label)
@@ -214,39 +213,39 @@ class ProgressCallback:
         self._progress.close()
 
 
-def optimize_prediction() -> List[List[IterationResult]]:
-    overall_results = []
-    max_iter = 200 * 3
-    initial_guess = [sum(vs) / 2 for vs in get_prediction_bounds()]
-    options = {
-        'return_all': True,
-        # 'bounds': get_prediction_bounds(),
-        'xatol': 1e-2,
-        'fatol': 1e-2,
-        'maxiter': max_iter
-    }
+# def optimize_prediction() -> List[List[IterationResult]]:
+#     overall_results = []
+#     max_iter = 200 * 3
+#     initial_guess = [sum(vs) / 2 for vs in get_prediction_bounds()]
+#     options = {
+#         'return_all': True,
+#         # 'bounds': get_prediction_bounds(),
+#         'xatol': 1e-2,
+#         'fatol': 1e-2,
+#         'maxiter': max_iter
+#     }
 
-    print("Starting prediction optimization...")
-    n_iterations = len(ModelProvider.generative_model_ids)
-    for i, mid in enumerate(ModelProvider.generative_model_ids):
-        print(f"Optimizing for model {mid}... ({i + 1} / {n_iterations})")
-        progress_callback = ProgressCallback(max_iter)
-        confusion_matrices = []
-        # print(f"{options['bounds']=}")
-        # print(f"{initial_guess=}")
-        results = minimize(
-            prediction_objective_function,
-            initial_guess,
-            args=(mid, confusion_matrices),
-            method="Nelder-Mead",
-            callback=progress_callback,
-            options=options
-        )
-        progress_callback.close()
-        overall_results.append([IterationResult(r.x, r.fun, confusion_matrix, mid) for r, confusion_matrix in zip(results, confusion_matrices)])
+#     print("Starting prediction optimization...")
+#     n_iterations = len(ModelProvider.generative_model_ids)
+#     for i, mid in enumerate(ModelProvider.generative_model_ids):
+#         print(f"Optimizing for model {mid}... ({i + 1} / {n_iterations})")
+#         progress_callback = ProgressCallback(max_iter)
+#         confusion_matrices = []
+#         # print(f"{options['bounds']=}")
+#         # print(f"{initial_guess=}")
+#         results = minimize(
+#             prediction_objective_function,
+#             initial_guess,
+#             args=(mid, confusion_matrices),
+#             method="Nelder-Mead",
+#             callback=progress_callback,
+#             options=options
+#         )
+#         progress_callback.close()
+#         overall_results.append([IterationResult(r.x, r.fun, confusion_matrix, mid) for r, confusion_matrix in zip(results, confusion_matrices)])
 
 
-    return overall_results
+#     return overall_results
 
 
 def optimize_distance() -> List[List[IterationResult]]:
@@ -255,7 +254,6 @@ def optimize_distance() -> List[List[IterationResult]]:
     initial_guess = [sum(vs) / 2 for vs in get_distance_bounds()]
     options = {
         'return_all': True,
-        # 'bounds': get_distance_bounds(),
         'xatol': 1e-2,
         'fatol': 1e-2,
         'maxiter': max_iter  
@@ -282,25 +280,26 @@ def optimize_distance() -> List[List[IterationResult]]:
 
 
 def optimize_parameters() -> Tuple[pd.DataFrame, pd.DataFrame]:
-    prediction_results = optimize_prediction()
+    # prediction_results = optimize_prediction()
     distance_results = optimize_distance()
 
-    predictions_dfs = (IterationResult.results_to_dataframe(results) for results in prediction_results)
+    # predictions_dfs = (IterationResult.results_to_dataframe(results) for results in prediction_results)
     distances_dfs = (IterationResult.results_to_dataframe(results) for results in distance_results)
 
-    prediction_df = pd.concat(predictions_dfs)
+    # prediction_df = pd.concat(predictions_dfs)
     distance_df = pd.concat(distances_dfs)
 
-    return prediction_df, distance_df
+    return distance_df  # , prediction_df 
 
 
-def store_results(prediction_df: pd.DataFrame, distance_df: pd.DataFrame):
-    with open("cache/prediction_eval_results.pkl", "wb") as f:
-        pickle.dump(prediction_df, f)
+# def store_results(prediction_df: pd.DataFrame, distance_df: pd.DataFrame):
+def store_results(distance_df: pd.DataFrame):
+    # with open("cache/prediction_eval_results.pkl", "wb") as f:
+    #     pickle.dump(prediction_df, f)
     with open("cache/distance_eval_results.pkl", "wb") as f:
         pickle.dump(distance_df, f)
 
-    os.chmod("cache/prediction_eval_results.pkl", stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
+    # os.chmod("cache/prediction_eval_results.pkl", stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
     os.chmod("cache/distance_eval_results.pkl", stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
 
 
@@ -315,5 +314,6 @@ def do_eval():
     global test_data_batches
     test_data_batches = batched(test_data, BATCH_SIZE)
 
-    prediction_df, distance_df = optimize_parameters()
-    store_results(prediction_df, distance_df)
+    # prediction_df, distance_df = optimize_parameters()
+    distance_df = optimize_parameters()
+    store_results(distance_df)  # prediction_df, distance_df)
