@@ -128,7 +128,7 @@ def perform_test_for_evaluation(
         mid=mid,
         precaching=False,
         test_parameters=test_parameters,
-        updated_docstrings=updated_docstrings[mid]
+        updated_docstrings=list(batched(updated_docstrings[mid], BATCH_SIZE))
     )
     tp, tn, fp, fn = 0, 0, 0, 0
     for result, label in zip(results, LABELS):
@@ -149,7 +149,7 @@ def perform_test_for_evaluation(
     return mcc
 
 
-def do_precaching() -> Dict[str, List[str]]:
+def do_precaching() -> Dict[str, List[List[str]]]:
     test_parameters = NoneTestParameters(
         generation_parameters=GENERATION_PARAMETERS
     )
@@ -158,13 +158,16 @@ def do_precaching() -> Dict[str, List[str]]:
     for mid in tqdm(mids, total=len(mids), desc="Precaching", leave=False):
         print(f"Do precaching for {mid}")
         results[mid] = [
-            r.updated_docstring
-            for r in perform_test(
-                mid=mid,
-                precaching=True,
-                test_parameters=test_parameters,
-                updated_docstrings=None
-            )
+            [
+                r.updated_docstring
+                for r in perform_test(
+                    mid=mid,
+                    precaching=True,
+                    test_parameters=test_parameters,
+                    updated_docstrings=None
+                )
+            ]
+            for _ in DistanceTest.N_SAMPLES
         ]
     return results
 

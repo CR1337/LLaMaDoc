@@ -8,7 +8,7 @@ from out_of_date_test.model_provider import device_name
 
 class DistanceTest(OutOfDateTest):
 
-    N_SAMPLES: int = 8
+    N_SAMPLES: int = 4
 
     def test(
         self, 
@@ -26,7 +26,7 @@ class DistanceTest(OutOfDateTest):
         docstrings = [docstring for docstring in docstrings for _ in range(n_samples)]
 
         if generated_docstrings is not None:
-            updated_docstrings = generated_docstrings
+            updated_docstrings = [d for ds in generated_docstrings for d in ds]
         else:
             prompts = self._build_prompts(codes)
             updated_docstrings = self._get_updated_docstrings(prompts, parameters.generation_parameters)

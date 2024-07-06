@@ -16,7 +16,7 @@ class NoneTest(OutOfDateTest):
 
         prompts = self._build_prompts(codes)
         if generated_docstrings is not None:
-            updated_docstrings = generated_docstrings
+            updated_docstrings = [ds[0] for ds in generated_docstrings]
         else:
             updated_docstrings = self._get_updated_docstrings(prompts, parameters.generation_parameters)
 
