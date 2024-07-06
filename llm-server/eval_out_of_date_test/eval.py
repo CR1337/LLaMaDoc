@@ -57,6 +57,8 @@ def batched(iterable, n):
 BATCHED_TEST_DATA: List[List[Dict[str, Any]]] = list(batched(TEST_DATA, BATCH_SIZE))
 N_BATCHES: int = len(BATCHED_TEST_DATA)
 MAX_OPTIMIZATION_ITERATIONS: int = 64
+XATOL: float = 1e-2
+FATOL: float = 1e-2
 
 
 def matthews_correlation(tp: int, tn: int, fp: int, fn: int) -> float:
@@ -253,8 +255,8 @@ def do_evaluation_optimization(
             "maxiter": MAX_OPTIMIZATION_ITERATIONS,
             "return_all": False,
             "initial_simplex": initial_simplex,
-            "xatol": 1e-2,
-            "fatol": 1e-2,
+            "xatol": XATOL,
+            "fatol": FATOL,
             "adaptive": False,
             "bounds": BOUNDS
         }
