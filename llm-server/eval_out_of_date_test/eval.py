@@ -17,6 +17,12 @@ import pandas as pd
 import pickle
 import os
 from scipy.optimize import minimize
+import transformers
+import logging
+import warnings
+
+logging.getLogger("transformers").setLevel(logging.ERROR)
+warnings.filterwarnings("ignore")
 
 
 BATCH_SIZE: int = 32
