@@ -1,4 +1,4 @@
-from fastapi import FastAPI, status
+from fastapi import FastAPI, status, BackgroundTasks
 from fastapi.responses import Response, PlainTextResponse
 
 import torch
@@ -112,22 +112,20 @@ async def unload(mid: str):
     else:
         return Response(status_code=status.HTTP_404_NOT_FOUND)
     
-    
-@server.post("/eval/run")
-async def run_eval():
+
+def background_run_eval():
     try:
         evaluation()
     except torch.cuda.OutOfMemoryError:
         mem_summary = gpu_memory_summary(long=True)
         print(mem_summary)
-        #print traceback:
         import traceback
         traceback.print_exc()
-
-        return PlainTextResponse(
-            content=mem_summary,
-            status_code=status.HTTP_507_INSUFFICIENT_STORAGE
-        )
+    
+    
+@server.post("/eval/run")
+async def run_eval(background_tasks: BackgroundTasks):
+    background_tasks.add_task(background_run_eval)
     return Response(status_code=status.HTTP_200_OK)
 
 

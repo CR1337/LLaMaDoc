@@ -3,6 +3,7 @@ import json
 import logging
 import os
 import pickle
+import sys
 import warnings
 from itertools import islice, product
 from typing import List, Tuple, Dict, Any
@@ -23,6 +24,14 @@ from out_of_date_test.model import (
 )
 from out_of_date_test.model_provider import ModelProvider
 from out_of_date_test.none_test import NoneTest
+
+
+eval_output_path: str = "cache/eval_output.txt"
+if not os.path.exists(eval_output_path):
+    with open(eval_output_path, "w") as f:
+        f.write("")
+    os.chmod(eval_output_path, 0o777)
+sys.stdout = open(eval_output_path, "w")
 
 
 logging.getLogger("transformers").setLevel(logging.ERROR)
