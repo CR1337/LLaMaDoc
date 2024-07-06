@@ -17,6 +17,7 @@ import pandas as pd
 import pickle
 import os
 from scipy.optimize import minimize
+import lzma
 import transformers
 import logging
 import warnings
@@ -297,7 +298,16 @@ def store_results(
 
 
 def evaluation():
-    updated_docstrings = do_precaching()
+    updated_docstrings_path = "cache/updated_docstrings.json.xz"
+    if os.path.exists(updated_docstrings_path):
+        with lzma.open(updated_docstrings_path, "rb") as f:
+            updated_docstrings = json.load(f)
+        os.chmod(updated_docstrings_path, 0o777)
+    else:
+        updated_docstrings = do_precaching()
+        with lzma.open(updated_docstrings_path, "wb") as f:
+            json.dump(updated_docstrings, f)
+
     exploration_df = do_evaluation_exploration(updated_docstrings)
     optimization_df = do_evaluation_optimization(
         updated_docstrings, exploration_df
