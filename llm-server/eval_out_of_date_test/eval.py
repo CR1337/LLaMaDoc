@@ -156,6 +156,7 @@ def do_precaching() -> Dict[str, List[str]]:
     mids = list(reversed(ModelProvider.generative_model_ids))
     results = {}
     for mid in tqdm(mids, total=len(mids), desc="Precaching", leave=False):
+        print(f"Do precaching for {mid}")
         results[mid] = [
             r.updated_docstring
             for r in perform_test(
