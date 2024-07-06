@@ -68,8 +68,5 @@ class DistanceTest(OutOfDateTest):
             )
         ]
 
-        if parameters.caching_configuration is not None:
-            self._set_cache_file_permissions()
-
         return test_results
     

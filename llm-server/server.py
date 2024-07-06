@@ -12,7 +12,6 @@ from out_of_date_test.prediction_test import PredictionTest
 from out_of_date_test.distance_test import DistanceTest
 from out_of_date_test.none_test import NoneTest
 
-# from eval_out_of_date_test.precache_for_eval import do_precaching
 from eval_out_of_date_test.eval import evaluation
 
 server = FastAPI()    
@@ -113,21 +112,7 @@ async def unload(mid: str):
     else:
         return Response(status_code=status.HTTP_404_NOT_FOUND)
     
-
-# @server.post("/eval/precaching/run")
-# async def run_eval_precaching():
-#     try:
-#         do_precaching()
-#     except torch.cuda.OutOfMemoryError:
-#         mem_summary = gpu_memory_summary(long=True)
-#         print(mem_summary)
-#         return PlainTextResponse(
-#             content=mem_summary,
-#             status_code=status.HTTP_507_INSUFFICIENT_STORAGE
-#         )
-#     return Response(status_code=status.HTTP_200_OK)
-
-
+    
 @server.post("/eval/run")
 async def run_eval():
     try:
