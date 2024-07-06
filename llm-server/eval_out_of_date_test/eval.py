@@ -167,7 +167,7 @@ def do_precaching() -> Dict[str, List[List[str]]]:
                     updated_docstrings=None
                 )
             ]
-            for _ in DistanceTest.N_SAMPLES
+            for _ in range(DistanceTest.N_SAMPLES)
         ]
     return results
 
