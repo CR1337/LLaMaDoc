@@ -227,31 +227,9 @@ class GenerationParameters(BaseModel):
         return generation_parameters
     
 
-class TestCachingConfiguration(BaseModel):
-    cache_identifier: str
-    item_index: int
-    store: bool
-    load: bool
-
-    @field_validator("item_index")
-    @classmethod
-    def validate_test_threshold(cls, value):
-        if value < 0:
-            raise ValueError("item_index must be greater than or equal to 0.")
-        return value
-
-    @model_validator(mode='after')
-    def validate_penalty_parameters(self):
-        if self.store and self.load:
-            raise ValueError("store and load cannot both be True.")
-        return self
-
-
 class TestParameters(BaseModel):
     generation_parameters: GenerationParameters
     test_threshold: Optional[float] = 1.0
-
-    caching_configuration: Optional[TestCachingConfiguration] = None
 
     @field_validator("test_threshold")
     @classmethod

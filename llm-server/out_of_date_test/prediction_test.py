@@ -17,12 +17,16 @@ class PredictionTest(OutOfDateTest):
         self, 
         codes: List[str],
         docstrings: List[str],
-        parameters: PredictionTestParameters
+        parameters: PredictionTestParameters,
+        generated_docstrings: List[str] | None
     ) -> List[TestResult]:
         assert len(codes) == len(docstrings)
 
         prompts = self._build_prompts(codes)
-        updated_docstrings = self._get_updated_docstrings(prompts, parameters.generation_parameters)
+        if generated_docstrings is not None:
+            updated_docstrings = generated_docstrings
+        else:
+            updated_docstrings = self._get_updated_docstrings(prompts, parameters.generation_parameters)
 
         docstring_probabilities = self.compute_docstring_probabilities(
             prompts, docstrings,

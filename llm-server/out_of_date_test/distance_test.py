@@ -14,7 +14,8 @@ class DistanceTest(OutOfDateTest):
         self, 
         codes: List[str],
         docstrings: List[str],
-        parameters: DistanceTestParameters
+        parameters: DistanceTestParameters,
+        generated_docstrings: List[str] | None
     ) -> List[TestResult]:
         assert len(codes) == len(docstrings)
 
@@ -24,8 +25,11 @@ class DistanceTest(OutOfDateTest):
         codes = [code for code in codes for _ in range(n_samples)]
         docstrings = [docstring for docstring in docstrings for _ in range(n_samples)]
 
-        prompts = self._build_prompts(codes)
-        updated_docstrings = self._get_updated_docstrings(prompts, parameters.generation_parameters)
+        if generated_docstrings is not None:
+            updated_docstrings = generated_docstrings
+        else:
+            prompts = self._build_prompts(codes)
+            updated_docstrings = self._get_updated_docstrings(prompts, parameters.generation_parameters)
 
         model = SentenceTransformer(parameters.mid, device=device_name)
         code_embeddings = model.encode(codes, normalize_embeddings=parameters.normalize)

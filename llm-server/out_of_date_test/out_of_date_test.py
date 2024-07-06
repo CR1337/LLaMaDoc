@@ -36,7 +36,8 @@ class OutOfDateTest(ABC):
         self, 
         codes: List[str],
         docstrings: List[str],
-        parameters: TestParameters
+        parameters: TestParameters,
+        generated_docstrings: List[str] | None
     ) -> List[TestResult]:
         raise NotImplementedError("@abstractmethod def test(...)")
     
