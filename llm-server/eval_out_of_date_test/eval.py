@@ -150,7 +150,7 @@ def do_precaching() -> Dict[str, List[str]]:
     test_parameters = NoneTestParameters(
         generation_parameters=GENERATION_PARAMETERS
     )
-    mids = ModelProvider.generative_model_ids
+    mids = list(reversed(ModelProvider.generative_model_ids))
     results = {}
     for mid in tqdm(mids, total=len(mids), desc="Precaching", leave=False):
         results[mid] = [
@@ -168,7 +168,7 @@ def do_precaching() -> Dict[str, List[str]]:
 def do_evaluation_exploration(
     updated_docstrings: Dict[str, List[str]]
 ) -> pd.DataFrame:
-    mids = ModelProvider.generative_model_ids
+    mids = list(reversed(ModelProvider.generative_model_ids))
     n_iterations = len(PARAMETER_COMBINATIONS) * len(mids) * N_EXPLORATION_POINTS
 
     df = pd.DataFrame(
@@ -235,7 +235,7 @@ def do_evaluation_optimization(
     updated_docstrings: Dict[str, List[str]],
     exploration_df: pd.DataFrame
 ) -> pd.DataFrame:
-    mids = ModelProvider.generative_model_ids
+    mids = list(reversed(ModelProvider.generative_model_ids))
     n_iterations = len(mids) * len(PARAMETER_COMBINATIONS)
 
     df = pd.DataFrame(
