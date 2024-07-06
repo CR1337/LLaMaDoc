@@ -143,7 +143,7 @@ def perform_test_for_evaluation(
             tn += 1
     mcc = matthews_correlation(tp, tn, fp, fn)
     df.loc[len(df)] = [
-        mid, distance_function, normalize, sample_many, 
+        mid, distance_function.value, normalize, sample_many, 
         test_threshold, tp, tn, fp, fn, mcc
     ]
     return mcc
