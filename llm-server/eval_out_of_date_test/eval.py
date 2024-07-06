@@ -16,7 +16,7 @@ import numpy as np
 import pandas as pd
 import pickle
 import os
-from scipy import minimize
+from scipy.optimize import minimize
 
 
 BATCH_SIZE: int = 32
