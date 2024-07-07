@@ -106,8 +106,7 @@ def perform_test(
     test_results = []
     for batch in tqdm(
         BATCHED_TEST_DATA, 
-        total=N_BATCHES,  
-        leave=False
+        total=N_BATCHES
     ):
         test_results.extend(
             test.test(
@@ -171,7 +170,7 @@ def do_precaching() -> Dict[str, List[List[str]]]:
     )
     mids = list(reversed(ModelProvider.generative_model_ids))
     results = {}
-    for mid in tqdm(mids, total=len(mids), desc="Precaching", leave=False):
+    for mid in tqdm(mids, total=len(mids), desc="Precaching"):
         print(f"Do precaching for {mid}")
         results[mid] = [
             [
@@ -204,8 +203,7 @@ def do_evaluation_exploration(
     for mid, (distance_function, normalize, sample_many), test_threshold in tqdm(
         product(mids, PARAMETER_COMBINATIONS, EXPLORATION_POINTS),
         total=n_iterations,
-        desc="Exploration",
-        leave=False
+        desc="Exploration"
     ):
         perform_test_for_evaluation(
             mid=mid,
@@ -245,7 +243,7 @@ def objective_function(
 class OptimizationCallback:
 
     def __init__(self, total: int):
-        self._progress = tqdm(total=total, leave=False, desc="Optimization")
+        self._progress = tqdm(total=total, desc="Optimization")
 
     def __call__(self, _):
         self._progress.update(1)
@@ -271,8 +269,7 @@ def do_evaluation_optimization(
     for mid, (distance_function, normalize, sample_many) in tqdm(
         product(mids, PARAMETER_COMBINATIONS),
         total=n_iterations,
-        desc="Exploration",
-        leave=False
+        desc="Exploration"
     ):
         initial_simplex = [tuple(exploration_df[
             (exploration_df["mid"] == mid) 
