@@ -27,14 +27,6 @@ from out_of_date_test.model_provider import ModelProvider
 from out_of_date_test.none_test import NoneTest
 
 
-eval_output_path: str = "cache/eval_output.txt"
-if not os.path.exists(eval_output_path):
-    with open(eval_output_path, "w") as f:
-        f.write("")
-    os.chmod(eval_output_path, 0o777)
-sys.stdout = open(eval_output_path, "w")
-
-
 logging.getLogger("transformers").setLevel(logging.ERROR)
 warnings.filterwarnings("ignore")
 
