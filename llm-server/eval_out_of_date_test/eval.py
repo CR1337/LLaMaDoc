@@ -316,7 +316,7 @@ def load_or_compute(path: str, file_type: str, function: Callable, *args) -> Any
 
 def evaluation():
     updated_docstrings = load_or_compute(
-        "cache/updated_docstrings.json.xz",
+        "cache/updated_docstrings.json",
         'json',
         do_precaching
     )
