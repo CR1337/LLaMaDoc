@@ -128,7 +128,8 @@ def perform_test_for_evaluation(
         distance_function=distance_function,
         normalize=normalize,
         sample_many=sample_many,
-        test_threshold=test_threshold
+        test_threshold=test_threshold,
+        mid=ModelProvider.embedding_model_ids[0]
     )
     results = perform_test(
         mid=mid,
