@@ -30,7 +30,7 @@ logging.getLogger("transformers").setLevel(logging.ERROR)
 warnings.filterwarnings("ignore")
 
 
-SEED: int = 42
+SEED: int = 1337
 RANDOM_NUMBER_GENERATOR: Random = Random(SEED)
 SAMPLE_SIZE: int = 512
 BATCH_SIZE: int = 32
@@ -319,23 +319,23 @@ def load_or_compute(path: str, file_type: str, function: Callable, *args) -> Any
 
 def evaluation():
     updated_docstrings = load_or_compute(
-        "cache/updated_docstrings.json",
+        "cache/updated_docstrings_2.json",
         'json',
         do_precaching
     )
-    exploration_df = load_or_compute(
-        "cache/exploration_df.pkl",
-        'df',
-        do_evaluation_exploration,
-        updated_docstrings
-    )
-    optimization_df = load_or_compute(
-        "cache/optimization_df.pkl",
-        'df',
-        do_evaluation_optimization,
-        updated_docstrings,
-        exploration_df
-    )
+    # exploration_df = load_or_compute(
+    #     "cache/exploration_df.pkl",
+    #     'df',
+    #     do_evaluation_exploration,
+    #     updated_docstrings
+    # )
+    # optimization_df = load_or_compute(
+    #     "cache/optimization_df.pkl",
+    #     'df',
+    #     do_evaluation_optimization,
+    #     updated_docstrings,
+    #     exploration_df
+    # )
 
 
 if __name__ == "__main__":
