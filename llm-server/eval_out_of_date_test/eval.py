@@ -131,11 +131,12 @@ def perform_test_for_evaluation(
         test_threshold=test_threshold,
         mid=ModelProvider.embedding_model_ids[0]
     )
+    docstrings = zip(*updated_docstrings[mid])
     results = perform_test(
         mid=mid,
         precaching=False,
         test_parameters=test_parameters,
-        updated_docstrings=list(batched(updated_docstrings[mid], BATCH_SIZE))
+        updated_docstrings=list(batched(docstrings, BATCH_SIZE))
     )
     tp, tn, fp, fn = 0, 0, 0, 0
     for result, label in zip(results, LABELS):
