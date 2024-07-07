@@ -166,7 +166,7 @@ def do_precaching() -> Dict[str, List[List[str]]]:
         print(f"Do precaching for {mid}")
         results[mid] = [
             [
-                r.updated_docstring.decode("utf-8")
+                r.updated_docstring
                 for r in perform_test(
                     mid=mid,
                     precaching=True,
@@ -301,7 +301,7 @@ def load_or_compute(path: str, file_type: str, function: Callable, *args) -> Any
             with open(path, 'rb') as f:
                 return pickle.load(f)
         elif file_type == 'json':
-            with lzma.open(path, 'rb') as f:
+            with open(path, 'r') as f:
                 return json.load(f)
     else:
         data = function(*args)
@@ -309,7 +309,7 @@ def load_or_compute(path: str, file_type: str, function: Callable, *args) -> Any
             with open(path, 'wb') as f:
                 pickle.dump(data, f)
         elif file_type == 'json':
-            with lzma.open(path, 'wb') as f:
+            with open(path, 'w') as f:
                 json.dump(data, f)
         os.chmod(path, 0o777)
         return data
