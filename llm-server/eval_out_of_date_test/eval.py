@@ -99,6 +99,7 @@ def perform_test(
         BATCHED_TEST_DATA, 
         total=N_BATCHES
     ):
+        print(len(batch))
         test_results.extend(
             test.test(
                 [item['c'] for item in batch],
@@ -335,3 +336,8 @@ def evaluation():
         updated_docstrings,
         exploration_df
     )
+
+
+if __name__ == "__main__":
+    evaluation()
+    
