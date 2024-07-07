@@ -175,7 +175,7 @@ def do_precaching() -> Dict[str, List[List[str]]]:
         print(f"Do precaching for {mid}")
         results[mid] = [
             [
-                r.updated_docstring
+                r.updated_docstring.decode("utf-8")
                 for r in perform_test(
                     mid=mid,
                     precaching=True,
