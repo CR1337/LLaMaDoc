@@ -9,7 +9,6 @@ from itertools import islice, product
 from random import Random
 from typing import Callable, List, Tuple, Dict, Any
 
-import lzma
 import numpy as np
 import pandas as pd
 import torch
