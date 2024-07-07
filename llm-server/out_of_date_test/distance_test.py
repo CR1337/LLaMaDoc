@@ -36,9 +36,9 @@ class DistanceTest(OutOfDateTest):
         docstring_embeddings = model.encode(updated_docstrings, normalize_embeddings=parameters.normalize)
         updated_docstring_embeddings = model.encode(docstrings, normalize_embeddings=parameters.normalize)
 
-        print("Code: ", code_embeddings.shape)
-        print("Doc: ", docstring_embeddings.shape)
-        print("Updated Doc: ", updated_docstring_embeddings.shape)
+        print("Code: ", code_embeddings.shape, flush=True)
+        print("Doc: ", docstring_embeddings.shape, flush=True)
+        print("Updated Doc: ", updated_docstring_embeddings.shape, flush=True)
 
         model.similarity_fn_name = parameters.distance_function.value
 
