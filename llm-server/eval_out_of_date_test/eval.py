@@ -6,7 +6,8 @@ import pickle
 import sys
 import warnings
 from itertools import islice, product
-from typing import List, Tuple, Dict, Any
+from random import Random
+from typing import Callable, List, Tuple, Dict, Any
 
 import lzma
 import numpy as np
@@ -38,6 +39,9 @@ logging.getLogger("transformers").setLevel(logging.ERROR)
 warnings.filterwarnings("ignore")
 
 
+SEED: int = 42
+RANDOM_NUMBER_GENERATOR: Random = Random(SEED)
+SAMPLE_SIZE: int = 512
 BATCH_SIZE: int = 32
 N_EXPLORATION_POINTS: int = 9
 BOUNDS: List[Tuple[float, float]] = [(0.0, 0.2)]
@@ -60,10 +64,13 @@ GENERATION_PARAMETERS: GenerationParameters = GenerationParameters(
 )
 TEST_DATA_PATH: str = "eval_out_of_date_test/test_data.json"
 with open(TEST_DATA_PATH, "r") as f:
-    TEST_DATA: List[Dict[str, Any]] = [
-        {'c': item['c'], 'd': item['d'], 'l': item['l']}
-        for item in json.load(f)
-    ]
+    TEST_DATA: List[Dict[str, Any]] = RANDOM_NUMBER_GENERATOR.sample(
+        [
+            {'c': item['c'], 'd': item['d'], 'l': item['l']}
+            for item in json.load(f)
+        ],
+        k=SAMPLE_SIZE
+    )
 LABELS: List[bool] = [item['l'] for item in TEST_DATA]
 
 
@@ -299,33 +306,42 @@ def do_evaluation_optimization(
     return df
 
 
-def store_results(
-    exploration_df: pd.DataFrame,
-    optimization_df: pd.DataFrame
-):
-    with open("cache/exploration_df.pkl", "wb") as f:
-        pickle.dump(exploration_df, f)
-    with open("cache/optimization_df.pkl", "wb") as f:
-        pickle.dump(optimization_df, f)
-
-    os.chmod("cache/exploration_df.pkl", 0o777)
-    os.chmod("cache/optimization_df.pkl", 0o777)
-
+def load_or_compute(path: str, file_type: str, function: Callable, *args) -> Any:
+    if os.path.exists(path):
+        if file_type == 'df':
+            with open(path, 'rb') as f:
+                return pickle.load(f)
+        elif file_type == 'json':
+            with lzma.open(path, 'rb') as f:
+                return json.load(f)
+    else:
+        data = function(*args)
+        if file_type == 'df':
+            with open(path, 'wb') as f:
+                pickle.dump(data, f)
+        elif file_type == 'json':
+            with lzma.open(path, 'wb') as f:
+                json.dump(data, f)
+        os.chmod(path, 0o777)
+        return data
 
 
 def evaluation():
-    updated_docstrings_path = "cache/updated_docstrings.json.xz"
-    if os.path.exists(updated_docstrings_path):
-        with lzma.open(updated_docstrings_path, "rb") as f:
-            updated_docstrings = json.load(f)
-        os.chmod(updated_docstrings_path, 0o777)
-    else:
-        updated_docstrings = do_precaching()
-        with lzma.open(updated_docstrings_path, "wb") as f:
-            json.dump(updated_docstrings, f)
-
-    exploration_df = do_evaluation_exploration(updated_docstrings)
-    optimization_df = do_evaluation_optimization(
-        updated_docstrings, exploration_df
+    updated_docstrings = load_or_compute(
+        "cache/updated_docstrings.json.xz",
+        'json',
+        do_precaching
     )
-    store_results(exploration_df, optimization_df)
+    exploration_df = load_or_compute(
+        "cache/exploration_df.pkl",
+        'df',
+        do_evaluation_exploration,
+        updated_docstrings
+    )
+    optimization_df = load_or_compute(
+        "cache/optimization_df.pkl",
+        'df',
+        do_evaluation_optimization,
+        updated_docstrings,
+        exploration_df
+    )
