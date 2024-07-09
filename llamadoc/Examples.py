@@ -23,7 +23,7 @@ def fibonacci(n):
 
 def add(x, y):
     """
-    Adds x and y.
+    Adds x and y and returns their sum.
     """
     return x + y
 

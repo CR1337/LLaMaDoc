@@ -3,13 +3,23 @@ import requests
 import json
 import os
 
-finetuned = False
-
 from llm_interface.model import (
     TestQuery, TestMethod, DistanceFunction, 
     DistanceTestParameters, GenerationParameters
 )
 
+finetuned = False
+
+DISTANCE = DistanceFunction.EUCLIDEAN
+NORMALIZE = True
+SAMPLE_MANY = True
+TEST_THRESHOLD = 1.1
+
+if(finetuned):
+    DISTANCE = DistanceFunction.EUCLIDEAN
+    NORMALIZE = False
+    SAMPLE_MANY = True
+    TEST_THRESHOLD = 1.39
 
 class LlmInterface:
 
@@ -117,9 +127,9 @@ class LlmInterface:
             test_method=TestMethod.UPDATE,
             test_parameters=DistanceTestParameters(
                 mid=emb_mid,
-                distance_function=DistanceFunction.EUCLIDEAN,
-                normalize=False,
-                sample_many=True,
+                distance_function=DISTANCE,
+                normalize=NORMALIZE,
+                sample_many=SAMPLE_MANY,
                 generation_parameters=GenerationParameters(
                     max_length=512,
                     sample_method="greedy"
@@ -157,11 +167,11 @@ class LlmInterface:
             docstrings=docstrings,
             test_method=TestMethod.DISTANCE,
             test_parameters=DistanceTestParameters(
-                test_threshold=1.39,
+                test_threshold=TEST_THRESHOLD,
                 mid=emb_mid,
-                distance_function=DistanceFunction.EUCLIDEAN,
-                normalize=False,
-                sample_many=True,
+                distance_function=DISTANCE,
+                normalize=NORMALIZE,
+                sample_many=SAMPLE_MANY,
                 generation_parameters=GenerationParameters(
                     max_length=512,
                     sample_method="greedy"
