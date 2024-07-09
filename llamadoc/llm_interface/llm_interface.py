@@ -100,7 +100,7 @@ class LlmInterface:
         if len(codes) == 0:
             return []
 
-        gen_mid = self._generative_model_ids[0]
+        gen_mid = "checkpoints/finetuned_0"
         emb_mid = self._embedding_model_ids[0]
 
         test_query = TestQuery(
@@ -111,8 +111,8 @@ class LlmInterface:
             test_parameters=DistanceTestParameters(
                 mid=emb_mid,
                 distance_function=DistanceFunction.EUCLIDEAN,
-                normalize=True,
-                sample_many=False,
+                normalize=False,
+                sample_many=True,
                 generation_parameters=GenerationParameters(
                     max_length=512,
                     sample_method="greedy"
@@ -137,7 +137,7 @@ class LlmInterface:
         if len(codes) == 0:
             return []
 
-        gen_mid = self._generative_model_ids[0]
+        gen_mid = "checkpoints/finetuned_0"
         emb_mid = self._embedding_model_ids[0]
 
         test_query = TestQuery(
@@ -146,11 +146,11 @@ class LlmInterface:
             docstrings=docstrings,
             test_method=TestMethod.DISTANCE,
             test_parameters=DistanceTestParameters(
-                test_threshold=1.0,
+                test_threshold=1.39,
                 mid=emb_mid,
                 distance_function=DistanceFunction.EUCLIDEAN,
-                normalize=True,
-                sample_many=False,
+                normalize=False,
+                sample_many=True,
                 generation_parameters=GenerationParameters(
                     max_length=512,
                     sample_method="greedy"
