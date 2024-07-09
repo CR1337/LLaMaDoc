@@ -10,16 +10,11 @@ from llm_interface.model import (
 
 finetuned = False
 
-DISTANCE = DistanceFunction.EUCLIDEAN
-NORMALIZE = True
-SAMPLE_MANY = True
-TEST_THRESHOLD = 1.1
+DISTANCE = {True: DistanceFunction.EUCLIDEAN, False: DistanceFunction.EUCLIDEAN}
+NORMALIZE = {True: False, False: True}
+SAMPLE_MANY = {True: True, False: True}
+TEST_THRESHOLD = {True: 1.39, False: 1.1}
 
-if(finetuned):
-    DISTANCE = DistanceFunction.EUCLIDEAN
-    NORMALIZE = False
-    SAMPLE_MANY = True
-    TEST_THRESHOLD = 1.39
 
 class LlmInterface:
 
@@ -127,9 +122,9 @@ class LlmInterface:
             test_method=TestMethod.UPDATE,
             test_parameters=DistanceTestParameters(
                 mid=emb_mid,
-                distance_function=DISTANCE,
-                normalize=NORMALIZE,
-                sample_many=SAMPLE_MANY,
+                distance_function=DISTANCE[finetuned],
+                normalize=NORMALIZE[finetuned],
+                sample_many=SAMPLE_MANY[finetuned],
                 generation_parameters=GenerationParameters(
                     max_length=512,
                     sample_method="greedy"
@@ -167,11 +162,11 @@ class LlmInterface:
             docstrings=docstrings,
             test_method=TestMethod.DISTANCE,
             test_parameters=DistanceTestParameters(
-                test_threshold=TEST_THRESHOLD,
+                test_threshold=TEST_THRESHOLD[finetuned],
                 mid=emb_mid,
-                distance_function=DISTANCE,
-                normalize=NORMALIZE,
-                sample_many=SAMPLE_MANY,
+                distance_function=DISTANCE[finetuned],
+                normalize=NORMALIZE[finetuned],
+                sample_many=SAMPLE_MANY[finetuned],
                 generation_parameters=GenerationParameters(
                     max_length=512,
                     sample_method="greedy"
