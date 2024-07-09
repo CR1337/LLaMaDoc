@@ -22,6 +22,11 @@ function deactivate() {
     codeActionProvider?.dispose();
 }
 
+function showLoadingMessage(message) {
+    const loadingMessage = vscode.window.setStatusBarMessage(`$(sync~spin) ${message}`);
+    return loadingMessage;
+}
+
 function registerCommands(context) {
     context.subscriptions.push(
         vscode.commands.registerCommand(LLAMADOC_UPDATE_DOCSTRING_COMMAND, updateDocstring),
@@ -57,22 +62,30 @@ async function updateDocstring(lineNumber, docstringStartLine, docstringEndLine,
     const document = activeEditor.document;
     const oldDocstring = document.getText(new vscode.Range(new vscode.Position(docstringStartLine - 1, 0), new vscode.Position(docstringEndLine, 0)));
     const codestring = document.getText(new vscode.Range(new vscode.Position(start_line - 1, 0), new vscode.Position(end_line, 0)));
-    const newDocstring = await getUpdatedText(codestring, oldDocstring);
-    const newDocstringLength = newDocstring.split('\n').length - 1
-    const oldDocstringLength = oldDocstring.split('\n').length - 1  
-    const lineDiff = newDocstringLength - oldDocstringLength
-
-    clearSpecificDecoration(lineNumber);
-    executedActions.add(lineNumber);
-    vscode.window.showInformationMessage('Updated Docstring.');
-
-    const edit = new vscode.WorkspaceEdit();
-    const editRange = new vscode.Range(new vscode.Position(docstringStartLine - 1, 0), new vscode.Position(docstringEndLine, 0));
-    edit.replace(document.uri, editRange, newDocstring);
-    await vscode.workspace.applyEdit(edit);
-
-    if (newDocstringLength !== oldDocstringLength) {
-        updateLineDifference(lineNumber + 1,  lineDiff);
+    
+    const loadingMessage = showLoadingMessage('Updating docstring...');
+    try {
+        const newDocstring = await getUpdatedText(codestring, oldDocstring);
+        const newDocstringLength = newDocstring.split('\n').length - 1
+        const oldDocstringLength = oldDocstring.split('\n').length - 1  
+        const lineDiff = newDocstringLength - oldDocstringLength
+    
+        clearSpecificDecoration(lineNumber);
+        executedActions.add(lineNumber);
+        vscode.window.showInformationMessage('Updated Docstring.');
+    
+        const edit = new vscode.WorkspaceEdit();
+        const editRange = new vscode.Range(new vscode.Position(docstringStartLine - 1, 0), new vscode.Position(docstringEndLine, 0));
+        edit.replace(document.uri, editRange, newDocstring);
+        await vscode.workspace.applyEdit(edit);
+    
+        if (newDocstringLength !== oldDocstringLength) {
+            updateLineDifference(lineNumber + 1,  lineDiff);
+        }
+    } catch (error) {
+        vscode.window.showErrorMessage(`Error updating docstring: ${error.message}`);
+    } finally {
+        loadingMessage.dispose();
     }
 }
 
@@ -91,8 +104,10 @@ function scanFile() {
         return;
     }
 
+    const loadingMessage = showLoadingMessage('Scanning for out-of-date docstrings...');
     const pyCommand = getPythonCommandFind(activeEditor.document.fileName);
     exec(pyCommand, (error, stdout, stderr) => {
+        loadingMessage.dispose();
         if (error) {
             console.error(`Error: ${error.message}`);
             return;
