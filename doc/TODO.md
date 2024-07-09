@@ -5,7 +5,7 @@
 - [x] Out-of-Date check parameter testing (Evaluierung)
 - [x] Updated Docstring evaluation with GPT4
 ---
-- [ ] Loading Animation (L)
+- [x] Loading Animation (L)
 - [ ] User Testing (L + C)
 - [ ] Refactoring
   - [ ] Jupyter + LLamadoc (L)
