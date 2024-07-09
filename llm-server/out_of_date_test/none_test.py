@@ -10,7 +10,7 @@ class NoneTest(OutOfDateTest):
         codes: List[str],
         docstrings: List[str],
         parameters: PredictionTestParameters,
-        generated_docstrings: List[str] | None
+        generated_docstrings: List[str] | None = None
     ) -> List[TestResult]:
         assert len(codes) == len(docstrings)
 

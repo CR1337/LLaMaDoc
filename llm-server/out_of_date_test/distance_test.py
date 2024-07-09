@@ -15,7 +15,7 @@ class DistanceTest(OutOfDateTest):
         codes: List[str],
         docstrings: List[str],
         parameters: DistanceTestParameters,
-        generated_docstrings: List[str] | None
+        generated_docstrings: List[str] | None = None
     ) -> List[TestResult]:
         assert len(codes) == len(docstrings)
 
