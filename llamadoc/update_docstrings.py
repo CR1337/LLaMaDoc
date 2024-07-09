@@ -8,25 +8,18 @@ def get_updated_docstring(code: str, docstring: str) -> str:
 
 def main():
     input_data = json.loads(sys.stdin.read())
-    codestring = input_data["codestring"]
+    codeString = input_data["codestring"]
     old_docstring = input_data["old_docstring"]
 
-    start = codestring.index('"""')
-    end = start + codestring[start + 1:].index('"""')
-    codestring = codestring[:start] + codestring[end + 4:]
+    start = codeString.index('"""')
+    end = start + codeString[start + 1:].index('"""')
+    codeString = codeString[:start] + codeString[end + 4:]
 
-    codestring.replace('\r', '')
+    codeString.replace('\r', '')
     old_docstring.replace('\r', '')
 
-    # with open("D:\\Programming\\update_code.txt", "w") as f:
-    #     f.write(codestring)
 
-    # with open("D:\\Programming\\update_doc.txt", "w") as f:
-    #     f.write(old_docstring)
-
-
-
-    new_docstring = get_updated_docstring(codestring, old_docstring)
+    new_docstring = get_updated_docstring(codeString, old_docstring)
     new_docstring = f'    """\n    {new_docstring}\n    """\n'
 
     print(json.dumps({"new_docstring": new_docstring}))

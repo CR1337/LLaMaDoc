@@ -122,7 +122,6 @@ def check_out_of_date(functions: List[Function]) -> List[Function]:
         functions[i].up_to_date = not result[0]
 
     return functions
-    # ---------------------------------------------------
 
 
 def main():
@@ -137,10 +136,6 @@ def main():
     code = [line.replace('\r', '') for line in code]
 
     functions = extract_functions(code)
-
-    # with open("D:\\Programming\\find.txt", "w") as f:
-    #     f.write("\n".join([funk.code for funk in functions]))
-
     functions = check_out_of_date(functions)
 
     functions_dicts = [function.to_dict() for function in functions]
