@@ -3,6 +3,8 @@ import requests
 import json
 import os
 
+finetuned = False
+
 from llm_interface.model import (
     TestQuery, TestMethod, DistanceFunction, 
     DistanceTestParameters, GenerationParameters
@@ -100,7 +102,12 @@ class LlmInterface:
         if len(codes) == 0:
             return []
 
-        gen_mid = "checkpoints/finetuned_0"
+        if finetuned:
+            gen_mid = "checkpoints/finetuned_0"
+        else:
+            gen_mid = "google/codegemma-2b"
+
+            
         emb_mid = self._embedding_model_ids[0]
 
         test_query = TestQuery(
@@ -137,7 +144,11 @@ class LlmInterface:
         if len(codes) == 0:
             return []
 
-        gen_mid = "checkpoints/finetuned_0"
+        if finetuned:
+            gen_mid = "checkpoints/finetuned_0"
+        else:
+            gen_mid = "google/codegemma-2b"
+
         emb_mid = self._embedding_model_ids[0]
 
         test_query = TestQuery(
