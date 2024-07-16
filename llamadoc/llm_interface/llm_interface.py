@@ -8,8 +8,10 @@ from llm_interface.model import (
     DistanceTestParameters, GenerationParameters
 )
 
+# Set this to True for using the fintuned model or to False for using the original model
 finetuned = False
 
+# Parameters for the best performing test for each model
 DISTANCE = {True: DistanceFunction.EUCLIDEAN, False: DistanceFunction.EUCLIDEAN}
 NORMALIZE = {True: False, False: True}
 SAMPLE_MANY = {True: True, False: True}
@@ -17,27 +19,14 @@ TEST_THRESHOLD = {True: 1.39, False: 1.1}
 
 
 class LlmInterface:
+    """
+    Interface for interacting with the LLM server
+    """
 
     _server_address: str
     _server_port: int
     _generative_model_ids: List[str]
     _embedding_model_ids: List[str]
-
-    @property
-    def server_address(self) -> str:
-        return self._server_address
-    
-    @property
-    def server_port(self) -> str:
-        return self._server_port
-    
-    @property
-    def generative_model_ids(self) -> List[str]:
-        return self._generative_model_ids
-    
-    @property
-    def embedding_model_ids(self) -> List[str]:
-        return self._embedding_model_ids
 
     def __init__(self):
         dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -46,44 +35,6 @@ class LlmInterface:
 
         self._server_address = server_config["address"]
         self._server_port = server_config["port"]
-
-        self._generative_model_ids = self._get_generative_model_ids()
-        assert len(self._generative_model_ids) > 0, "No models found"
-    
-        self._embedding_model_ids = self._get_embedding_model_ids()
-        assert len(self._embedding_model_ids) > 0, "No models found"
-
-    def _get_model_ids(self, model_type: str) -> List[str]:
-        response = requests.get(
-            url=f"{self._server_address}:{self._server_port}/models/{model_type}"
-        )
-        response.raise_for_status()
-        return response.json()
-
-    def _get_generative_model_ids(self) -> List[str]:
-        return self._get_model_ids("generative")
-    
-    def _get_embedding_model_ids(self) -> List[str]:
-        return self._get_model_ids("embedding")
-
-    def _get_loaded_model_ids(self, model_type: str) -> Dict[str, bool]:
-        response = requests.get(
-            url=f"{self._server_address}:{self._server_port}/models/{model_type}/loaded"
-        )
-        response.raise_for_status()
-        return response.json()
-    
-    def get_loaded_generative_model_ids(self) -> Dict[str, bool]:
-        return self._get_loaded_model_ids("generative")
-    
-    def get_loaded_embedding_model_ids(self) -> Dict[str, bool]:
-        return self._get_loaded_model_ids("embedding")
-    
-    def unload_model(self, model_id: str) -> None:
-        response = requests.delete(
-            url=f"{self._server_address}:{self._server_port}/unload/{model_id}"
-        )
-        response.raise_for_status()
     
     def _do_request(
         self, 
@@ -102,6 +53,17 @@ class LlmInterface:
         codes: List[str],
         docstrings: List[str]
     ) -> List[Tuple[bool, str]]:
+        """
+        Update the docstrings of the given codes
+
+        Args:
+            codes: List of code snippets
+            docstrings: List of docstrings for the given code snippets
+
+        Returns:
+            List of tuples where the first element is a boolean indicating whether the docstring was updated
+            and the second element is the updated docstring
+        """
         assert len(codes) == len(docstrings), "len(codes) != len(docstrings)"
     
         if len(codes) == 0:
@@ -144,6 +106,17 @@ class LlmInterface:
         codes: List[str],
         docstrings: List[str]
     ) -> List[Tuple[bool, str]]:
+        """
+        Check if the docstrings of the given codes are up to date
+
+        Args:
+            codes: List of code snippets
+            docstrings: List of docstrings for the given code snippets
+
+        Returns:
+            List of tuples where the first element is a boolean indicating whether the docstring is up to date
+            and the second element is the suggested updated docstring
+        """
         assert len(codes) == len(docstrings), "len(codes) != len(docstrings)"
     
         if len(codes) == 0:
