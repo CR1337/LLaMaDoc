@@ -60,10 +60,8 @@ except FileNotFoundError:
     print("No test data found")
 
 N_BATCHES: List[int] = [
-    len(BATCHED_TEST_DATA[0]),
-    len(BATCHED_TEST_DATA[1])
+    len(bd) for bd in BATCHED_TEST_DATA
 ]
-
 
 def perform_test(
     index: int,
