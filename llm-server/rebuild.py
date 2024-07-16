@@ -1,5 +1,10 @@
 import subprocess
 
+"""
+This script stops a the runningdocker container,
+pulls the latest changes from GitHub, and rebuilds the container.
+"""
+
 def main():
     process = subprocess.Popen(['docker', 'ps', '-a'], stdout=subprocess.PIPE)
     stdout, _ = process.communicate()
