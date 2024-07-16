@@ -52,6 +52,8 @@ cd ..
 
 ## Recronstructing needed data/files
 
+*If you are one of the lucky persons who got the zip file with all the required files you can just merge the content of the zip file with this repo. The directory structrue is the same.*
+
 ### `github-scraper`
 
 - Put your GitHub authentication token in `github-scraper/github-auth.token`:
