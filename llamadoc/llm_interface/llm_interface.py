@@ -75,7 +75,7 @@ class LlmInterface:
             gen_mid = "google/codegemma-2b"
 
             
-        emb_mid = self._embedding_model_ids[0]
+        emb_mid = "microsoft/codebert-base"
 
         test_query = TestQuery(
             mid=gen_mid,
@@ -127,7 +127,7 @@ class LlmInterface:
         else:
             gen_mid = "google/codegemma-2b"
 
-        emb_mid = self._embedding_model_ids[0]
+        emb_mid = "microsoft/codebert-base"
 
         test_query = TestQuery(
             mid=gen_mid,

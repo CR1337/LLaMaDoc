@@ -50,7 +50,7 @@ class RepoScraper:
             full_name=repo_data["full_name"],
             size=repo_data["size"],
             open_issues=repo_data["open_issues"],
-            watchers=repo_data["watchers"],
+            watchers=repo_data^["watchers"],
             contributors=len(contributors),
             forks=repo_data["forks"],
             contributions=sum(contributor["contributions"] for contributor in contributors),
