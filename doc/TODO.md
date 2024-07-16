@@ -2,13 +2,15 @@
   - [x] Finetuning Daten runterladen
   - [x] Finetuning Daten filtern
 ---
-- [ ] Out-of-Date check parameter testing (Evaluierung)
+- [x] Out-of-Date check parameter testing (Evaluierung)
 - [x] Updated Docstring evaluation with GPT4
 ---
-- [ ] Loading Animation
-- [ ] User Testing
+- [x] Loading Animation (L)
+- [ ] User Testing (L + C)
 - [ ] Refactoring
+  - [ ] Jupyter + LLamadoc (L)
+  - [ ] Rest (C)
 ---
-- [ ] Report schreiben
-  - [ ] Screencast
-  - [ ] Gifs
+- [ ] Report schreiben (L + C)
+  - [ ] Screencast (L)
+  - [ ] Gifs (L)

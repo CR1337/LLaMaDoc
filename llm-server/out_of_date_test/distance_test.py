@@ -8,13 +8,14 @@ from out_of_date_test.model_provider import device_name
 
 class DistanceTest(OutOfDateTest):
 
-    N_SAMPLES: int = 8
+    N_SAMPLES: int = 4
 
     def test(
         self, 
         codes: List[str],
         docstrings: List[str],
-        parameters: DistanceTestParameters
+        parameters: DistanceTestParameters,
+        generated_docstrings: List[str] | None = None
     ) -> List[TestResult]:
         assert len(codes) == len(docstrings)
 
@@ -24,8 +25,11 @@ class DistanceTest(OutOfDateTest):
         codes = [code for code in codes for _ in range(n_samples)]
         docstrings = [docstring for docstring in docstrings for _ in range(n_samples)]
 
-        prompts = self._build_prompts(codes)
-        updated_docstrings = self._get_updated_docstrings(prompts, parameters.generation_parameters)
+        if generated_docstrings is not None:
+            updated_docstrings = [d for ds in generated_docstrings for d in ds]
+        else:
+            prompts = self._build_prompts(codes)
+            updated_docstrings = self._get_updated_docstrings(prompts, parameters.generation_parameters)
 
         model = SentenceTransformer(parameters.mid, device=device_name)
         code_embeddings = model.encode(codes, normalize_embeddings=parameters.normalize)
@@ -63,9 +67,6 @@ class DistanceTest(OutOfDateTest):
                 results, updated_docstrings, docstring_similarities, updated_docstring_similarities
             )
         ]
-
-        if parameters.caching_configuration is not None:
-            self._set_cache_file_permissions()
 
         return test_results
     

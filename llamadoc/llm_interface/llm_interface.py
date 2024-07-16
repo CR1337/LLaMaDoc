@@ -8,6 +8,13 @@ from llm_interface.model import (
     DistanceTestParameters, GenerationParameters
 )
 
+finetuned = False
+
+DISTANCE = {True: DistanceFunction.EUCLIDEAN, False: DistanceFunction.EUCLIDEAN}
+NORMALIZE = {True: False, False: True}
+SAMPLE_MANY = {True: True, False: True}
+TEST_THRESHOLD = {True: 1.39, False: 1.1}
+
 
 class LlmInterface:
 
@@ -100,7 +107,12 @@ class LlmInterface:
         if len(codes) == 0:
             return []
 
-        gen_mid = self._generative_model_ids[0]
+        if finetuned:
+            gen_mid = "checkpoints/finetuned_0"
+        else:
+            gen_mid = "google/codegemma-2b"
+
+            
         emb_mid = self._embedding_model_ids[0]
 
         test_query = TestQuery(
@@ -110,9 +122,9 @@ class LlmInterface:
             test_method=TestMethod.UPDATE,
             test_parameters=DistanceTestParameters(
                 mid=emb_mid,
-                distance_function=DistanceFunction.EUCLIDEAN,
-                normalize=True,
-                sample_many=False,
+                distance_function=DISTANCE[finetuned],
+                normalize=NORMALIZE[finetuned],
+                sample_many=SAMPLE_MANY[finetuned],
                 generation_parameters=GenerationParameters(
                     max_length=512,
                     sample_method="greedy"
@@ -137,7 +149,11 @@ class LlmInterface:
         if len(codes) == 0:
             return []
 
-        gen_mid = self._generative_model_ids[0]
+        if finetuned:
+            gen_mid = "checkpoints/finetuned_0"
+        else:
+            gen_mid = "google/codegemma-2b"
+
         emb_mid = self._embedding_model_ids[0]
 
         test_query = TestQuery(
@@ -146,11 +162,11 @@ class LlmInterface:
             docstrings=docstrings,
             test_method=TestMethod.DISTANCE,
             test_parameters=DistanceTestParameters(
-                test_threshold=1.0,
+                test_threshold=TEST_THRESHOLD[finetuned],
                 mid=emb_mid,
-                distance_function=DistanceFunction.EUCLIDEAN,
-                normalize=True,
-                sample_many=False,
+                distance_function=DISTANCE[finetuned],
+                normalize=NORMALIZE[finetuned],
+                sample_many=SAMPLE_MANY[finetuned],
                 generation_parameters=GenerationParameters(
                     max_length=512,
                     sample_method="greedy"

@@ -16,3 +16,4 @@ llm-server/checkpoints/**
 llm-server/eval_out_of_date_test/*.json
 **/*.secret
 **/*.pkl
+!llm-server/out_of_date_test/inverse_relative_log_token_frequencies.pkl

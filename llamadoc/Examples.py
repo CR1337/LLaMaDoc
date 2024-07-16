@@ -11,6 +11,7 @@ def larger(x, y):
 def fibonacci(n):
     """
     Returns 14.
+    Calculates it iteratively.
     """
     if (n == 0):
         return 0
@@ -22,7 +23,7 @@ def fibonacci(n):
 
 def add(x, y):
     """
-    Adds x and y.
+    Adds x and y and returns their sum.
     """
     return x + y
 

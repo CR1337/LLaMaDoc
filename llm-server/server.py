@@ -1,4 +1,4 @@
-from fastapi import FastAPI, status
+from fastapi import FastAPI, status, BackgroundTasks
 from fastapi.responses import Response, PlainTextResponse
 
 import torch
@@ -12,8 +12,7 @@ from out_of_date_test.prediction_test import PredictionTest
 from out_of_date_test.distance_test import DistanceTest
 from out_of_date_test.none_test import NoneTest
 
-from eval_out_of_date_test.precache_for_eval import do_precaching
-from eval_out_of_date_test.eval import do_eval
+from eval_out_of_date_test.eval import evaluation
 
 server = FastAPI()    
 
@@ -114,15 +113,19 @@ async def unload(mid: str):
         return Response(status_code=status.HTTP_404_NOT_FOUND)
     
 
-@server.post("/eval/precaching/run")
-async def run_eval_precaching():
-    do_precaching()
-    return Response(status_code=status.HTTP_200_OK)
-
-
+def background_run_eval():
+    try:
+        evaluation()
+    except torch.cuda.OutOfMemoryError:
+        mem_summary = gpu_memory_summary(long=True)
+        print(mem_summary)
+        import traceback
+        traceback.print_exc()
+    
+    
 @server.post("/eval/run")
-async def run_eval():
-    do_eval()
+async def run_eval(background_tasks: BackgroundTasks):
+    background_tasks.add_task(background_run_eval)
     return Response(status_code=status.HTTP_200_OK)
 
 

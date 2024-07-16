@@ -19,15 +19,32 @@ for docstring in tqdm(docstrings, total=len(docstrings)):
     for token in tokens:
         frequencies[token] += 1
 
-log_frequencies = (log(frequency + e) for frequency in frequencies)
-relative_log_frequencies = (
-    log_frequency / max(log_frequencies) 
+print(f"{len(frequencies)=}")
+print(f"{sum(frequencies)=}")
+
+log_frequencies = [log(frequency + 1 + e) for frequency in frequencies]
+
+print(f"{len(log_frequencies)=}")
+
+max_log_frequency = max(log_frequencies)
+
+relative_log_frequencies = [
+    log_frequency / max_log_frequency
     for log_frequency in log_frequencies
-)
-inverse_relative_log_frequencies = (
-    1.0 / relative_log_frequency 
+]
+
+print(f"{len(relative_log_frequencies)=}")
+
+max_relative_log_frequency = max(relative_log_frequencies)
+
+inverse_relative_log_frequencies = [
+    # 1.0 / (relative_log_frequency + e)
+    max_relative_log_frequency - relative_log_frequency 
     for relative_log_frequency in relative_log_frequencies
-)
+]
+
+print(f"{len(inverse_relative_log_frequencies)=}")
+print(f"{inverse_relative_log_frequencies=}")
 
 with open("inverse_relative_log_token_frequencies.pkl", "wb") as file:
     pickle.dump(list(inverse_relative_log_frequencies), file)

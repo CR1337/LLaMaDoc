@@ -9,15 +9,16 @@ class NoneTest(OutOfDateTest):
         self, 
         codes: List[str],
         docstrings: List[str],
-        parameters: PredictionTestParameters
+        parameters: PredictionTestParameters,
+        generated_docstrings: List[str] | None = None
     ) -> List[TestResult]:
         assert len(codes) == len(docstrings)
 
         prompts = self._build_prompts(codes)
-        updated_docstrings = self._get_updated_docstrings(prompts, parameters.generation_parameters)
-
-        if parameters.caching_configuration is not None:
-            self._set_cache_file_permissions()
+        if generated_docstrings is not None:
+            updated_docstrings = [ds[0] for ds in generated_docstrings]
+        else:
+            updated_docstrings = self._get_updated_docstrings(prompts, parameters.generation_parameters)
 
         return [
             TestResult(

@@ -1,11 +1,10 @@
 from out_of_date_test.out_of_date_test import OutOfDateTest
 from typing import List, Tuple
-from out_of_date_test.model import PredictionTestParameters, TestResult, TestCachingConfiguration
+from out_of_date_test.model import PredictionTestParameters, TestResult
 import torch
 from math import tan, pi
 import pickle
 import gc
-import h5py
 
 
 class PredictionTest(OutOfDateTest):
@@ -18,32 +17,31 @@ class PredictionTest(OutOfDateTest):
         self, 
         codes: List[str],
         docstrings: List[str],
-        parameters: PredictionTestParameters
+        parameters: PredictionTestParameters,
+        generated_docstrings: List[str] | None = None
     ) -> List[TestResult]:
         assert len(codes) == len(docstrings)
 
         prompts = self._build_prompts(codes)
-        updated_docstrings = self._get_updated_docstrings(prompts, parameters.generation_parameters)
+        if generated_docstrings is not None:
+            updated_docstrings = [ds[0] for ds in generated_docstrings]
+        else:
+            updated_docstrings = self._get_updated_docstrings(prompts, parameters.generation_parameters)
 
         docstring_probabilities = self.compute_docstring_probabilities(
             prompts, docstrings,
-            parameters.weight_decay, parameters.frequency_importance,
-            parameters.caching_configuration
+            parameters.weight_decay, parameters.frequency_importance
         )
 
         updated_docstring_probabilities = self.compute_docstring_probabilities(
             prompts, updated_docstrings,
-            parameters.weight_decay, parameters.frequency_importance,
-            parameters.caching_configuration
+            parameters.weight_decay, parameters.frequency_importance
         )
 
         is_out_of_date = self._is_out_of_date(
             docstring_probabilities, updated_docstring_probabilities,
             parameters.test_threshold
         )
-
-        if parameters.caching_configuration is not None:
-            self._set_cache_file_permissions()
 
         return [
             TestResult(
@@ -83,8 +81,7 @@ class PredictionTest(OutOfDateTest):
         prompts: List[str],
         docstrings: List[str],
         weight_decay: float,
-        frequency_importance: float,
-        cache_config: TestCachingConfiguration | None = None
+        frequency_importance: float
     ) -> List[float]:
         docstrings = self._append_eos_to_docstrings(docstrings)
         prompt_tokens = self._tokenize_texts(prompts)
@@ -93,7 +90,7 @@ class PredictionTest(OutOfDateTest):
         all_sequences, attention_masks = self._prepare_sequences_and_masks(
             prompt_tokens, docstring_tokens
         )
-        probability_distributions = self._compute_probability_distributions(all_sequences, attention_masks, cache_config)
+        probability_distributions = self._compute_probability_distributions(all_sequences, attention_masks)
         last_token_probability_distributions = self._get_last_token_probability_distributions(probability_distributions, attention_masks)
         last_docstring_token_probabilities, last_token_ids = self._compute_last_docstring_token_probabilities(
             last_token_probability_distributions, docstring_tokens
@@ -181,14 +178,8 @@ class PredictionTest(OutOfDateTest):
     def _compute_probability_distributions(
         self,
         all_sequences: torch.Tensor, 
-        attention_masks: torch.Tensor, 
-        cache_config: TestCachingConfiguration | None = None
+        attention_masks: torch.Tensor
     ) -> torch.Tensor:
-        if cache_config is not None and cache_config.load:
-            with h5py.File("cache/" + cache_config.cache_identifier + "_probability_distributions.h5", "r") as f:
-                tensor_data = f['probability_distributions'][cache_config.item_index]
-                return torch.from_numpy(tensor_data)
-        
         # Reshape tensors to fit the model input requirements
         n_batches, n_sequences, n_tokens = all_sequences.shape
         input_tensor = all_sequences.view(-1, n_tokens)
@@ -206,20 +197,6 @@ class PredictionTest(OutOfDateTest):
         torch.cuda.empty_cache()
 
         result = probabilities.view(n_batches, n_sequences, n_tokens, -1)
-
-        if cache_config is not None and cache_config.save:
-            with h5py.File("cache/" + cache_config.cache_identifier + "_probability_distributions.h5", "a") as f:
-                if "probability_distributions" not in f:
-                    f.create_dataset(
-                        "probability_distributions", 
-                        (0,), 
-                        maxshape=(None,), 
-                        chunks=True, 
-                        dtype='f'
-                    )
-                f['probability_distributions'].resize((f['probability_distributions'].shape[0] + 1,))
-                f['probability_distributions'][-1] = result.cpu().numpy()
-
         return result
 
     def _get_last_token_probability_distributions(

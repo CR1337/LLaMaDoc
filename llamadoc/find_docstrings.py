@@ -122,11 +122,19 @@ def check_out_of_date(functions: List[Function]) -> List[Function]:
         functions[i].up_to_date = not result[0]
 
     return functions
-    # ---------------------------------------------------
 
 
-def main():
-    filename = sys.argv[1]
+def process_code(filename: str) -> List[Dict[str, Any]]:
+    """
+    Process and format the code from a given filename, extract functions, check if docstrings are up to date,
+    and return the results as a list of dictionaries.
+
+    Args:
+        filename (str): The filename of the code to process.
+
+    Returns:
+        List[Dict[str, Any]]: The processed functions and their attributes as dictionaries.
+    """
     try:
         with open(filename, 'r') as f:
             code = f.readlines()
@@ -137,13 +145,14 @@ def main():
     code = [line.replace('\r', '') for line in code]
 
     functions = extract_functions(code)
-
-    # with open("D:\\Programming\\find.txt", "w") as f:
-    #     f.write("\n".join([funk.code for funk in functions]))
-
     functions = check_out_of_date(functions)
 
-    functions_dicts = [function.to_dict() for function in functions]
+    return [function.to_dict() for function in functions]
+
+
+def main():
+    filename = sys.argv[1]
+    functions_dicts = process_code(filename)
     print(json.dumps(functions_dicts, indent=2))
 
     
