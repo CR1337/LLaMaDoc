@@ -2,7 +2,10 @@
 
 [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/CR1337/LLaMaDoc/blob/master/LICENSE)
 
-![LLaMaDoc](icons/llamadoc_icon.png)
+<p align="center">
+  <img src="icons/llamadoc_icon.png"  style="width: 33%; height: 33%;"/>
+</p>
+
 
 # Screencast
 
