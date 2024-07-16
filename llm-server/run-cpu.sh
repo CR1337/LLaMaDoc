@@ -1,6 +1,6 @@
 #!/bin/sh
 
-export GROUP=2
+export GROUP=11
 export CACHE_DIR=/var/opt/huggingface
 export PORT=$((9000 + GROUP))
 
