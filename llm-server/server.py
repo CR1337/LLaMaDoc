@@ -12,7 +12,7 @@ from out_of_date_test.prediction_test import PredictionTest
 from out_of_date_test.distance_test import DistanceTest
 from out_of_date_test.none_test import NoneTest
 
-from eval_out_of_date_test.eval import compute_predictions
+from evaluation.compute_predictions import compute_predictions
 
 server = FastAPI()    
 
@@ -113,9 +113,9 @@ async def unload(mid: str):
         return Response(status_code=status.HTTP_404_NOT_FOUND)
     
 
-def background_compute_predictions():
+def background_compute_predictions(index: int):
     try:
-        compute_predictions()
+        compute_predictions(index)
     except torch.cuda.OutOfMemoryError:
         mem_summary = gpu_memory_summary(long=True)
         print(mem_summary)
@@ -123,9 +123,10 @@ def background_compute_predictions():
         traceback.print_exc()
     
     
-@server.post("/compute-predictions")
-async def compute_predictions(background_tasks: BackgroundTasks):
-    background_tasks.add_task(background_compute_predictions)
+@server.post("/compute-predictions/{index}")
+async def compute_predictions(background_tasks: BackgroundTasks, index: str):
+    index = int(index)
+    background_tasks.add_task(background_compute_predictions, index)
     return Response(status_code=status.HTTP_200_OK)
 
 
