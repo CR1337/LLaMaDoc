@@ -62,10 +62,10 @@ function registerCommands(context) {
  * @param {vscode.ExtensionContext} context - The context for the extension.
  */
 function displayStatusBarButtons(context) {
-    const searchButton = createStatusBarButton("$(search) Search for Out of Date Docstrings", LLAMADOC_SCAN_FILE, vscode.StatusBarAlignment.Left, 100);
+    const searchButton = createStatusBarButton("$(search) Find Outdated Docstrings", LLAMADOC_SCAN_FILE, vscode.StatusBarAlignment.Left, 100);
     context.subscriptions.push(searchButton);
 
-    dismissAllButton = createStatusBarButton("$(close) Dismiss All Expired Docstrings", 'llamadoc.dismissAll', vscode.StatusBarAlignment.Left, 99);
+    dismissAllButton = createStatusBarButton("$(close) Dismiss All Docstring Suggestions", 'llamadoc.dismissAll', vscode.StatusBarAlignment.Left, 99);
     context.subscriptions.push(dismissAllButton);
 }
 
@@ -110,7 +110,7 @@ function provideCodeActions(document, range) {
         if (range.start.line !== lineNumber || range.end.line !== lineNumber) return [];
         
         const updateAction = createCodeAction('Update Docstring', LLAMADOC_UPDATE_DOCSTRING_COMMAND, vscode.CodeActionKind.RefactorRewrite, [lineNumber, docstring_start, docstring_end, start_line, end_line]);
-        const dismissAction = createCodeAction('Dismiss', LLAMADOC_DISMISS_COMMAND, vscode.CodeActionKind.Refactor, [lineNumber]);
+        const dismissAction = createCodeAction('Dismiss Docstring Suggestion', LLAMADOC_DISMISS_COMMAND, vscode.CodeActionKind.Refactor, [lineNumber]);
 
         updateAction.isPreferred = true;
         dismissAction.isPreferred = true;
@@ -149,7 +149,7 @@ function findDocstrings() {
         return;
     }
 
-    const loadingMessage = showLoadingMessage('Scanning for out-of-date docstrings...');
+    const loadingMessage = showLoadingMessage('Scanning for outdated docstrings...');
     const pyCommand = getPythonCommandFindDocstrings(activeEditor.document.fileName);
     exec(pyCommand, (error, stdout, stderr) => {
         loadingMessage.dispose();
@@ -199,7 +199,7 @@ function spawnExpiredDocstringTags(jsonObject, currentLineNumber, lineDiff = 0) 
         const lineNumber = start_line - 1;
         const decorationType = vscode.window.createTextEditorDecorationType({
             after: {
-                contentText: "Expired Docstring!",
+                contentText: "Outdated Docstring!",
                 color: '#f0f0f0',
                 backgroundColor: '#333333',
                 margin: '0 0 0 2em',
@@ -236,7 +236,7 @@ function spawnLightbulbs(lineNumber, docstring_start, docstring_end, start_line,
 function dismissDocstring(lineNumber) {
     clearSpecificDecoration(lineNumber);
     executedActions.add(lineNumber);
-    vscode.window.showInformationMessage('Dismissed Docstring Update.');
+    vscode.window.showInformationMessage('Dismissed docstring suggestion.');
 }
 
 
@@ -270,7 +270,7 @@ function dismissAllExpiredDocstrings(hidden = false) {
     lightbulbLines = [];
     registerCodeActionsProvider();
     if (!hidden) {
-        vscode.window.showInformationMessage('Dismissed all expired docstrings.');
+        vscode.window.showInformationMessage('Dismissed all docstring suggestions.');
     }
 }
 
@@ -319,7 +319,7 @@ async function updateDocstring(lineNumber, docstringStartLine, docstringEndLine,
     
         clearSpecificDecoration(lineNumber);
         executedActions.add(lineNumber);
-        vscode.window.showInformationMessage('Updated Docstring.');
+        vscode.window.showInformationMessage('Updated docstring.');
     
         const edit = new vscode.WorkspaceEdit();
         const editRange = new vscode.Range(new vscode.Position(docstringStartLine - 1, 0), new vscode.Position(docstringEndLine, 0));
@@ -365,7 +365,6 @@ async function getUpdatedDocstring(codeString, oldDocstring) {
             }
 
             try {
-                console.info('Received data from python script');
                 const result = JSON.parse(stdoutData);
                 const formatted_result = result.new_docstring;
                 resolve(formatted_result);
@@ -378,7 +377,6 @@ async function getUpdatedDocstring(codeString, oldDocstring) {
             reject(error);
         });
 
-        console.info('Sending data to python script');
         process.stdin.write(JSON.stringify({ codestring: codeString, old_docstring: oldDocstring }));
         process.stdin.end();
     });
