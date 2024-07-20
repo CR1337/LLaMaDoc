@@ -45,7 +45,7 @@ deactivate
 cd ..
 ```
 
-- Install dependencies for the LLaMaDoc Extensions. The python dependencies have to be installed globally.
+- Install dependencies for the LLaMaDoc Extension. The python dependencies have to be installed globally.
 ```bash
 cd llamadoc
 pip3 install -r requirements.txt
@@ -55,7 +55,7 @@ cd ..
 
 ## Recronstructing needed data/files
 
-*If you are one of the lucky persons who got the zip file with all the required files you can just merge the content of the zip file with this repo. The directory structrue is the same.*
+*If you are one of the lucky persons who got the zip file with all the required files you can just merge the content of the zip file with this repo. The directory structure is the same.*
 
 ### `github-scraper`
 
@@ -96,7 +96,7 @@ touch llm-server/not-on-server
 echo "YOUR-TOKEN" > llm-server/huggingface-token
 ```
 
-- Copy the fintuned model adapter fo your choice (e.g. number 9) into the right llm-server directory and rename it to `finetuned_0`:
+- Copy the fintuned model adapter of your choice (e.g. number 9) into the right llm-server directory and rename it to `finetuned_0`:
 ```bash
 cp -r finetuning/finetuning_checkpoints/checkpoint-ep9 llm-server/checkpoints/finetuned_0
 ```
