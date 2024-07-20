@@ -147,7 +147,7 @@ You can now use the extension by running the VSCode [launch task](.vscode/launch
 
 There are two evaluations. One compares the quality of the generated docstrings between the original and the finetuned model: [`finetuning/evaluation/finetuning-evaluation.ipynb`](finetuning/evaluation/finetuning-evaluation.ipynb).
 
-The other evaluation find the best parameters for the out-of-date test and measures the performance of tha test: [`llm-server/evaluation/out-of-date-evaluation.ipynb`](llm-server/evaluation/out-of-date-evaluation.ipynb).
+The other evaluation finds the best parameters for the out-of-date test and measures the performance of that test: [`llm-server/evaluation/out-of-date-evaluation.ipynb`](llm-server/evaluation/out-of-date-evaluation.ipynb).
 
 ## Finetuning Evaluation
 
