@@ -1,0 +1,22 @@
+\begin{tabular}{llrrrrrrrr}
+\toprule
+mid & distance_function & normalize & sample_many & test_threshold & p4 & tp & tn & fp & fn \\
+\midrule
+checkpoints/finetuned_0 & cosine & False & False & 1.341709 & 0.509823 & 186 & 91 & 152 & 83 \\
+checkpoints/finetuned_0 & cosine & False & True & 1.386935 & 0.533545 & 185 & 100 & 143 & 84 \\
+checkpoints/finetuned_0 & cosine & True & False & 1.341709 & 0.509823 & 186 & 91 & 152 & 83 \\
+checkpoints/finetuned_0 & cosine & True & True & 1.386935 & 0.533545 & 185 & 100 & 143 & 84 \\
+checkpoints/finetuned_0 & euclidean & False & False & 0.889447 & 0.504510 & 139 & 120 & 123 & 130 \\
+checkpoints/finetuned_0 & euclidean & False & True & 0.904523 & 0.530913 & 131 & 141 & 102 & 138 \\
+checkpoints/finetuned_0 & euclidean & True & False & 0.874372 & 0.502399 & 139 & 119 & 124 & 130 \\
+checkpoints/finetuned_0 & euclidean & True & True & 0.783920 & 0.530355 & 115 & 160 & 83 & 154 \\
+google/codegemma-2b & cosine & False & False & 1.010050 & 0.491935 & 130 & 122 & 121 & 139 \\
+google/codegemma-2b & cosine & False & True & 1.010050 & 0.495100 & 119 & 135 & 108 & 150 \\
+google/codegemma-2b & cosine & True & False & 1.010050 & 0.491935 & 130 & 122 & 121 & 139 \\
+google/codegemma-2b & cosine & True & True & 1.010050 & 0.495100 & 119 & 135 & 108 & 150 \\
+google/codegemma-2b & euclidean & False & False & 0.874372 & 0.514382 & 114 & 152 & 91 & 155 \\
+google/codegemma-2b & euclidean & False & True & 1.085427 & 0.525802 & 156 & 116 & 127 & 113 \\
+google/codegemma-2b & euclidean & True & False & 0.874372 & 0.518369 & 115 & 153 & 90 & 154 \\
+google/codegemma-2b & euclidean & True & True & 1.100503 & 0.526173 & 169 & 107 & 136 & 100 \\
+\bottomrule
+\end{tabular}
