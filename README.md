@@ -22,6 +22,8 @@ Click the 💡 lightbulb in the line of the function definition to update the ou
   <img src="resources/icons/update.gif"  style="width: 80%; height: 80%;"/>
 </p>
 
+🎥 A more detailed screencast can be found [here](https://github.com/CR1337/LLaMaDoc/blob/main/resources/LLaMaDoc_usage.mp4).
+
 
 # Setup (Linux)
 
