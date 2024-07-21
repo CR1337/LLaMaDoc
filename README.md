@@ -3,7 +3,7 @@
 [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/CR1337/LLaMaDoc/blob/master/LICENSE)
 
 <p align="center">
-  <img src="icons/llamadoc_icon_round.png"  style="width: 25%; height: 25%;"/>
+  <img src="resources/icons/llamadoc_icon_round.png"  style="width: 25%; height: 25%;"/>
 </p>
 
 
@@ -12,12 +12,12 @@
 
 Press "🔎 Find Outdated Docstrings" in the VSCode status bar.
 <p>
-  <img src="icons/scan.gif"  style="width: 80%; height: 80%;"/> 
+  <img src="resources/icons/scan.gif"  style="width: 80%; height: 80%;"/> 
 </p>
 
 Click the 💡 lightbulb in the line of the function definition to update the outdated docstring.
 <p>
-  <img src="icons/update.gif"  style="width: 80%; height: 80%;"/>
+  <img src="resources/icons/update.gif"  style="width: 80%; height: 80%;"/>
 </p>
 
 
