@@ -2,6 +2,8 @@
 
 [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/CR1337/LLaMaDoc/blob/master/LICENSE)
 
+LLaMaDoc is a VSCode extension to automatically detect and update outdated Python docstrings.
+
 <p align="center">
   <img src="resources/icons/llamadoc_icon_round.png"  style="width: 25%; height: 25%;"/>
 </p>
