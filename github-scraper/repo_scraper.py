@@ -1,3 +1,8 @@
+"""
+This script scrapes every version of a python function containing a docstring from
+the repositories in repositories.json and stores them in the data directory.
+"""
+
 from typing import Dict, Any, List, Tuple
 import json
 import git
