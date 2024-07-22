@@ -1,3 +1,8 @@
+"""
+This script generates the inverse relative log token frequencies from the training data.
+The frequencies are not used by our current approach.
+"""
+
 import pickle
 from math import log
 import json

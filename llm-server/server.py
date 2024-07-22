@@ -1,3 +1,7 @@
+"""
+This file contains all the FastAPI endpoints for the LLaMaDoc server.
+"""
+
 from fastapi import FastAPI, status, BackgroundTasks
 from fastapi.responses import Response, PlainTextResponse
 
