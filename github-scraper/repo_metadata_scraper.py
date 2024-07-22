@@ -1,3 +1,7 @@
+"""
+This script scrapes repository metadata from GitHub and stores it in repositories.json.
+"""
+
 import requests
 import json
 from tqdm import tqdm
