@@ -12,7 +12,7 @@ sequenceDiagram
     VSCode->>+Backend: Code of methods and docstrings
     Backend->>+codegemma-2b: Generate updated docstrings
     codegemma-2b->>-Backend: Updated docstrings
-    Backend->>+codebert-base: Embedd code, docstrings and updated docstrings
+    Backend->>+codebert-base: Embed code, docstrings and updated docstrings
     codebert-base->>-Backend: Embeddings
     Backend->>-VSCode: Docstrings that are out-of-date
     VSCode->>-User: Tags indicating out-of-date docstrings

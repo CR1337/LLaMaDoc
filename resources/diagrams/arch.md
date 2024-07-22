@@ -2,7 +2,8 @@
 
 ```mermaid
 flowchart LR
-    vscode[VSCode Extension]
+    vscode[VSCode\nExtension]
+    python[Python\nInterface]
     subgraph Backend
         subgraph Docker
             fastapi[FastAPI]
@@ -11,7 +12,8 @@ flowchart LR
         end
     end
 
-    vscode --- fastapi
+    vscode --- python
+    python --- fastapi
     fastapi --- codegemma
     fastapi --- codebert
 ```
