@@ -1,3 +1,8 @@
+"""
+This is a file with code examples for you to test the extension with.
+"""
+
+
 def larger(x, y):
     """
     Checks if the sum of x and y is even.
