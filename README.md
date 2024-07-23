@@ -24,6 +24,8 @@ Click the 💡 lightbulb in the line of the function definition to update the ou
 
 🎥 A more detailed screencast can be found [here](https://github.com/CR1337/LLaMaDoc/blob/main/resources/LLaMaDoc_usage.mp4).
 
+📝 The corresponding project report can be found [here](https://github.com/CR1337/LLaMaDoc/blob/main/resources/LLaMaDoc_project_report.pdf).
+
 
 # Setup (Linux)
 
